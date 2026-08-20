@@ -144,6 +144,7 @@
    <aside id="sidebar-menu" class="sidebar-transition w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col min-h-screen sticky top-0 z-30">
     <div class="p-4 border-b border-slate-800 text-center flex-shrink-0">
      <h1 class="text-2xl font-black text-red-500 tracking-wider">SICAL</h1>
+     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest whitespace-nowrap">Multimodal &amp; Rail Transport</p>
      <p class="text-[9px] text-indigo-300 italic whitespace-nowrap">A PRISTINE GROUP COMPANY</p>
     </div>
     <nav class="p-4 space-y-1 flex-1">
@@ -1068,6 +1069,8 @@
 
   <!-- JAVASCRIPT -->
   <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXzFsI1gSjpnJJauz8h0GHwmrrr6krfyG0gNkQCMx4KL4aWArth_LJdYDcML3Uqc7qWQ/exec";
+
         const DEFAULT_ADMIN = {
             name: "SICAL Admin", 
             username: "SICAL ADMIN", 
@@ -1091,66 +1094,87 @@
             "User (Employee)", "IT Admin / Support Agent", "IT Support Engineer", "CFS Operations Lead"
         ];
 
-        // LOCAL STORAGE HELPERS
-        function loadUsers() {
-            const stored = localStorage.getItem('sical_users');
-            if (stored) {
-                try {
-                    let parsed = JSON.parse(stored);
-                    if (!parsed.some(u => u.username === DEFAULT_ADMIN.username)) {
-                        parsed.unshift(DEFAULT_ADMIN);
-                    }
-                    return parsed;
-                } catch(e) {
-                    return [DEFAULT_ADMIN];
-                }
+        // GOOGLE SHEET CLOUD STORAGE SYNCHRONIZATION HELPERS
+        async function fetchSheetData(sheetName) {
+            try {
+                let response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ sheet: sheetName, action: "fetchAll" })
+                });
+                let json = await response.json();
+                if (json.status === "success") return json.data;
+            } catch(e) {
+                console.error("Cloud fetch error:", e);
             }
-            localStorage.setItem('sical_users', JSON.stringify([DEFAULT_ADMIN]));
-            return [DEFAULT_ADMIN];
+            return null;
         }
-        function saveUsers() { localStorage.setItem('sical_users', JSON.stringify(usersList)); }
 
-        function loadLocations() {
-            const stored = localStorage.getItem('sical_locations');
-            if (stored) return JSON.parse(stored);
-            localStorage.setItem('sical_locations', JSON.stringify(DEFAULT_LOCATIONS));
-            return DEFAULT_LOCATIONS;
+        async function saveSheetData(sheetName, records) {
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ sheet: sheetName, action: "saveAll", records: records })
+                });
+            } catch(e) {
+                console.error("Cloud save error:", e);
+            }
         }
+
+        // LOADERS WITH LOCALSTORAGE FALLBACK
+        let usersList = [DEFAULT_ADMIN];
+        let locationsList = DEFAULT_LOCATIONS;
+        let assetTypesList = DEFAULT_ASSET_TYPES;
+        let rolesList = DEFAULT_ROLES;
+        let ticketsList = [];
+        let assetMasterList = [];
+        let assetHistoryList = [];
+        let notifications = [];
+
+        async function initializeCloudData() {
+            let cloudUsers = await fetchSheetData("Users");
+            if (cloudUsers && cloudUsers.length > 0) {
+                usersList = cloudUsers;
+            } else {
+                usersList = [DEFAULT_ADMIN];
+                saveUsers();
+            }
+
+            let cloudTickets = await fetchSheetData("Tickets");
+            if (cloudTickets) ticketsList = cloudTickets;
+
+            let cloudAssets = await fetchSheetData("Assets");
+            if (cloudAssets) assetMasterList = cloudAssets;
+
+            let cloudHistory = await fetchSheetData("AssetHistory");
+            if (cloudHistory) assetHistoryList = cloudHistory;
+
+            initApp();
+        }
+
+        function saveUsers() { 
+            localStorage.setItem('sical_users', JSON.stringify(usersList)); 
+            saveSheetData("Users", usersList);
+        }
+
         function saveLocations() { localStorage.setItem('sical_locations', JSON.stringify(locationsList)); }
-
-        function loadAssetTypes() {
-            const stored = localStorage.getItem('sical_asset_types');
-            if (stored) return JSON.parse(stored);
-            localStorage.setItem('sical_asset_types', JSON.stringify(DEFAULT_ASSET_TYPES));
-            return DEFAULT_ASSET_TYPES;
-        }
         function saveAssetTypes() { localStorage.setItem('sical_asset_types', JSON.stringify(assetTypesList)); }
-
-        function loadRoles() {
-            const stored = localStorage.getItem('sical_roles');
-            if (stored) return JSON.parse(stored);
-            localStorage.setItem('sical_roles', JSON.stringify(DEFAULT_ROLES));
-            return DEFAULT_ROLES;
-        }
         function saveRoles() { localStorage.setItem('sical_roles', JSON.stringify(rolesList)); }
 
-        function loadTickets() {
-            const stored = localStorage.getItem('sical_tickets');
-            return stored ? JSON.parse(stored) : [];
+        function saveTickets() { 
+            localStorage.setItem('sical_tickets', JSON.stringify(ticketsList)); 
+            saveSheetData("Tickets", ticketsList);
         }
-        function saveTickets() { localStorage.setItem('sical_tickets', JSON.stringify(ticketsList)); }
 
-        function loadAssets() {
-            const stored = localStorage.getItem('sical_assets');
-            return stored ? JSON.parse(stored) : [];
+        function saveAssets() { 
+            localStorage.setItem('sical_assets', JSON.stringify(assetMasterList)); 
+            saveSheetData("Assets", assetMasterList);
         }
-        function saveAssets() { localStorage.setItem('sical_assets', JSON.stringify(assetMasterList)); }
 
-        function loadAssetHistory() {
-            const stored = localStorage.getItem('sical_asset_history');
-            return stored ? JSON.parse(stored) : [];
+        function saveAssetHistory() { 
+            localStorage.setItem('sical_asset_history', JSON.stringify(assetHistoryList)); 
+            saveSheetData("AssetHistory", assetHistoryList);
         }
-        function saveAssetHistory() { localStorage.setItem('sical_asset_history', JSON.stringify(assetHistoryList)); }
 
         function loadNotifications() {
             const stored = localStorage.getItem('sical_notifications');
@@ -1158,15 +1182,7 @@
         }
         function saveNotifications() { localStorage.setItem('sical_notifications', JSON.stringify(notifications)); }
 
-        // MASTER STATE
-        let usersList = loadUsers();
-        let locationsList = loadLocations();
-        let assetTypesList = loadAssetTypes();
-        let rolesList = loadRoles();
-        let ticketsList = loadTickets();
-        let assetMasterList = loadAssets();
-        let assetHistoryList = loadAssetHistory();
-        let notifications = loadNotifications();
+        notifications = loadNotifications();
         let priorityChartInstance = null;
         let categoryChartInstance = null;
         let currentUser = null;
@@ -1209,7 +1225,6 @@
             if (savedSession) {
                 try {
                     const parsedUser = JSON.parse(savedSession);
-                    usersList = loadUsers();
                     const activeMatch = usersList.find(u => u.username.trim().toLowerCase() === parsedUser.username.trim().toLowerCase() && u.active);
                     if (activeMatch) {
                         currentUser = activeMatch;
@@ -1322,7 +1337,6 @@
             if (!uInput || !pInput) return;
             const u = uInput.value.trim().replace(/\s+/g, ' ');
             const p = pInput.value.trim();
-            usersList = loadUsers();
             
             const foundUser = usersList.find(usr => 
                 usr.username.trim().replace(/\s+/g, ' ').toLowerCase() === u.toLowerCase() && 
@@ -2643,7 +2657,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            checkPersistedSession();
+            initializeCloudData().then(() => {
+                checkPersistedSession();
+            });
         });
   </script>
  </body>
