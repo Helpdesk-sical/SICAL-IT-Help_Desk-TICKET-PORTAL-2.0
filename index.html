@@ -1132,6 +1132,9 @@
         let notifications = [];
 
         async function initializeCloudData() {
+            // Check session instantly using local storage / session storage first
+            checkPersistedSession();
+
             let cloudUsers = await fetchSheetData("Users");
             if (cloudUsers && cloudUsers.length > 0) {
                 usersList = cloudUsers;
@@ -1150,7 +1153,7 @@
             if (cloudHistory) assetHistoryList = cloudHistory;
 
             initApp();
-            checkPersistedSession(); // FIXED: Called after cloud users are fully loaded
+            checkPersistedSession(); // Re-validate session once cloud data is fully synced
         }
 
         function saveUsers() { 
@@ -1226,14 +1229,13 @@
             if (savedSession) {
                 try {
                     const parsedUser = JSON.parse(savedSession);
-                    const activeMatch = usersList.find(u => u.username.trim().toLowerCase() === parsedUser.username.trim().toLowerCase() && u.active);
+                    const activeMatch = usersList.find(u => u.username.trim().toLowerCase() === parsedUser.username.trim().toLowerCase() && (u.active === true || String(u.active).toUpperCase() === "TRUE"));
                     if (activeMatch) {
                         currentUser = activeMatch;
                         document.getElementById('current-user-display').innerText = currentUser.name;
                         document.getElementById('login-screen').classList.add('hidden');
                         document.getElementById('app-screen').classList.remove('hidden');
                         applyUserPermissions();
-                        initApp();
                     }
                 } catch(e) {
                     console.error("Session restore error", e);
@@ -1340,11 +1342,12 @@
             const p = pInput.value.trim();
             
             const foundUser = usersList.find(usr => 
-                usr.username.trim().replace(/\s+/g, ' ').toLowerCase() === u.toLowerCase() && 
-                usr.password.trim() === p
+                usr.username && usr.username.trim().replace(/\s+/g, ' ').toLowerCase() === u.toLowerCase() && 
+                usr.password && usr.password.trim() === p
             );
             if (foundUser) {
-                if (!foundUser.active) {
+                const isActive = foundUser.active === true || String(foundUser.active).toUpperCase() === "TRUE";
+                if (!isActive) {
                     showToast("Account deactivated. Contact SICAL IT Admin.", 'error');
                     return;
                 }
