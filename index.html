@@ -1,0 +1,2650 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SICAL IT Ticket Management System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b1120',
+                        darkCard: '#1e293b'
+                    }
+                }
+            }
+        }
+  </script>
+  <style>
+        body { 
+            font-family: 'DM Sans', sans-serif; 
+            transition: background-color 0.3s ease, color 0.3s ease; 
+        }
+
+        .login-bg {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.70), rgba(15, 23, 42, 0.70)), 
+                              url('SICAL IT SUPPORT BG2.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        @media (max-width: 768px) {
+            .login-bg {
+                background-size: cover;
+                justify-content: center !important;
+                padding-left: 1rem !important;
+            }
+        }
+
+        .sidebar-transition {
+            transition: width 0.3s ease-in-out, margin-left 0.3s ease-in-out;
+        }
+
+        .star-rating i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        /* REFINED, HIGH-CONTRAST PROFESSIONAL DARK MODE */
+        .dark body { background-color: #0b1120; color: #f1f5f9; }
+        .dark .bg-white { background-color: #1e293b !important; color: #f1f5f9 !important; }
+        .dark .bg-slate-100 { background-color: #0b1120 !important; }
+        .dark .bg-slate-50 { background-color: #151e32 !important; }
+        .dark .text-slate-800 { color: #f8fafc !important; }
+        .dark .text-slate-700 { color: #cbd5e1 !important; }
+        .dark .text-slate-600 { color: #94a3b8 !important; }
+        .dark .text-slate-500 { color: #94a3b8 !important; }
+        .dark .border-slate-200 { border-color: #334155 !important; }
+        .dark .border-slate-100 { border-color: #26334a !important; }
+        .dark header.bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
+        .dark input, .dark select, .dark textarea {
+            background-color: #0f172a !important;
+            border-color: #475569 !important;
+            color: #f8fafc !important;
+        }
+        .dark input::placeholder, .dark textarea::placeholder { color: #64748b !important; }
+        .dark table.w-full { color: #e2e8f0 !important; }
+        .dark thead.bg-slate-50 { background-color: #151e32 !important; color: #cbd5e1 !important; }
+        .dark tr.border-b { border-color: #26334a !important; }
+        .dark tbody tr:hover { background-color: #273449 !important; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .stat-card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .stat-card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+
+        /* Toast Container */
+        #toast-container { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+        .toast { padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease; max-width: 360px; }
+        .toast-success { background: #ecfdf5; color: #065f46; border-left: 4px solid #059669; }
+        .toast-error { background: #fef2f2; color: #991b1b; border-left: 4px solid #dc2626; }
+        .toast-info { background: #eff6ff; color: #1e40af; border-left: 4px solid #2563eb; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(1rem); } to { opacity: 1; transform: translateX(0); } }
+
+        .confirm-row { display: none; }
+        .confirm-row.active { display: flex; }
+  </style>
+ </head>
+ <body class="bg-slate-100 font-sans text-slate-800 min-h-screen">
+  <div id="toast-container"></div>
+
+  <!-- ========================================== -->
+  <!-- 1. LOGIN SCREEN                            -->
+  <!-- ========================================== -->
+  <div id="login-screen" class="min-h-screen w-full flex items-center justify-start pl-16 login-bg p-4 fixed inset-0 z-50">
+   <div class="bg-white/95 backdrop-blur-md p-8 rounded-xl shadow-2xl w-full max-w-md border border-slate-200">
+    <div class="text-center mb-6">
+     <h1 class="text-3xl font-extrabold text-red-600 tracking-wider">SICAL</h1>
+     <p class="text-xs text-indigo-900 font-medium italic mt-1">A PRISTINE GROUP COMPANY</p>
+     <div class="h-1 w-16 bg-red-600 mx-auto my-4 rounded"></div>
+     <h2 class="text-lg font-bold text-slate-700">IT Helpdesk Portal Login</h2>
+    </div>
+    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Username</label>
+      <div class="relative">
+       <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"> <i class="fa-solid fa-user"></i> </span> 
+       <input type="text" id="login-username" required class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none text-sm" placeholder="Enter Username">
+      </div>
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Password</label>
+      <div class="relative">
+       <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"> <i class="fa-solid fa-lock"></i> </span> 
+       <input type="password" id="login-password" required class="w-full pl-10 pr-10 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none text-sm" placeholder="••••••••">
+       <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none">
+        <i class="fa-solid fa-eye" id="password-eye-icon"></i>
+       </button>
+      </div>
+     </div>
+     <div id="login-error" class="hidden text-red-600 text-xs text-center font-semibold">
+      Invalid Credentials or Account Deactivated!
+     </div>
+     <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg shadow-md transition duration-200"> Sign In </button>
+    </form>
+    <div class="mt-6 text-center text-xs text-slate-500 border-t border-slate-200 pt-4">
+     <p>IT CONTACT</p>
+     <p class="font-mono text-slate-700 font-semibold mt-1">Mail : <span class="text-red-600">hardware.support@sical.com</span></p>
+    </div>
+   </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. MAIN APP LAYOUT                         -->
+  <!-- ========================================== -->
+  <div id="app-screen" class="hidden min-h-screen flex flex-row">
+   <!-- Sidebar Navigation -->
+   <aside id="sidebar-menu" class="sidebar-transition w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col min-h-screen sticky top-0 z-30">
+    <div class="p-4 border-b border-slate-800 text-center flex-shrink-0">
+     <h1 class="text-2xl font-black text-red-500 tracking-wider">SICAL</h1>
+     <p class="text-[9px] text-indigo-300 italic whitespace-nowrap">A PRISTINE GROUP COMPANY</p>
+    </div>
+    <nav class="p-4 space-y-1 flex-1">
+     <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-slate-800 text-white font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-chart-pie w-5 text-red-500"></i> <span>Dashboard</span> </button> 
+     <button onclick="switchTab('ticket-system')" id="btn-ticket-system" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-ticket w-5 text-red-500"></i> <span>Ticket System</span> </button> 
+     <button onclick="switchTab('asset-register')" id="btn-asset-register" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-laptop w-5 text-red-500"></i> <span>Asset Register</span> </button> 
+     <button onclick="switchTab('asset-history')" id="btn-asset-history" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-clock-rotate-left w-5 text-red-500"></i> <span>Asset History</span> </button> 
+     <button onclick="switchTab('reports')" id="btn-reports" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-file-excel w-5 text-red-500"></i> <span>Reports</span> </button> 
+     <button onclick="switchTab('setup')" id="btn-setup" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-sliders w-5 text-red-500"></i> <span>Setup &amp; Access</span> </button>
+    </nav>
+   </aside>
+
+   <!-- Main Content Area -->
+   <main class="flex-1 flex flex-col min-w-0 min-h-screen">
+    <!-- Top Navbar -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-20">
+     <div class="flex items-center space-x-4">
+      <button onclick="toggleSidebar()" class="text-slate-600 hover:text-slate-900 focus:outline-none p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition"> <i class="fa-solid fa-bars text-lg"></i> </button>
+      <h2 id="page-title" class="text-xl font-bold text-slate-800">Dashboard Metrics</h2>
+     </div>
+     <div class="flex items-center space-x-3">
+      <!-- Notification Button -->
+      <button onclick="toggleNotificationPanel()" class="relative text-slate-500 hover:text-slate-800 p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition"> 
+       <i class="fa-solid fa-bell text-lg"></i> 
+       <span id="notif-badge" class="hidden absolute -top-1 -right-1 bg-red-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center"></span> 
+      </button> 
+      
+      <!-- Dark/Light Mode Button -->
+      <button onclick="toggleTheme()" id="theme-toggle-btn" class="text-slate-500 hover:text-slate-800 p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition" title="Toggle Theme"> 
+       <i class="fa-solid fa-moon text-lg text-indigo-400" id="theme-icon"></i> 
+      </button> 
+
+      <!-- User Profile Badge -->
+      <span class="text-xs bg-slate-100 border border-slate-200 text-slate-700 px-3 py-1.5 rounded-full font-bold flex items-center space-x-1.5"> 
+       <i class="fa-solid fa-user-shield text-red-600"></i> <span id="current-user-display">SICAL Admin</span> 
+      </span>
+
+      <!-- Logout Button -->
+      <button onclick="handleLogout()" class="text-red-600 hover:text-white hover:bg-red-600 p-1.5 rounded-lg border border-slate-200 transition" title="Logout"> 
+       <i class="fa-solid fa-right-from-bracket text-lg"></i> 
+      </button>
+     </div>
+    </header>
+
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="hidden fixed top-16 right-4 w-80 bg-white border border-slate-200 rounded-xl shadow-2xl z-40 overflow-hidden">
+     <div class="flex items-center justify-between px-4 py-3 bg-slate-900 text-white">
+      <span class="font-bold text-sm"><i class="fa-solid fa-bell text-red-400 mr-2"></i>Notifications</span> 
+      <button onclick="clearNotifications()" class="text-slate-400 hover:text-white text-xs">Clear All</button>
+     </div>
+     <div id="notification-list" class="max-h-72 overflow-y-auto divide-y divide-slate-100 text-sm text-slate-700">
+      <p class="p-4 text-slate-400 text-xs font-medium">No notifications yet.</p>
+     </div>
+    </div>
+
+    <div class="p-6 space-y-6 flex-1">
+     <!-- ========================================== -->
+     <!-- TAB 1: DASHBOARD                           -->
+     <!-- ========================================== -->
+     <section id="tab-dashboard" class="space-y-6 animate-fade-in">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+        <div>
+         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">📊 Total Tickets</p>
+         <p id="stat-total" class="text-3xl font-extrabold text-slate-800 mt-1">0</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl shadow-inner">📋</div>
+       </div>
+
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+        <div>
+         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">📂 Open Tickets</p>
+         <p id="stat-open" class="text-3xl font-extrabold text-amber-600 mt-1">0</p>
+        </div>
+        <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 text-2xl shadow-inner">⏳</div>
+       </div>
+
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+        <div>
+         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">⚡ In Progress</p>
+         <p id="stat-progress" class="text-3xl font-extrabold text-blue-600 mt-1">0</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl shadow-inner">🔧</div>
+       </div>
+
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+        <div>
+         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">✅ Closed Tickets</p>
+         <p id="stat-closed" class="text-3xl font-extrabold text-emerald-600 mt-1">0</p>
+        </div>
+        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-2xl shadow-inner">🎉</div>
+       </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
+       <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 bg-indigo-600/30 rounded-xl flex items-center justify-center text-2xl border border-indigo-500/30">📅</div>
+        <div>
+         <p class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Current Month Performance</p>
+         <p class="text-2xl font-extrabold mt-0.5"><span id="stat-month">0</span> New Tickets Logged This Month</p>
+        </div>
+       </div>
+       <div class="hidden sm:flex items-center space-x-2 text-xs font-semibold bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+        <span>🚀 System Active</span>
+       </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🎯 Tickets by Priority</h3>
+        <div class="h-64 flex justify-center items-center">
+         <canvas id="priorityChart"></canvas>
+        </div>
+       </div>
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">📊 Category Distribution</h3>
+        <div class="h-64 flex justify-center items-center">
+         <canvas id="categoryChart"></canvas>
+        </div>
+       </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🏆 Top Users by Ticket Count</h3>
+        <div id="top-users-list" class="space-y-2"></div>
+       </div>
+       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🔥 Top Issue Categories</h3>
+        <div id="top-categories-list" class="space-y-2"></div>
+       </div>
+      </div>
+     </section>
+
+     <!-- ========================================== -->
+     <!-- TAB 2: TICKET SYSTEM                       -->
+     <!-- ========================================== -->
+     <section id="tab-ticket-system" class="hidden space-y-6 animate-fade-in">
+      <div class="flex flex-wrap justify-between items-center gap-3">
+       <h3 class="text-lg font-bold text-slate-800">Support Ticket Register</h3>
+       <div class="flex items-center space-x-2">
+        <input type="text" id="ticket-search-input" placeholder="Search tickets..." oninput="filterTickets()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none w-44"> 
+        <select id="ticket-status-filter" onchange="filterTickets()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500"> 
+         <option value="">All Statuses</option> 
+         <option value="Open">Open</option> 
+         <option value="In Progress">In Progress</option> 
+         <option value="Closed">Closed</option> 
+        </select> 
+        <button onclick="openModal('ticket-modal')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2"> 
+         <i class="fa-solid fa-plus"></i> <span>Raise Ticket</span> 
+        </button>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+       <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+         <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[11px] border-b border-slate-200 sticky top-0 z-10">
+          <tr>
+           <th class="p-4 bg-slate-50">Ticket ID</th>
+           <th class="p-4 bg-slate-50">Location</th>
+           <th class="p-4 bg-slate-50">Category</th>
+           <th class="p-4 bg-slate-50">Asset TAG</th>
+           <th class="p-4 bg-slate-50">Allocated User &amp; Dept</th>
+           <th class="p-4 bg-slate-50">Raised By (User)</th>
+           <th class="p-4 bg-slate-50">Device Specs</th>
+           <th class="p-4 bg-slate-50">Subject</th>
+           <th class="p-4 bg-slate-50">Priority</th>
+           <th class="p-4 bg-slate-50">Status</th>
+           <th class="p-4 bg-slate-50">Action</th>
+          </tr>
+         </thead>
+         <tbody id="ticket-table-body" class="divide-y divide-slate-100 font-medium">
+         </tbody>
+        </table>
+       </div>
+       <div id="ticket-pagination" class="flex justify-between items-center p-4 bg-slate-50 border-t border-slate-200 text-xs font-bold text-slate-600">
+        <span id="ticket-page-info">Showing 1-15 of 0 tickets</span>
+        <div class="space-x-2">
+         <button onclick="changeTicketPage(-1)" class="px-3 py-1 bg-white border border-slate-300 rounded hover:bg-slate-100 shadow-sm">Previous</button>
+         <span id="ticket-page-num" class="px-2">Page 1</span>
+         <button onclick="changeTicketPage(1)" class="px-3 py-1 bg-white border border-slate-300 rounded hover:bg-slate-100 shadow-sm">Next</button>
+        </div>
+       </div>
+      </div>
+     </section>
+
+     <!-- ========================================== -->
+     <!-- TAB 2.5: ASSET REGISTER VIEW               -->
+     <!-- ========================================== -->
+     <section id="tab-asset-register" class="hidden space-y-6 animate-fade-in">
+      <div class="flex flex-wrap justify-between items-center gap-3">
+       <h3 class="text-lg font-bold text-slate-800">Master Asset Register &amp; Hardware Specs</h3>
+       <div class="flex flex-wrap items-center gap-2">
+        <!-- Location Filter -->
+        <select id="asset-location-filter" onchange="renderAssetDirectoryTable()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500">
+         <option value="">All Locations</option>
+        </select>
+        <!-- Search Input -->
+        <input type="text" id="asset-directory-search" placeholder="Search assets..." oninput="renderAssetDirectoryTable()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none w-44"> 
+        <!-- Custom Export Button -->
+        <button onclick="openModal('export-asset-modal')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2">
+         <i class="fa-solid fa-file-excel"></i> <span>Export Asset Report</span>
+        </button>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+       <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+         <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[11px] border-b border-slate-200 sticky top-0 z-10">
+          <tr>
+           <th class="p-3 bg-slate-50">Asset TAG</th>
+           <th class="p-3 bg-slate-50">Asset Number</th>
+           <th class="p-3 bg-slate-50">Asset Type</th>
+           <th class="p-3 bg-slate-50">Allocated User &amp; Dept</th>
+           <th class="p-3 bg-slate-50">Location</th>
+           <th class="p-3 bg-slate-50">Manufacturer &amp; Model</th>
+           <th class="p-3 bg-slate-50">Processor &amp; RAM</th>
+           <th class="p-3 bg-slate-50 text-right">Actions</th>
+          </tr>
+         </thead>
+         <tbody id="asset-directory-table-body" class="divide-y divide-slate-100 font-medium text-xs">
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </section>
+
+     <!-- ========================================== -->
+     <!-- TAB 2.6: ASSET HISTORY / AUDIT TRAIL       -->
+     <!-- ========================================== -->
+     <section id="tab-asset-history" class="hidden space-y-6 animate-fade-in">
+      <div class="flex flex-wrap justify-between items-center gap-3">
+       <div>
+        <h3 class="text-lg font-bold text-slate-800">Asset Assignment History &amp; Audit Trail</h3>
+        <p class="text-xs text-slate-500">Track complete lifecycle history of asset reassignments from previous users to current owners.</p>
+       </div>
+       <div class="flex items-center space-x-2">
+        <input type="text" id="asset-history-search" placeholder="Search Asset TAG or User..." oninput="renderAssetHistoryTable()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none w-60"> 
+       </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+       <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+         <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[11px] border-b border-slate-200 sticky top-0 z-10">
+          <tr>
+           <th class="p-3 bg-slate-50">Asset TAG</th>
+           <th class="p-3 bg-slate-50">Asset Number</th>
+           <th class="p-3 bg-slate-50">Previous / Reassigned User</th>
+           <th class="p-3 bg-slate-50">Department</th>
+           <th class="p-3 bg-slate-50">Location</th>
+           <th class="p-3 bg-slate-50">Action / Event</th>
+           <th class="p-3 bg-slate-50">Logged Timestamp</th>
+          </tr>
+         </thead>
+         <tbody id="asset-history-table-body" class="divide-y divide-slate-100 font-medium text-xs">
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </section>
+
+     <!-- ========================================== -->
+     <!-- TAB 3: REPORTS                             -->
+     <!-- ========================================== -->
+     <section id="tab-reports" class="hidden space-y-6 animate-fade-in">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+       <div class="flex justify-between items-center">
+        <div>
+         <h3 class="text-lg font-bold text-slate-800">Export Ticket Reports &amp; Live View</h3>
+         <p class="text-xs text-slate-500">Filter parameters, review live table data, and download system activity in Excel format.</p>
+        </div>
+        <button onclick="downloadExcelReport()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-sm flex items-center space-x-2 transition"> 
+         <i class="fa-solid fa-file-excel"></i> <span>Download Excel Report (.csv)</span> 
+        </button>
+       </div>
+       
+       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+        <div>
+         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">SICAL Location</label> 
+         <select id="report-location-filter" onchange="renderReportPreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+        </div>
+        <div>
+         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">From Date</label> 
+         <input type="date" id="report-from-date" onchange="renderReportPreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+        </div>
+        <div>
+         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">To Date</label> 
+         <input type="date" id="report-to-date" onchange="renderReportPreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+        </div>
+        <div>
+         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Status Filter</label> 
+         <select id="report-status-filter" onchange="renderReportPreview()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"> 
+          <option value="">All Statuses</option> 
+          <option value="Open">Open</option> 
+          <option value="In Progress">In Progress</option> 
+          <option value="Closed">Closed</option> 
+         </select>
+        </div>
+       </div>
+
+       <div class="mt-6 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+        <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center text-xs font-bold uppercase tracking-wider">
+         <span>📋 Report Data Preview Table</span>
+         <span id="report-count-indicator" class="bg-red-600 px-2.5 py-0.5 rounded text-white font-mono">0 Records</span>
+        </div>
+        <div class="overflow-x-auto max-h-[450px] overflow-y-auto">
+         <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[11px] border-b border-slate-200 sticky top-0 z-10">
+           <tr>
+            <th class="p-3 bg-slate-50">Ticket ID</th>
+            <th class="p-3 bg-slate-50">Location</th>
+            <th class="p-3 bg-slate-50">Department</th>
+            <th class="p-3 bg-slate-50">Allocated User</th>
+            <th class="p-3 bg-slate-50">Raised By</th>
+            <th class="p-3 bg-slate-50">Category</th>
+            <th class="p-3 bg-slate-50">Subject</th>
+            <th class="p-3 bg-slate-50">Priority</th>
+            <th class="p-3 bg-slate-50">Status</th>
+            <th class="p-3 bg-slate-50">Created Date</th>
+           </tr>
+          </thead>
+          <tbody id="report-table-body" class="divide-y divide-slate-100 font-medium text-xs">
+          </tbody>
+         </table>
+        </div>
+        <div class="flex justify-between items-center p-3 bg-slate-50 border-t border-slate-200 text-xs font-bold text-slate-600">
+         <span id="report-page-info">Showing 1-15 of 0 records</span>
+         <div class="space-x-2">
+          <button onclick="changeReportPage(-1)" class="px-3 py-1 bg-white border border-slate-300 rounded hover:bg-slate-100 shadow-sm">Previous</button>
+          <span id="report-page-num" class="px-2">Page 1</span>
+          <button onclick="changeReportPage(1)" class="px-3 py-1 bg-white border border-slate-300 rounded hover:bg-slate-100 shadow-sm">Next</button>
+         </div>
+        </div>
+       </div>
+
+      </div>
+     </section>
+
+     <!-- ========================================== -->
+     <!-- TAB 4: SETUP & ACCESS                      -->
+     <!-- ========================================== -->
+     <section id="tab-setup" class="hidden space-y-6 animate-fade-in">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+         <h3 class="text-lg font-bold text-slate-800">Automated Mail &amp; Feedback Survey Setup</h3>
+         <p class="text-xs text-slate-500">Configure central SICAL SMTP server settings to automatically send ticket receipts &amp; feedback surveys.</p>
+        </div>
+        <span class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-200"> <i class="fa-solid fa-envelope-circle-check mr-1"></i> Auto-Mail Active </span>
+       </div>
+       <form onsubmit="handleSaveMailSetup(event)" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">SMTP Server Host</label> 
+          <input type="text" id="smtp-host" placeholder="smtp.office365.com" value="smtp.sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">SMTP Port</label> 
+          <input type="number" id="smtp-port" placeholder="587" value="587" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Helpdesk Fixed Support Mail</label> 
+          <input type="email" id="smtp-helpdesk-mail" placeholder="hardware.support@sical.com" value="hardware.support@sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Sender Email ID</label> 
+          <input type="email" id="smtp-sender-mail" placeholder="it.helpdesk@sical.com" value="it.helpdesk@sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Sender Password / App Key</label> 
+          <input type="password" id="smtp-password" value="••••••••••••" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
+         <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Automated Mail Triggers</label>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-semibold text-slate-700">
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="trigger-create" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Send Auto-Mail on Ticket Creation (To User &amp; Helpdesk Team)</span> </label> 
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="trigger-close" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Send Auto-Survey Form on Ticket Closure (Return Feedback to Fixed Mail)</span> </label>
+         </div>
+        </div>
+        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-sm"> Save Email &amp; Survey Configuration </button>
+       </form>
+      </div>
+
+      <!-- BULK UPLOAD ASSET REGISTER -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+       <div class="flex justify-between items-center">
+        <div>
+         <h3 class="text-lg font-bold text-slate-800">Bulk Upload SICAL Master Asset Register</h3>
+         <p class="text-xs text-slate-500 mt-0.5">Supports: <b>Asset TAG, Asset Number, ALLOCATE TO, User Mail ID, Department, Asset Type, Location, MANUFACTURER NAME, ASSET MODEL, SERIAL NUMBER, System Name, REMARKS, MEMORY SIZE, PROCESSOR, OPERATING SYSTEM, HARD DRIVE SIZE, OS Upg. Required?, One drive, USB Access</b></p>
+        </div>
+        <button onclick="downloadCSVTemplate()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-3 py-1.5 rounded flex items-center space-x-1"> <i class="fa-solid fa-download"></i> <span>Download Format Template</span> </button>
+       </div>
+       <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center bg-slate-50 hover:bg-slate-100/50 transition">
+        <i class="fa-solid fa-file-csv text-4xl text-emerald-600 mb-2"></i>
+        <p class="text-sm font-semibold text-slate-700">Select or Drag &amp; Drop Asset Master Sheet (.CSV format)</p>
+        <input type="file" id="asset-file-input" accept=".csv" class="hidden" onchange="handleFileUpload(event)"> 
+        <button onclick="document.getElementById('asset-file-input').click()" class="mt-3 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-lg"> Browse File </button>
+       </div>
+       <div id="upload-status" class="hidden p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-xs font-semibold flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+         <i class="fa-solid fa-circle-check text-emerald-600"></i> <span id="upload-status-text">Asset List Imported Successfully!</span>
+        </div>
+        <span id="asset-count-badge" class="bg-emerald-200 text-emerald-900 font-bold px-2 py-0.5 rounded text-[10px]"></span>
+       </div>
+      </div>
+
+      <!-- NEW MANUAL ASSET ENTRY FORM -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+       <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Add New Single Asset Manually (Full Specs)</h3>
+       <form onsubmit="handleManualAssetSubmit(event)" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset TAG</label>
+          <input type="text" id="manual-asset-tag" placeholder="e.g. HQC/IT/SMTL/001D" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Number</label>
+          <input type="text" id="manual-asset-no" placeholder="e.g. SICAL/DT/0402" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Allocate To (Name)</label>
+          <input type="text" id="manual-allocated-to" placeholder="e.g. John Doe" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">User Mail ID</label>
+          <input type="email" id="manual-user-mail" placeholder="john@sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Department</label>
+          <input type="text" id="manual-department" placeholder="e.g. IT / SMART-CFS" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Type (Lookup)</label>
+          <select id="manual-asset-type" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Location</label>
+          <select id="manual-location" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Manufacturer</label>
+          <input type="text" id="manual-manufacturer" placeholder="e.g. LENOVO" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Model</label>
+          <input type="text" id="manual-model" placeholder="e.g. ThinkCentre" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Serial Number</label>
+          <input type="text" id="manual-serial" placeholder="e.g. PF04TQDN" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">System Name</label>
+          <input type="text" id="manual-system-name" placeholder="e.g. SICLT800" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Remarks</label>
+          <input type="text" id="manual-remarks" placeholder="Any additional notes..." class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+        </div>
+        <!-- TECHNICAL SPECS FIELDS -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Memory Size</label>
+          <input type="text" id="manual-memory" placeholder="e.g. 16 GB" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Processor</label>
+          <input type="text" id="manual-processor" placeholder="e.g. Intel i5 12th Gen" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Operating System</label>
+          <input type="text" id="manual-os" placeholder="e.g. Windows 11 Pro" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hard Drive Size</label>
+          <input type="text" id="manual-hdd" placeholder="e.g. 512 GB SSD" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">OS Upg. Required?</label>
+          <select id="manual-os-upg" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+           <option value="No">No</option>
+           <option value="Yes">Yes</option>
+          </select>
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">One drive</label>
+          <select id="manual-onedrive" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+           <option value="Configured">Configured</option>
+           <option value="Pending">Pending</option>
+          </select>
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">USB Access</label>
+          <select id="manual-usb" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+           <option value="Enabled">Enabled</option>
+           <option value="Disabled">Disabled</option>
+          </select>
+         </div>
+        </div>
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-sm">Save Asset to Permanent Register</button>
+       </form>
+      </div>
+
+      <!-- MASTER SETTINGS GRIDS -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+       <!-- Location Master -->
+       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Location Master</h3>
+        <form onsubmit="handleAddLocation(event)" class="flex space-x-2">
+         <input type="text" id="new-location-input" placeholder="e.g. CHENNAI" required class="flex-1 border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-red-500"> 
+         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm">Add</button>
+        </form>
+        <div class="overflow-y-auto max-h-48 border border-slate-200 rounded-lg">
+         <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[10px]">
+           <tr>
+            <th class="p-2">Location Hub</th>
+            <th class="p-2 text-right">Action</th>
+           </tr>
+          </thead>
+          <tbody id="location-master-table-body" class="divide-y divide-slate-100 font-medium text-xs">
+          </tbody>
+         </table>
+        </div>
+       </div>
+
+       <!-- Asset Type Master Settings -->
+       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Asset Type Master</h3>
+        <form onsubmit="handleAddAssetType(event)" class="flex space-x-2">
+         <input type="text" id="new-asset-type-input" placeholder="e.g. LAPTOP" required class="flex-1 border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-red-500"> 
+         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm">Add</button>
+        </form>
+        <div class="overflow-y-auto max-h-48 border border-slate-200 rounded-lg">
+         <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[10px]">
+           <tr>
+            <th class="p-2">Asset Type</th>
+            <th class="p-2 text-right">Action</th>
+           </tr>
+          </thead>
+          <tbody id="asset-type-master-table-body" class="divide-y divide-slate-100 font-medium text-xs">
+          </tbody>
+         </table>
+        </div>
+       </div>
+
+       <!-- Role Assignment Master -->
+       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Role Assignment</h3>
+        <form onsubmit="handleAddRole(event)" class="flex space-x-2">
+         <input type="text" id="new-role-input" placeholder="e.g. Engineer" required class="flex-1 border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-red-500"> 
+         <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm">Add</button>
+        </form>
+        <div class="overflow-y-auto max-h-48 border border-slate-200 rounded-lg">
+         <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[10px]">
+           <tr>
+            <th class="p-2">Role Title</th>
+            <th class="p-2 text-right">Action</th>
+           </tr>
+          </thead>
+          <tbody id="role-master-table-body" class="divide-y divide-slate-100 font-medium text-xs">
+          </tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+       <h3 class="text-lg font-bold text-slate-800">Create User Credentials &amp; Assign Menu Access</h3>
+       <form onsubmit="handleCreateUser(event)" class="space-y-4 border-t border-slate-100 pt-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Full Name</label> 
+          <input type="text" id="new-user-name" placeholder="e.g. Rajadurai K." required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Email Address</label> 
+          <input type="email" id="new-user-email" placeholder="rajadurai@sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Location Hub</label> 
+          <select id="new-user-location" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Username</label> 
+          <input type="text" id="new-user-username" placeholder="Username" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Login Password</label> 
+          <input type="password" id="new-user-password" placeholder="••••••••" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+         </div>
+         <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Role Assignment</label> 
+          <select id="new-user-role" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+         </div>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+         <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Assign Menu Access Permissions</label>
+         <div class="grid grid-cols-2 md:grid-cols-6 gap-3 text-xs font-semibold text-slate-700">
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="perm-dashboard" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Dashboard</span> </label> 
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="perm-ticket" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Raise Ticket</span> </label> 
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="perm-asset" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Asset Register</span> </label> 
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="perm-history" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Asset History</span> </label> 
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="perm-reports" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Reports Download</span> </label> 
+          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="perm-setup" class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Setup Menu</span> </label>
+         </div>
+        </div>
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-sm"> Create User Credentials </button>
+       </form>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+       <h3 class="text-lg font-bold text-slate-800">User Directory, Deactivation &amp; Password Reset</h3>
+       <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+         <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[11px] border-b border-slate-200">
+          <tr>
+           <th class="p-3">User Details</th>
+           <th class="p-3">Username</th>
+           <th class="p-3">Password</th>
+           <th class="p-3">Location</th>
+           <th class="p-3">Status</th>
+           <th class="p-3">Assigned Permissions</th>
+           <th class="p-3 text-right">Actions</th>
+          </tr>
+         </thead>
+         <tbody id="user-table-body" class="divide-y divide-slate-100 font-medium">
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </section>
+    </div>
+   </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- EXPORT ASSET REPORT MODAL                  -->
+  <!-- ========================================== -->
+  <div id="export-asset-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+     <h3 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-file-excel text-emerald-400 mr-2"></i>Custom Asset Report Export</h3>
+     <button onclick="closeModal('export-asset-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="p-6 space-y-4">
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Filter by Location</label>
+      <select id="export-asset-location" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+       <option value="">All Locations</option>
+      </select>
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Select Columns to Export</label>
+      <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200 max-h-48 overflow-y-auto">
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="assetTag" checked class="asset-col-chk"> <span>Asset TAG</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="assetNo" checked class="asset-col-chk"> <span>Asset Number</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="assetType" checked class="asset-col-chk"> <span>Asset Type</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="allocatedTo" checked class="asset-col-chk"> <span>Allocated To</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="userMail" checked class="asset-col-chk"> <span>User Mail ID</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="department" checked class="asset-col-chk"> <span>Department</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="location" checked class="asset-col-chk"> <span>Location</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="manufacturer" checked class="asset-col-chk"> <span>Manufacturer</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="model" checked class="asset-col-chk"> <span>Asset Model</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="serial" checked class="asset-col-chk"> <span>Serial Number</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="systemName" checked class="asset-col-chk"> <span>System Name</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="memory" checked class="asset-col-chk"> <span>Memory Size</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="processor" checked class="asset-col-chk"> <span>Processor</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="os" checked class="asset-col-chk"> <span>Operating System</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="hdd" checked class="asset-col-chk"> <span>Hard Drive Size</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="osUpg" checked class="asset-col-chk"> <span>OS Upg. Required?</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="onedrive" checked class="asset-col-chk"> <span>One drive</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="usb" checked class="asset-col-chk"> <span>USB Access</span></label>
+      </div>
+     </div>
+     <div class="flex justify-end space-x-3 pt-2">
+      <button type="button" onclick="closeModal('export-asset-modal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-lg">Cancel</button> 
+      <button type="button" onclick="executeCustomAssetExport()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg shadow-sm">Download Selected Report</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- FEEDBACK SURVEY MODAL -->
+  <div id="survey-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+     <h3 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-comment-dots text-red-500 mr-2"></i>SICAL Help Desk Feedback Survey</h3>
+     <button onclick="closeModal('survey-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <form onsubmit="handleSurveySubmit(event)" class="p-6 space-y-6">
+     <input type="hidden" id="survey-ticket-id">
+     <div>
+      <p class="text-sm font-bold text-slate-800 mb-2">How did you contact our help desk?</p>
+      <div class="space-y-2 text-xs font-semibold text-slate-700">
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="contact_method" value="Walk up" required class="text-red-600 focus:ring-red-500"> <span>Walk up</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="contact_method" value="On the phone" class="text-red-600 focus:ring-red-500"> <span>On the phone</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="contact_method" value="Online chat" class="text-red-600 focus:ring-red-500"> <span>Online chat / Portal</span> </label>
+      </div>
+     </div>
+     <div>
+      <p class="text-sm font-bold text-slate-800 mb-2">How satisfied are you with the quality of the support you received?</p>
+      <div class="flex space-x-2 text-2xl text-slate-300 star-rating" id="star-container">
+       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(1)"></i> 
+       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(2)"></i> 
+       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(3)"></i> 
+       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(4)"></i> 
+       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(5)"></i>
+      </div>
+      <input type="hidden" id="survey-rating" value="5">
+     </div>
+     <div>
+      <p class="text-sm font-bold text-slate-800 mb-2">Was your problem resolved in a timely manner?</p>
+      <div class="space-y-2 text-xs font-semibold text-slate-700">
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="timely" value="Yes" required class="text-red-600 focus:ring-red-500"> <span>Yes</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="timely" value="No" class="text-red-600 focus:ring-red-500"> <span>No</span> </label>
+      </div>
+     </div>
+     <div class="flex justify-end space-x-3 pt-2 border-t border-slate-100">
+      <button type="button" onclick="closeModal('survey-modal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-lg">Skip</button> 
+      <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm">Submit Feedback to IT Helpdesk</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <!-- EDIT USER MODAL -->
+  <div id="edit-user-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+     <h3 class="font-bold text-sm uppercase tracking-wider">Reset Password &amp; Permissions</h3>
+     <button onclick="closeModal('edit-user-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <form onsubmit="handleSaveUserEdit(event)" class="p-6 space-y-4">
+     <input type="hidden" id="edit-user-index">
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Username</label> 
+      <input type="text" id="edit-username" disabled class="w-full border border-slate-200 bg-slate-100 rounded-lg p-2 text-sm text-slate-500 font-bold">
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Reset Password</label> 
+      <input type="text" id="edit-password" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Update Menu Permissions</label>
+      <div class="space-y-2 text-xs font-semibold text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="edit-perm-dashboard" class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Dashboard Access</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="edit-perm-ticket" class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Ticket System Access</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="edit-perm-asset" class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Asset Register Access</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="edit-perm-history" class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Asset History Access</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="edit-perm-reports" class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Reports Download Access</span> </label> 
+       <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="edit-perm-setup" class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Setup Menu Access</span> </label>
+      </div>
+     </div>
+     <div class="flex justify-end space-x-3 pt-2">
+      <button type="button" onclick="closeModal('edit-user-modal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-lg">Cancel</button> 
+      <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm">Save Changes</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <!-- EDIT ASSET MODAL -->
+  <div id="edit-asset-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+     <h3 class="font-bold text-sm uppercase tracking-wider">Edit Asset Allocation &amp; Details</h3>
+     <button onclick="closeModal('edit-asset-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <form onsubmit="handleSaveAssetEdit(event)" class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+     <input type="hidden" id="edit-asset-tag-id">
+     <div class="grid grid-cols-2 gap-4">
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset TAG</label> 
+       <input type="text" id="edit-asset-tag" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
+      </div>
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Number</label> 
+       <input type="text" id="edit-asset-no" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
+      </div>
+     </div>
+     <div class="grid grid-cols-2 gap-4">
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Allocated To (Name)</label> 
+       <input type="text" id="edit-asset-allocated" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+      </div>
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">User Mail ID</label> 
+       <input type="email" id="edit-asset-mail" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+      </div>
+     </div>
+     <div class="grid grid-cols-2 gap-4">
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Department</label> 
+       <input type="text" id="edit-asset-dept" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+      </div>
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Location</label> 
+       <select id="edit-asset-location" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+      </div>
+     </div>
+     <div class="flex justify-end space-x-3 pt-2 border-t border-slate-100">
+      <button type="button" onclick="closeModal('edit-asset-modal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-lg">Cancel</button> 
+      <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm">Save Asset Changes</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <!-- RAISE TICKET MODAL -->
+  <div id="ticket-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center flex-shrink-0">
+     <h3 class="font-bold text-sm uppercase tracking-wider">Raise IT Support Ticket</h3>
+     <button onclick="closeModal('ticket-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <form onsubmit="handleTicketSubmit(event)" class="p-6 space-y-4 overflow-y-auto flex-1">
+     <div>
+      <div class="flex justify-between items-center mb-1">
+       <label class="block text-xs font-bold text-slate-700 uppercase"> <i class="fa-solid fa-magnifying-glass text-red-600 mr-1"></i> Search Employee Name or Asset Number (Auto-Fill) </label>
+       <button type="button" onclick="clearTicketSearch()" class="text-[11px] text-red-600 hover:text-red-800 font-bold underline"><i class="fa-solid fa-rotate-right mr-1"></i>Clear Search</button>
+      </div>
+      <input type="text" id="asset-search-input" list="asset-datalist" placeholder="Type Asset Number or Name..." oninput="handleAssetSearchSelect(this.value)" class="w-full border-2 border-amber-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 bg-amber-50/50 font-medium"> 
+      <datalist id="asset-datalist"></datalist>
+      <p class="text-[11px] text-slate-400 mt-1">Start typing to search existing master records, or manually enter details below.</p>
+     </div>
+     <div class="grid grid-cols-2 gap-4">
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Employee Name</label> 
+       <input type="text" id="ticket-name" placeholder="Your Full Name" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+      </div>
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Department</label> 
+       <input type="text" id="ticket-department" placeholder="e.g. SMART-CFS" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+      </div>
+     </div>
+     <div class="grid grid-cols-2 gap-4">
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">SICAL Location</label> 
+       <select id="ticket-location" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+      </div>
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset TAG</label> 
+       <input type="text" id="ticket-asset" placeholder="e.g. HQC/IT/SMTL/001D" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
+      </div>
+     </div>
+     <div class="grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
+      <div>
+       <span class="block text-slate-400 font-bold uppercase">Device Model</span> 
+       <input type="text" id="ticket-model" placeholder="Model" class="w-full bg-transparent font-semibold text-slate-700 outline-none" readonly>
+      </div>
+      <div>
+       <span class="block text-slate-400 font-bold uppercase">Serial No</span> 
+       <input type="text" id="ticket-serial" placeholder="Serial" class="w-full bg-transparent font-semibold text-slate-700 outline-none" readonly>
+      </div>
+      <div>
+       <span class="block text-slate-400 font-bold uppercase">System Name</span> 
+       <input type="text" id="ticket-system-name" placeholder="System" class="w-full bg-transparent font-semibold text-slate-700 outline-none" readonly>
+      </div>
+     </div>
+     <div class="grid grid-cols-2 gap-4">
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Category</label> 
+       <select id="ticket-category" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"> 
+        <option>Hardware</option> 
+        <option>Network</option> 
+        <option>System Software</option> 
+       </select>
+      </div>
+      <div>
+       <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Priority</label> 
+       <select id="ticket-priority" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"> 
+        <option>Low</option> 
+        <option>Medium</option> 
+        <option>High</option> 
+        <option>Critical</option> 
+       </select>
+      </div>
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Subject</label> 
+      <input type="text" id="ticket-subject" placeholder="Brief issue title" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Description</label> 
+      <textarea id="ticket-description" rows="3" placeholder="Provide full details of the issue..." required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></textarea>
+     </div>
+     <div class="flex justify-end space-x-3 pt-2">
+      <button type="button" onclick="closeModal('ticket-modal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-lg">Cancel</button> 
+      <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm">Submit Ticket</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <!-- TICKET DETAIL MODAL -->
+  <div id="ticket-detail-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+     <h3 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-ticket text-red-400 mr-2"></i>Ticket Details</h3>
+     <button onclick="closeModal('ticket-detail-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div id="ticket-detail-content" class="p-6 text-sm text-slate-700 space-y-3 max-h-[70vh] overflow-y-auto"></div>
+   </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+        const DEFAULT_ADMIN = {
+            name: "SICAL Admin", 
+            username: "SICAL ADMIN", 
+            password: "$ic@L0826", 
+            email: "admin@sical.com", 
+            location: "CHENNAI-RAJAJI SALAI", 
+            role: "IT Admin / Support Agent", 
+            active: true,
+            perms: { dashboard: true, ticket: true, asset: true, history: true, reports: true, setup: true } 
+        };
+
+        const DEFAULT_LOCATIONS = [
+            "NIGAHI", "CHENNAI-RAJAJI SALAI", "TUTICORIN-SMARTCFS", "BANGALORE-CORPORATE OFFICE", "CHENNAI-MINJUR", "VIZAG-GAJUWAKA", "CHENNAI-SIH"
+        ];
+
+        const DEFAULT_ASSET_TYPES = [
+            "LAPTOP", "DESKTOP", "PRINTER", "SERVER", "SWITCH", "ROUTER", "CCTV", "BARCODE SCANNER"
+        ];
+
+        const DEFAULT_ROLES = [
+            "User (Employee)", "IT Admin / Support Agent", "IT Support Engineer", "CFS Operations Lead"
+        ];
+
+        // LOCAL STORAGE HELPERS
+        function loadUsers() {
+            const stored = localStorage.getItem('sical_users');
+            if (stored) {
+                try {
+                    let parsed = JSON.parse(stored);
+                    if (!parsed.some(u => u.username === DEFAULT_ADMIN.username)) {
+                        parsed.unshift(DEFAULT_ADMIN);
+                    }
+                    return parsed;
+                } catch(e) {
+                    return [DEFAULT_ADMIN];
+                }
+            }
+            localStorage.setItem('sical_users', JSON.stringify([DEFAULT_ADMIN]));
+            return [DEFAULT_ADMIN];
+        }
+        function saveUsers() { localStorage.setItem('sical_users', JSON.stringify(usersList)); }
+
+        function loadLocations() {
+            const stored = localStorage.getItem('sical_locations');
+            if (stored) return JSON.parse(stored);
+            localStorage.setItem('sical_locations', JSON.stringify(DEFAULT_LOCATIONS));
+            return DEFAULT_LOCATIONS;
+        }
+        function saveLocations() { localStorage.setItem('sical_locations', JSON.stringify(locationsList)); }
+
+        function loadAssetTypes() {
+            const stored = localStorage.getItem('sical_asset_types');
+            if (stored) return JSON.parse(stored);
+            localStorage.setItem('sical_asset_types', JSON.stringify(DEFAULT_ASSET_TYPES));
+            return DEFAULT_ASSET_TYPES;
+        }
+        function saveAssetTypes() { localStorage.setItem('sical_asset_types', JSON.stringify(assetTypesList)); }
+
+        function loadRoles() {
+            const stored = localStorage.getItem('sical_roles');
+            if (stored) return JSON.parse(stored);
+            localStorage.setItem('sical_roles', JSON.stringify(DEFAULT_ROLES));
+            return DEFAULT_ROLES;
+        }
+        function saveRoles() { localStorage.setItem('sical_roles', JSON.stringify(rolesList)); }
+
+        function loadTickets() {
+            const stored = localStorage.getItem('sical_tickets');
+            return stored ? JSON.parse(stored) : [];
+        }
+        function saveTickets() { localStorage.setItem('sical_tickets', JSON.stringify(ticketsList)); }
+
+        function loadAssets() {
+            const stored = localStorage.getItem('sical_assets');
+            return stored ? JSON.parse(stored) : [];
+        }
+        function saveAssets() { localStorage.setItem('sical_assets', JSON.stringify(assetMasterList)); }
+
+        function loadAssetHistory() {
+            const stored = localStorage.getItem('sical_asset_history');
+            return stored ? JSON.parse(stored) : [];
+        }
+        function saveAssetHistory() { localStorage.setItem('sical_asset_history', JSON.stringify(assetHistoryList)); }
+
+        function loadNotifications() {
+            const stored = localStorage.getItem('sical_notifications');
+            return stored ? JSON.parse(stored) : [];
+        }
+        function saveNotifications() { localStorage.setItem('sical_notifications', JSON.stringify(notifications)); }
+
+        // MASTER STATE
+        let usersList = loadUsers();
+        let locationsList = loadLocations();
+        let assetTypesList = loadAssetTypes();
+        let rolesList = loadRoles();
+        let ticketsList = loadTickets();
+        let assetMasterList = loadAssets();
+        let assetHistoryList = loadAssetHistory();
+        let notifications = loadNotifications();
+        let priorityChartInstance = null;
+        let categoryChartInstance = null;
+        let currentUser = null;
+        let isDark = localStorage.getItem('sical_dark') === 'true';
+
+        // PAGINATION STATES
+        let currentTicketPage = 1;
+        let currentReportPage = 1;
+        const rowsPerPage = 15;
+
+        // CLEAR TICKET SEARCH & AUTO-FILL FIELDS
+        function clearTicketSearch() {
+            const searchInput = document.getElementById('asset-search-input');
+            if (searchInput) searchInput.value = '';
+            document.getElementById('ticket-name').value = '';
+            document.getElementById('ticket-department').value = '';
+            document.getElementById('ticket-asset').value = '';
+            document.getElementById('ticket-model').value = '';
+            document.getElementById('ticket-serial').value = '';
+            document.getElementById('ticket-system-name').value = '';
+            showToast('Search & auto-fill fields cleared.', 'info');
+        }
+
+        // PASSWORD VISIBILITY TOGGLE
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById('login-password');
+            const eyeIcon = document.getElementById('password-eye-icon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeIcon.className = 'fa-solid fa-eye-slash';
+            } else {
+                passInput.type = 'password';
+                eyeIcon.className = 'fa-solid fa-eye';
+            }
+        }
+
+        // PERSISTENT SESSION RESTORATION ON REFRESH (F5 FIX)
+        function checkPersistedSession() {
+            const savedSession = sessionStorage.getItem('sical_current_user') || localStorage.getItem('sical_persistent_user');
+            if (savedSession) {
+                try {
+                    const parsedUser = JSON.parse(savedSession);
+                    usersList = loadUsers();
+                    const activeMatch = usersList.find(u => u.username.trim().toLowerCase() === parsedUser.username.trim().toLowerCase() && u.active);
+                    if (activeMatch) {
+                        currentUser = activeMatch;
+                        document.getElementById('current-user-display').innerText = currentUser.name;
+                        document.getElementById('login-screen').classList.add('hidden');
+                        document.getElementById('app-screen').classList.remove('hidden');
+                        applyUserPermissions();
+                        initApp();
+                    }
+                } catch(e) {
+                    console.error("Session restore error", e);
+                }
+            }
+        }
+
+        // THEME
+        function applyTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            if (isDark) {
+                html.classList.add('dark');
+                if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-lg text-yellow-400';
+            } else {
+                html.classList.remove('dark');
+                if (themeIcon) themeIcon.className = 'fa-solid fa-moon text-lg text-indigo-400';
+            }
+        }
+        function toggleTheme() {
+            isDark = !isDark;
+            localStorage.setItem('sical_dark', isDark);
+            applyTheme();
+        }
+        applyTheme();
+
+        // TOAST
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+            toast.innerHTML = `<i class="fa-solid ${icons[type] || 'fa-circle-info'}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3500);
+        }
+
+        // NOTIFICATIONS
+        function addNotification(msg, type = 'info') {
+            const n = { msg, type, time: new Date().toLocaleTimeString(), id: Date.now() };
+            notifications.unshift(n);
+            if (notifications.length > 30) notifications = notifications.slice(0, 30);
+            saveNotifications();
+            renderNotifications();
+        }
+        function renderNotifications() {
+            const list = document.getElementById('notification-list');
+            const badge = document.getElementById('notif-badge');
+            if (!list || !badge) return;
+            if (!notifications.length) {
+                list.innerHTML = '<p class="p-4 text-slate-400 text-xs font-medium">No notifications yet.</p>';
+                badge.classList.add('hidden');
+                return;
+            }
+            badge.textContent = notifications.length > 9 ? '9+' : notifications.length;
+            badge.classList.remove('hidden');
+            const icons = { info: 'fa-circle-info text-blue-500', success: 'fa-circle-check text-emerald-500', error: 'fa-circle-xmark text-red-500' };
+            list.innerHTML = notifications.map(n => `
+                <div class="px-4 py-3 hover:bg-slate-50">
+                    <div class="flex items-start gap-2">
+                        <i class="fa-solid ${icons[n.type] || icons.info} mt-0.5 text-xs"></i>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-700">${n.msg}</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">${n.time}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        function clearNotifications() {
+            notifications = [];
+            saveNotifications();
+            renderNotifications();
+            const panel = document.getElementById('notification-panel');
+            if (panel) panel.classList.add('hidden');
+        }
+        function toggleNotificationPanel() {
+            const panel = document.getElementById('notification-panel');
+            if (panel) panel.classList.toggle('hidden');
+        }
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('notification-panel');
+            const bell = e.target.closest('button[onclick="toggleNotificationPanel()"]');
+            if (panel && !panel.contains(e.target) && !bell) {
+                panel.classList.add('hidden');
+            }
+        });
+
+        // SIDEBAR
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-menu');
+            if (!sidebar) return;
+            sidebar.classList.toggle('hidden');
+        }
+
+        // AUTH
+        function handleLogin(e) {
+            e.preventDefault();
+            const uInput = document.getElementById('login-username');
+            const pInput = document.getElementById('login-password');
+            if (!uInput || !pInput) return;
+            const u = uInput.value.trim().replace(/\s+/g, ' ');
+            const p = pInput.value.trim();
+            usersList = loadUsers();
+            
+            const foundUser = usersList.find(usr => 
+                usr.username.trim().replace(/\s+/g, ' ').toLowerCase() === u.toLowerCase() && 
+                usr.password.trim() === p
+            );
+            if (foundUser) {
+                if (!foundUser.active) {
+                    showToast("Account deactivated. Contact SICAL IT Admin.", 'error');
+                    return;
+                }
+                currentUser = foundUser;
+                sessionStorage.setItem('sical_current_user', JSON.stringify(currentUser));
+                localStorage.setItem('sical_persistent_user', JSON.stringify(currentUser));
+
+                const userDisplay = document.getElementById('current-user-display');
+                if (userDisplay) userDisplay.innerText = currentUser.name;
+                
+                const loginScreen = document.getElementById('login-screen');
+                const appScreen = document.getElementById('app-screen');
+                if (loginScreen) loginScreen.classList.add('hidden');
+                if (appScreen) appScreen.classList.remove('hidden');
+                
+                applyUserPermissions();
+                initApp();
+            } else {
+                const err = document.getElementById('login-error');
+                if (err) err.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            sessionStorage.removeItem('sical_current_user');
+            localStorage.removeItem('sical_persistent_user');
+            const appScreen = document.getElementById('app-screen');
+            const loginScreen = document.getElementById('login-screen');
+            const loginErr = document.getElementById('login-error');
+            if (appScreen) appScreen.classList.add('hidden');
+            if (loginScreen) loginScreen.classList.remove('hidden');
+            if (loginErr) loginErr.classList.add('hidden');
+        }
+
+        function applyUserPermissions() {
+            if (!currentUser) return;
+            const p = currentUser.perms || { dashboard: true, ticket: true, asset: true, history: true, reports: true, setup: true };
+            toggleMenuBtn('btn-dashboard', p.dashboard);
+            toggleMenuBtn('btn-ticket-system', p.ticket);
+            toggleMenuBtn('btn-asset-register', p.asset);
+            toggleMenuBtn('btn-asset-history', p.history);
+            toggleMenuBtn('btn-reports', p.reports);
+            toggleMenuBtn('btn-setup', p.setup);
+            if (p.dashboard) switchTab('dashboard');
+            else if (p.ticket) switchTab('ticket-system');
+            else if (p.asset) switchTab('asset-register');
+            else if (p.history) switchTab('asset-history');
+            else if (p.reports) switchTab('reports');
+            else if (p.setup) switchTab('setup');
+        }
+
+        function toggleMenuBtn(btnId, hasAccess) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                if (hasAccess) btn.classList.remove('hidden');
+                else btn.classList.add('hidden');
+            }
+        }
+
+        function initApp() {
+            renderLocationDropdowns();
+            renderAssetTypeDropdowns();
+            renderRoleDropdowns();
+            renderLocationMasterTable();
+            renderAssetTypeMasterTable();
+            renderRoleMasterTable();
+            renderTicketTable();
+            renderAssetDirectoryTable();
+            renderAssetHistoryTable();
+            renderUsersTable();
+            populateUserDropdown();
+            updateMetricsAndCharts();
+            renderNotifications();
+            renderReportPreview();
+        }
+
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'ticket-system', 'asset-register', 'asset-history', 'reports', 'setup'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`btn-${t}`);
+                if (btn) {
+                    btn.classList.remove('bg-slate-800', 'text-white');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-800', 'text-white');
+                activeBtn.classList.remove('text-slate-400');
+            }
+            const pageTitles = {
+                'dashboard': 'Dashboard Metrics',
+                'ticket-system': 'Ticket Management System',
+                'asset-register': 'Master Asset Register Directory',
+                'asset-history': 'Asset Assignment History & Audit Trail',
+                'reports': 'Reports & Exports',
+                'setup': 'System Access & Master Data Directory'
+            };
+            const titleEl = document.getElementById('page-title');
+            if (titleEl) titleEl.innerText = pageTitles[tabId] || 'Dashboard Metrics';
+
+            if (tabId === 'reports') {
+                renderReportPreview();
+            } else if (tabId === 'asset-register') {
+                renderAssetDirectoryTable();
+            } else if (tabId === 'asset-history') {
+                renderAssetHistoryTable();
+            }
+        }
+
+        // DROPDOWNS
+        function renderLocationDropdowns() {
+            const dropdownIds = ['new-user-location', 'ticket-location', 'report-location-filter', 'manual-location', 'asset-location-filter', 'export-asset-location'];
+            dropdownIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                let html = (id === 'report-location-filter' || id === 'asset-location-filter' || id === 'export-asset-location') ? '<option value="">All Locations</option>' : '<option value="">Select Location</option>';
+                locationsList.forEach(loc => { html += `<option value="${loc}">${loc}</option>`; });
+                el.innerHTML = html;
+            });
+        }
+
+        function renderAssetTypeDropdowns() {
+            const el = document.getElementById('manual-asset-type');
+            if (!el) return;
+            el.innerHTML = '<option value="">Select Asset Type</option>' + assetTypesList.map(t => `<option value="${t}">${t}</option>`).join('');
+        }
+
+        function renderRoleDropdowns() {
+            const el = document.getElementById('new-user-role');
+            if (!el) return;
+            el.innerHTML = rolesList.map(r => `<option value="${r}">${r}</option>`).join('');
+        }
+
+        // LOCATION MASTER
+        function renderLocationMasterTable() {
+            const tbody = document.getElementById('location-master-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            locationsList.forEach((loc, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2 font-semibold text-slate-700">${loc}</td>
+                        <td class="p-2 text-right space-x-1">
+                            <button onclick="editLocationInline(${index}, this)" class="text-xs text-blue-600 hover:underline font-bold">Edit</button>
+                            <button onclick="requestDeleteLocation(${index}, this)" class="text-xs text-red-600 hover:underline font-bold">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleAddLocation(e) {
+            e.preventDefault();
+            const input = document.getElementById('new-location-input');
+            const val = input.value.trim().toUpperCase();
+            if (val && !locationsList.includes(val)) {
+                locationsList.push(val);
+                saveLocations();
+                renderLocationDropdowns();
+                renderLocationMasterTable();
+                input.value = '';
+                showToast(`Location "${val}" added.`);
+            } else {
+                showToast('Location already exists or empty.', 'error');
+            }
+        }
+
+        function editLocationInline(index, btn) {
+            const tr = btn.closest('tr');
+            const td = tr.querySelector('td:first-child');
+            const oldVal = locationsList[index];
+            td.innerHTML = `<input type="text" value="${oldVal}" class="border border-slate-300 rounded p-1 text-xs w-full" id="loc-edit-${index}">`;
+            btn.textContent = 'Save';
+            btn.onclick = function() {
+                const newVal = document.getElementById(`loc-edit-${index}`).value.trim().toUpperCase();
+                if (newVal) {
+                    locationsList[index] = newVal;
+                    saveLocations();
+                    renderLocationDropdowns();
+                    renderLocationMasterTable();
+                    showToast('Location updated.');
+                }
+            };
+        }
+
+        function requestDeleteLocation(index, btn) {
+            const tr = btn.closest('tr');
+            const existing = tr.querySelector('.confirm-row');
+            if (existing) { existing.remove(); btn.textContent = 'Delete'; return; }
+            btn.textContent = 'Cancel';
+            const confirmSpan = document.createElement('span');
+            confirmSpan.className = 'confirm-row active items-center space-x-1 ml-1';
+            confirmSpan.innerHTML = `<button class="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-bold" onclick="deleteLocation(${index})">Confirm</button>`;
+            btn.insertAdjacentElement('afterend', confirmSpan);
+        }
+
+        function deleteLocation(index) {
+            const name = locationsList[index];
+            locationsList.splice(index, 1);
+            saveLocations();
+            renderLocationDropdowns();
+            renderLocationMasterTable();
+            showToast(`Location "${name}" deleted.`);
+        }
+
+        // ASSET TYPE MASTER SETTINGS
+        function renderAssetTypeMasterTable() {
+            const tbody = document.getElementById('asset-type-master-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            assetTypesList.forEach((type, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2 font-semibold text-slate-700">${type}</td>
+                        <td class="p-2 text-right space-x-1">
+                            <button onclick="editAssetTypeInline(${index}, this)" class="text-xs text-blue-600 hover:underline font-bold">Edit</button>
+                            <button onclick="requestDeleteAssetType(${index}, this)" class="text-xs text-red-600 hover:underline font-bold">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleAddAssetType(e) {
+            e.preventDefault();
+            const input = document.getElementById('new-asset-type-input');
+            const val = input.value.trim().toUpperCase();
+            if (val && !assetTypesList.includes(val)) {
+                assetTypesList.push(val);
+                saveAssetTypes();
+                renderAssetTypeDropdowns();
+                renderAssetTypeMasterTable();
+                input.value = '';
+                showToast(`Asset Type "${val}" added.`);
+            } else {
+                showToast('Asset Type already exists or empty.', 'error');
+            }
+        }
+
+        function editAssetTypeInline(index, btn) {
+            const tr = btn.closest('tr');
+            const td = tr.querySelector('td:first-child');
+            const oldVal = assetTypesList[index];
+            td.innerHTML = `<input type="text" value="${oldVal}" class="border border-slate-300 rounded p-1 text-xs w-full" id="asset-type-edit-${index}">`;
+            btn.textContent = 'Save';
+            btn.onclick = function() {
+                const newVal = document.getElementById(`asset-type-edit-${index}`).value.trim().toUpperCase();
+                if (newVal) {
+                    assetTypesList[index] = newVal;
+                    saveAssetTypes();
+                    renderAssetTypeDropdowns();
+                    renderAssetTypeMasterTable();
+                    showToast('Asset Type updated.');
+                }
+            };
+        }
+
+        function requestDeleteAssetType(index, btn) {
+            const tr = btn.closest('tr');
+            const existing = tr.querySelector('.confirm-row');
+            if (existing) { existing.remove(); btn.textContent = 'Delete'; return; }
+            btn.textContent = 'Cancel';
+            const confirmSpan = document.createElement('span');
+            confirmSpan.className = 'confirm-row active items-center space-x-1 ml-1';
+            confirmSpan.innerHTML = `<button class="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-bold" onclick="deleteAssetType(${index})">Confirm</button>`;
+            btn.insertAdjacentElement('afterend', confirmSpan);
+        }
+
+        function deleteAssetType(index) {
+            const name = assetTypesList[index];
+            assetTypesList.splice(index, 1);
+            saveAssetTypes();
+            renderAssetTypeDropdowns();
+            renderAssetTypeMasterTable();
+            showToast(`Asset Type "${name}" deleted.`);
+        }
+
+        // ROLE MASTER
+        function renderRoleMasterTable() {
+            const tbody = document.getElementById('role-master-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            rolesList.forEach((role, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2 font-semibold text-slate-700">${role}</td>
+                        <td class="p-2 text-right space-x-1">
+                            <button onclick="editRoleInline(${index}, this)" class="text-xs text-blue-600 hover:underline font-bold">Edit</button>
+                            <button onclick="requestDeleteRole(${index}, this)" class="text-xs text-red-600 hover:underline font-bold">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleAddRole(e) {
+            e.preventDefault();
+            const input = document.getElementById('new-role-input');
+            const val = input.value.trim();
+            if (val && !rolesList.includes(val)) {
+                rolesList.push(val);
+                saveRoles();
+                renderRoleDropdowns();
+                renderRoleMasterTable();
+                input.value = '';
+                showToast(`Role "${val}" added.`);
+            } else {
+                showToast('Role already exists or empty.', 'error');
+            }
+        }
+
+        function editRoleInline(index, btn) {
+            const tr = btn.closest('tr');
+            const td = tr.querySelector('td:first-child');
+            const oldVal = rolesList[index];
+            td.innerHTML = `<input type="text" value="${oldVal}" class="border border-slate-300 rounded p-1 text-xs w-full" id="role-edit-${index}">`;
+            btn.textContent = 'Save';
+            btn.onclick = function() {
+                const newVal = document.getElementById(`role-edit-${index}`).value.trim();
+                if (newVal) {
+                    rolesList[index] = newVal;
+                    saveRoles();
+                    renderRoleDropdowns();
+                    renderRoleMasterTable();
+                    showToast('Role updated.');
+                }
+            };
+        }
+
+        function requestDeleteRole(index, btn) {
+            const tr = btn.closest('tr');
+            const existing = tr.querySelector('.confirm-row');
+            if (existing) { existing.remove(); btn.textContent = 'Delete'; return; }
+            btn.textContent = 'Cancel';
+            const confirmSpan = document.createElement('span');
+            confirmSpan.className = 'confirm-row active items-center space-x-1 ml-1';
+            confirmSpan.innerHTML = `<button class="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-bold" onclick="deleteRole(${index})">Confirm</button>`;
+            btn.insertAdjacentElement('afterend', confirmSpan);
+        }
+
+        function deleteRole(index) {
+            const name = rolesList[index];
+            rolesList.splice(index, 1);
+            saveRoles();
+            renderRoleDropdowns();
+            renderRoleMasterTable();
+            showToast(`Role "${name}" deleted.`);
+        }
+
+        // USER MANAGEMENT
+        function handleCreateUser(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-user-name').value.trim();
+            const email = document.getElementById('new-user-email').value.trim();
+            const location = document.getElementById('new-user-location').value;
+            const username = document.getElementById('new-user-username').value.trim().replace(/\s+/g, ' ');
+            const password = document.getElementById('new-user-password').value.trim();
+            const role = document.getElementById('new-user-role').value;
+            const perms = {
+                dashboard: document.getElementById('perm-dashboard').checked,
+                ticket: document.getElementById('perm-ticket').checked,
+                asset: document.getElementById('perm-asset').checked,
+                history: document.getElementById('perm-history').checked,
+                reports: document.getElementById('perm-reports').checked,
+                setup: document.getElementById('perm-setup').checked
+            };
+            if (usersList.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+                showToast('Username already exists!', 'error');
+                return;
+            }
+            usersList.push({ name, username, password, email, location, role, active: true, perms });
+            saveUsers();
+            renderUsersTable();
+            showToast(`User "${username}" created successfully!`);
+            addNotification(`New user "${username}" created.`, 'success');
+            e.target.reset();
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('user-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            usersList.forEach((u, index) => {
+                let permTags = '';
+                if (u.perms.dashboard) permTags += '<span class="bg-blue-50 text-blue-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Dash</span>';
+                if (u.perms.ticket) permTags += '<span class="bg-amber-50 text-amber-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Ticket</span>';
+                if (u.perms.asset) permTags += '<span class="bg-indigo-50 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Asset</span>';
+                if (u.perms.history) permTags += '<span class="bg-cyan-50 text-cyan-700 text-[10px] px-1.5 py-0.5 rounded mr-1">History</span>';
+                if (u.perms.reports) permTags += '<span class="bg-emerald-50 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Reports</span>';
+                if (u.perms.setup) permTags += '<span class="bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Setup</span>';
+                const statusBadge = u.active 
+                    ? '<span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-bold">Active</span>'
+                    : '<span class="bg-red-100 text-red-800 text-[10px] px-2 py-0.5 rounded font-bold">Inactive</span>';
+                const toggleBtnText = u.active ? 'Deactivate' : 'Activate';
+                const toggleBtnClass = u.active ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100';
+                const isSuperAdmin = u.username === 'SICAL ADMIN';
+                const actionButtons = isSuperAdmin ? '<span class="text-xs text-slate-400 font-semibold italic">System Admin</span>' : `
+                    <button onclick="openEditUserModal(${index})" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded border border-slate-300">
+                        <i class="fa-solid fa-key text-slate-500"></i> Edit
+                    </button>
+                    <button onclick="toggleUserStatus(${index})" class="${toggleBtnClass} text-xs font-bold px-2 py-1 rounded border border-slate-200">
+                        ${toggleBtnText}
+                    </button>
+                    <button onclick="requestDeleteUser(${index}, this)" class="bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded border border-red-200">
+                        Delete
+                    </button>
+                `;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100">
+                        <td class="p-3"><b>${u.name}</b><br><span class="text-xs text-slate-400">${u.email}</span></td>
+                        <td class="p-3 font-mono font-bold text-red-600">${u.username}</td>
+                        <td class="p-3 font-mono text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1">${u.password}</td>
+                        <td class="p-3 text-xs font-semibold">${u.location}</td>
+                        <td class="p-3">${statusBadge}</td>
+                        <td class="p-3">${permTags}</td>
+                        <td class="p-3 text-right space-x-1">${actionButtons}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function toggleUserStatus(index) {
+            usersList[index].active = !usersList[index].active;
+            saveUsers();
+            renderUsersTable();
+            showToast(`User ${usersList[index].active ? 'activated' : 'deactivated'}.`);
+        }
+
+        function requestDeleteUser(index, btn) {
+            const tr = btn.closest('tr');
+            const existing = tr.querySelector('.confirm-row');
+            if (existing) { existing.remove(); btn.textContent = 'Delete'; return; }
+            btn.textContent = 'Cancel';
+            const confirmSpan = document.createElement('span');
+            confirmSpan.className = 'confirm-row active items-center space-x-1 ml-1';
+            confirmSpan.innerHTML = `<button class="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-bold" onclick="deleteUser(${index})">Confirm Delete</button>`;
+            btn.insertAdjacentElement('afterend', confirmSpan);
+        }
+
+        function deleteUser(index) {
+            const name = usersList[index].username;
+            usersList.splice(index, 1);
+            saveUsers();
+            renderUsersTable();
+            showToast(`User "${name}" deleted.`);
+        }
+
+        function openEditUserModal(index) {
+            const u = usersList[index];
+            document.getElementById('edit-user-index').value = index;
+            document.getElementById('edit-username').value = u.username;
+            document.getElementById('edit-password').value = u.password;
+            document.getElementById('edit-perm-dashboard').checked = u.perms.dashboard;
+            document.getElementById('edit-perm-ticket').checked = u.perms.ticket;
+            document.getElementById('edit-perm-asset').checked = u.perms.asset;
+            document.getElementById('edit-perm-history').checked = u.perms.history;
+            document.getElementById('edit-perm-reports').checked = u.perms.reports;
+            document.getElementById('edit-perm-setup').checked = u.perms.setup;
+            openModal('edit-user-modal');
+        }
+
+        function handleSaveUserEdit(e) {
+            e.preventDefault();
+            const index = document.getElementById('edit-user-index').value;
+            const u = usersList[index];
+            u.password = document.getElementById('edit-password').value.trim();
+            u.perms = {
+                dashboard: document.getElementById('edit-perm-dashboard').checked,
+                ticket: document.getElementById('edit-perm-ticket').checked,
+                asset: document.getElementById('edit-perm-asset').checked,
+                history: document.getElementById('edit-perm-history').checked,
+                reports: document.getElementById('edit-perm-reports').checked,
+                setup: document.getElementById('edit-perm-setup').checked
+            };
+            saveUsers();
+            renderUsersTable();
+            closeModal('edit-user-modal');
+            showToast(`Changes saved for ${u.username}.`);
+        }
+
+        // SMTP SAVE
+        function handleSaveMailSetup(e) {
+            e.preventDefault();
+            const host = document.getElementById('smtp-host').value;
+            const helpdeskMail = document.getElementById('smtp-helpdesk-mail').value;
+            localStorage.setItem('sical_smtp_host', host);
+            localStorage.setItem('sical_smtp_helpdesk', helpdeskMail);
+            showToast('SMTP Configuration Saved Successfully!');
+        }
+
+        // MANUAL ASSET SUBMIT
+        function handleManualAssetSubmit(e) {
+            e.preventDefault();
+            const assetTag = document.getElementById('manual-asset-tag').value.trim();
+            const assetNo = document.getElementById('manual-asset-no').value.trim();
+            const allocatedTo = document.getElementById('manual-allocated-to').value.trim();
+            const userMail = document.getElementById('manual-user-mail').value.trim();
+            const department = document.getElementById('manual-department').value.trim();
+            const assetType = document.getElementById('manual-asset-type').value;
+            const location = document.getElementById('manual-location').value.trim().toUpperCase();
+            const manufacturer = document.getElementById('manual-manufacturer').value.trim();
+            const model = document.getElementById('manual-model').value.trim();
+            const serial = document.getElementById('manual-serial').value.trim();
+            const systemName = document.getElementById('manual-system-name').value.trim();
+            const remarks = document.getElementById('manual-remarks').value.trim();
+            
+            const memory = document.getElementById('manual-memory').value.trim();
+            const processor = document.getElementById('manual-processor').value.trim();
+            const os = document.getElementById('manual-os').value.trim();
+            const hdd = document.getElementById('manual-hdd').value.trim();
+            const osUpg = document.getElementById('manual-os-upg').value.trim();
+            const onedrive = document.getElementById('manual-onedrive').value.trim();
+            const usb = document.getElementById('manual-usb').value.trim();
+
+            if (assetMasterList.some(a => a.assetTag && a.assetTag.toLowerCase() === assetTag.toLowerCase())) {
+                showToast(`Asset TAG "${assetTag}" already exists!`, 'error');
+                return;
+            }
+
+            const newAsset = { 
+                assetTag, assetNo, allocatedTo, userMail, department, assetType, location, 
+                manufacturer, model, serial, systemName, remarks,
+                memory, processor, os, hdd, osUpg, onedrive, usb 
+            };
+            assetMasterList.push(newAsset);
+            saveAssets();
+
+            // Log history
+            assetHistoryList.unshift({
+                assetTag,
+                assetNo,
+                user: allocatedTo,
+                department,
+                location,
+                action: 'Initial Registration / Assignment',
+                timestamp: new Date().toLocaleString()
+            });
+            saveAssetHistory();
+
+            populateUserDropdown();
+            renderAssetDirectoryTable();
+            renderAssetHistoryTable();
+            showToast(`Asset TAG "${assetTag}" added permanently with full specs!`, 'success');
+            e.target.reset();
+        }
+
+        // EDIT ASSET HANDLERS
+        function openEditAssetModal(assetTag) {
+            const asset = assetMasterList.find(a => a.assetTag === assetTag);
+            if (!asset) return;
+
+            document.getElementById('edit-asset-tag-id').value = asset.assetTag;
+            document.getElementById('edit-asset-tag').value = asset.assetTag || '';
+            document.getElementById('edit-asset-no').value = asset.assetNo || '';
+            document.getElementById('edit-asset-allocated').value = asset.allocatedTo || '';
+            document.getElementById('edit-asset-mail').value = asset.userMail || '';
+            document.getElementById('edit-asset-dept').value = asset.department || '';
+            
+            const locSelect = document.getElementById('edit-asset-location');
+            locSelect.innerHTML = locationsList.map(l => `<option value="${l}" ${l === asset.location ? 'selected' : ''}>${l}</option>`).join('');
+
+            openModal('edit-asset-modal');
+        }
+
+        function handleSaveAssetEdit(e) {
+            e.preventDefault();
+            const oldTag = document.getElementById('edit-asset-tag-id').value;
+            const asset = assetMasterList.find(a => a.assetTag === oldTag);
+            if (!asset) return;
+
+            const oldUser = asset.allocatedTo;
+            const newUser = document.getElementById('edit-asset-allocated').value.trim();
+
+            asset.assetTag = document.getElementById('edit-asset-tag').value.trim();
+            asset.assetNo = document.getElementById('edit-asset-no').value.trim();
+            asset.allocatedTo = newUser;
+            asset.userMail = document.getElementById('edit-asset-mail').value.trim();
+            asset.department = document.getElementById('edit-asset-dept').value.trim();
+            asset.location = document.getElementById('edit-asset-location').value;
+
+            saveAssets();
+
+            let actionText = oldUser !== newUser ? `Reassigned from [${oldUser}] to [${newUser}]` : 'Updated Asset Details';
+            assetHistoryList.unshift({
+                assetTag: asset.assetTag,
+                assetNo: asset.assetNo,
+                user: newUser,
+                department: asset.department,
+                location: asset.location,
+                action: actionText,
+                timestamp: new Date().toLocaleString()
+            });
+            saveAssetHistory();
+
+            renderAssetDirectoryTable();
+            renderAssetHistoryTable();
+            populateUserDropdown();
+            closeModal('edit-asset-modal');
+            showToast(`Asset TAG "${asset.assetTag}" updated & history logged!`, 'success');
+        }
+
+        // ASSET DIRECTORY TABLE RENDERING (LOCATION FILTER & SEARCH)
+        function renderAssetDirectoryTable() {
+            const search = (document.getElementById('asset-directory-search')?.value || '').toLowerCase();
+            const locFilter = document.getElementById('asset-location-filter')?.value || '';
+            const tbody = document.getElementById('asset-directory-table-body');
+            if (!tbody) return;
+
+            const filtered = assetMasterList.filter(a => {
+                const matchLoc = !locFilter || a.location === locFilter;
+                const matchSearch = !search || 
+                    (a.assetTag && a.assetTag.toLowerCase().includes(search)) ||
+                    (a.assetNo && a.assetNo.toLowerCase().includes(search)) ||
+                    (a.allocatedTo && a.allocatedTo.toLowerCase().includes(search)) ||
+                    (a.serial && a.serial.toLowerCase().includes(search));
+                return matchLoc && matchSearch;
+            });
+
+            if (!filtered.length) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400 font-medium">No assets match the selected location/search.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(a => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-3 font-mono font-bold text-red-600">${a.assetTag || 'N/A'}<br><span class="text-[10px] text-slate-400">SN: ${a.serial || 'N/A'}</span></td>
+                    <td class="p-3 font-mono text-xs font-bold text-slate-700">${a.assetNo || 'N/A'}</td>
+                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-bold">${a.assetType || 'PC'}</span></td>
+                    <td class="p-3 font-semibold text-slate-800">${a.allocatedTo}<br><span class="text-[10px] text-slate-400">${a.department || 'N/A'} (${a.userMail || ''})</span></td>
+                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">${a.location}</span></td>
+                    <td class="p-3 text-slate-600">${a.manufacturer || ''} ${a.model || ''}</td>
+                    <td class="p-3 font-mono">${a.processor || 'N/A'}<br><span class="text-[10px] text-indigo-600 font-bold">RAM: ${a.memory || 'N/A'}</span></td>
+                    <td class="p-3 text-right">
+                        <button onclick="openEditAssetModal('${a.assetTag}')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded border border-slate-300">
+                            <i class="fa-solid fa-pen text-slate-500 mr-1"></i> Edit
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // CUSTOM COLUMN ASSET EXPORT
+        function executeCustomAssetExport() {
+            const locFilter = document.getElementById('export-asset-location').value;
+            const checkboxes = document.querySelectorAll('.asset-col-chk:checked');
+            const selectedCols = Array.from(checkboxes).map(cb => cb.value);
+
+            if (selectedCols.length === 0) {
+                showToast('Please select at least one column to export!', 'error');
+                return;
+            }
+
+            const filtered = assetMasterList.filter(a => !locFilter || a.location === locFilter);
+            if (filtered.length === 0) {
+                showToast('No assets available for export with this location filter.', 'error');
+                return;
+            }
+
+            // Map keys to headers
+            const headerNames = {
+                assetTag: 'Asset TAG', assetNo: 'Asset Number', assetType: 'Asset Type',
+                allocatedTo: 'Allocated To', userMail: 'User Mail ID', department: 'Department',
+                location: 'Location', manufacturer: 'Manufacturer', model: 'Asset Model',
+                serial: 'Serial Number', systemName: 'System Name', remarks: 'Remarks',
+                memory: 'Memory Size', processor: 'Processor', os: 'Operating System',
+                hdd: 'Hard Drive Size', osUpg: 'OS Upg. Required?', onedrive: 'One drive', usb: 'USB Access'
+            };
+
+            let csvContent = selectedCols.map(c => headerNames[c] || c).join(',') + '\n';
+
+            filtered.forEach(a => {
+                let row = selectedCols.map(col => {
+                    let val = a[col] || '';
+                    return `"${String(val).replace(/"/g, '""')}"`;
+                });
+                csvContent += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `SICAL_Asset_Register_${locFilter || 'All_Locations'}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            closeModal('export-asset-modal');
+            showToast(`Asset report successfully exported (${filtered.length} records)!`, 'success');
+        }
+
+        // ASSET HISTORY TABLE RENDERING
+        function renderAssetHistoryTable() {
+            const search = (document.getElementById('asset-history-search')?.value || '').toLowerCase();
+            const tbody = document.getElementById('asset-history-table-body');
+            if (!tbody) return;
+
+            const filtered = assetHistoryList.filter(h => 
+                !search || 
+                (h.assetTag && h.assetTag.toLowerCase().includes(search)) ||
+                (h.assetNo && h.assetNo.toLowerCase().includes(search)) ||
+                h.user.toLowerCase().includes(search) ||
+                h.action.toLowerCase().includes(search)
+            );
+
+            if (!filtered.length) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-medium">No asset history logs found yet. Reassign an asset to record history.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(h => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-3 font-mono font-bold text-red-600">${h.assetTag || 'N/A'}</td>
+                    <td class="p-3 font-mono text-xs font-bold text-slate-700">${h.assetNo || 'N/A'}</td>
+                    <td class="p-3 font-semibold text-slate-800">👤 ${h.user}</td>
+                    <td class="p-3 text-slate-600">${h.department || 'N/A'}</td>
+                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">${h.location}</span></td>
+                    <td class="p-3"><span class="bg-indigo-50 text-indigo-700 text-[10px] px-2 py-0.5 rounded font-bold">${h.action}</span></td>
+                    <td class="p-3 font-mono text-slate-500">${h.timestamp}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ASSET SEARCH (SEARCH BY ASSET NUMBER OR EMPLOYEE NAME)
+        function populateUserDropdown() {
+            const datalist = document.getElementById('asset-datalist');
+            if (!datalist) return;
+            datalist.innerHTML = '';
+            assetMasterList.forEach((item) => {
+                // Search suggestions by Asset Number and Employee Name
+                datalist.innerHTML += `<option value="${item.assetNo}">Asset No: ${item.assetNo} - ${item.allocatedTo} (${item.location})</option>`;
+                datalist.innerHTML += `<option value="${item.allocatedTo}">User: ${item.allocatedTo} (No: ${item.assetNo})</option>`;
+            });
+        }
+
+        function handleAssetSearchSelect(val) {
+            if (!val || val.trim() === '') return;
+            const cleanVal = val.trim().toLowerCase();
+            const match = assetMasterList.find(a => 
+                (a.assetNo && a.assetNo.toLowerCase() === cleanVal) || 
+                (a.assetTag && a.assetTag.toLowerCase() === cleanVal) ||
+                (a.allocatedTo && a.allocatedTo.toLowerCase() === cleanVal)
+            );
+            if (match) {
+                document.getElementById('ticket-name').value = match.allocatedTo || '';
+                document.getElementById('ticket-department').value = match.department || '';
+                document.getElementById('ticket-location').value = match.location || '';
+                document.getElementById('ticket-asset').value = match.assetTag || ''; // Records Asset Tag
+                document.getElementById('ticket-model').value = `${match.manufacturer} ${match.model} (${match.memory || ''}, ${match.processor || ''})`.trim();
+                document.getElementById('ticket-serial').value = match.serial || '';
+                document.getElementById('ticket-system-name').value = match.systemName || '';
+            }
+        }
+
+        // TICKET SUBMIT
+        function handleTicketSubmit(e) {
+            e.preventDefault();
+            const nextId = "TCK-" + (1001 + ticketsList.length);
+            const now = new Date();
+            const raisedByName = currentUser ? currentUser.name : "SICAL Admin";
+
+            const newTicket = {
+                id: nextId,
+                name: document.getElementById('ticket-name').value,
+                department: document.getElementById('ticket-department').value,
+                location: document.getElementById('ticket-location').value,
+                asset: document.getElementById('ticket-asset').value,
+                model: document.getElementById('ticket-model').value,
+                serial: document.getElementById('ticket-serial').value,
+                systemName: document.getElementById('ticket-system-name').value,
+                category: document.getElementById('ticket-category').value,
+                priority: document.getElementById('ticket-priority').value,
+                subject: document.getElementById('ticket-subject').value,
+                description: document.getElementById('ticket-description').value,
+                raisedBy: raisedByName,
+                status: "Open",
+                createdAt: now.toISOString(),
+                createdMonth: now.getMonth(),
+                createdYear: now.getFullYear()
+            };
+            ticketsList.unshift(newTicket);
+            saveTickets();
+            renderTicketTable();
+            updateMetricsAndCharts();
+            renderReportPreview();
+            const helpdeskMail = localStorage.getItem('sical_smtp_helpdesk') || "hardware.support@sical.com";
+            showToast(`Ticket ${nextId} raised! Auto-mail to ${helpdeskMail} triggered.`, 'success');
+            addNotification(`Ticket ${nextId} raised for "${newTicket.name}" by ${raisedByName} — ${newTicket.subject}`, 'info');
+            closeModal('ticket-modal');
+            e.target.reset();
+            const searchInput = document.getElementById('asset-search-input');
+            if (searchInput) searchInput.value = '';
+        }
+
+        // ROLE-BASED TICKET ACCESS HELPER
+        function getAccessibleTickets() {
+            if (!currentUser) return ticketsList; 
+            const role = (currentUser.role || '').toLowerCase();
+            const isAdmin = currentUser.username === 'SICAL ADMIN' || role.includes('admin') || role.includes('engineer') || role.includes('lead');
+            if (isAdmin) {
+                return ticketsList;
+            }
+            const userName = currentUser.name ? currentUser.name.toLowerCase() : '';
+            const userEmail = currentUser.email ? currentUser.email.toLowerCase() : '';
+            const userLogin = currentUser.username ? currentUser.username.toLowerCase() : '';
+
+            const matchedAssets = assetMasterList.filter(a => 
+                (a.allocatedTo && a.allocatedTo.toLowerCase() === userName) ||
+                (a.userMail && a.userMail.toLowerCase() === userEmail)
+            );
+            const assetTags = matchedAssets.map(a => a.assetTag ? a.assetTag.toLowerCase() : '');
+
+            return ticketsList.filter(t => {
+                const tName = t.name ? t.name.toLowerCase() : '';
+                const tAsset = t.asset ? t.asset.toLowerCase() : '';
+                const tRaisedBy = t.raisedBy ? t.raisedBy.toLowerCase() : '';
+                return tName === userName || tName === userLogin || tRaisedBy === userName || assetTags.includes(tAsset);
+            });
+        }
+
+        // TICKET TABLE & PAGINATION
+        function filterTickets() {
+            currentTicketPage = 1;
+            renderTicketTable();
+        }
+
+        function changeTicketPage(direction) {
+            const accessible = getAccessibleTickets();
+            const searchInput = document.getElementById('ticket-search-input');
+            const statusFilter = document.getElementById('ticket-status-filter');
+            const search = (searchInput ? searchInput.value : '').toLowerCase();
+            const status = statusFilter ? statusFilter.value : '';
+            
+            const filtered = accessible.filter(t => {
+                const matchSearch = !search || 
+                    t.id.toLowerCase().includes(search) || 
+                    (t.name && t.name.toLowerCase().includes(search)) ||
+                    (t.subject && t.subject.toLowerCase().includes(search)) ||
+                    (t.asset && t.asset.toLowerCase().includes(search)) ||
+                    (t.raisedBy && t.raisedBy.toLowerCase().includes(search));
+                const matchStatus = !status || t.status === status;
+                return matchSearch && matchStatus;
+            });
+
+            const maxPages = Math.ceil(filtered.length / rowsPerPage) || 1;
+            currentTicketPage += direction;
+            if (currentTicketPage < 1) currentTicketPage = 1;
+            if (currentTicketPage > maxPages) currentTicketPage = maxPages;
+            renderTicketTable();
+        }
+
+        function renderTicketTable() {
+            const accessible = getAccessibleTickets();
+            const searchInput = document.getElementById('ticket-search-input');
+            const statusFilter = document.getElementById('ticket-status-filter');
+            const search = (searchInput ? searchInput.value : '').toLowerCase();
+            const status = statusFilter ? statusFilter.value : '';
+            
+            const filtered = accessible.filter(t => {
+                const matchSearch = !search || 
+                    t.id.toLowerCase().includes(search) || 
+                    (t.name && t.name.toLowerCase().includes(search)) ||
+                    (t.subject && t.subject.toLowerCase().includes(search)) ||
+                    (t.asset && t.asset.toLowerCase().includes(search)) ||
+                    (t.raisedBy && t.raisedBy.toLowerCase().includes(search));
+                const matchStatus = !status || t.status === status;
+                return matchSearch && matchStatus;
+            });
+
+            const totalRecords = filtered.length;
+            const maxPages = Math.ceil(totalRecords / rowsPerPage) || 1;
+            if (currentTicketPage > maxPages) currentTicketPage = maxPages;
+
+            const startIdx = (currentTicketPage - 1) * rowsPerPage;
+            const paginatedList = filtered.slice(startIdx, startIdx + rowsPerPage);
+
+            const tbody = document.getElementById('ticket-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            if (!paginatedList.length) {
+                tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-400 font-medium">No tickets found.</td></tr>`;
+            } else {
+                paginatedList.forEach(ticket => {
+                    let priorityBadge = 'bg-slate-100 text-slate-700';
+                    if (ticket.priority === 'Critical') priorityBadge = 'bg-red-100 text-red-700';
+                    else if (ticket.priority === 'High') priorityBadge = 'bg-orange-100 text-orange-700';
+                    let statusBadge = 'bg-amber-100 text-amber-700';
+                    if (ticket.status === 'In Progress') statusBadge = 'bg-blue-100 text-blue-700';
+                    else if (ticket.status === 'Closed') statusBadge = 'bg-emerald-100 text-emerald-700';
+
+                    const raisedByDisplay = ticket.raisedBy || ticket.name || 'System Admin';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-4 font-mono font-bold text-red-600">
+                                <button onclick="viewTicketDetail('${ticket.id}')" class="hover:underline">${ticket.id}</button>
+                            </td>
+                            <td class="p-4"><span class="bg-slate-100 text-slate-800 text-xs px-2 py-1 rounded font-semibold">${ticket.location}</span></td>
+                            <td class="p-4">${ticket.category}</td>
+                            <td class="p-4 font-mono text-xs font-bold text-slate-700">${ticket.asset}</td>
+                            <td class="p-4 text-xs">${ticket.name}<br><span class="text-slate-400">${ticket.department || 'N/A'}</span></td>
+                            <td class="p-4 text-xs font-semibold text-indigo-700">👤 ${raisedByDisplay}</td>
+                            <td class="p-4 text-xs font-mono">${ticket.model || 'N/A'}<br><span class="text-slate-400">SN: ${ticket.serial || 'N/A'}</span></td>
+                            <td class="p-4 font-semibold text-slate-800">${ticket.subject}</td>
+                            <td class="p-4"><span class="${priorityBadge} text-xs px-2 py-0.5 rounded font-bold">${ticket.priority}</span></td>
+                            <td class="p-4"><span class="${statusBadge} text-xs px-2.5 py-1 rounded-full font-bold">${ticket.status}</span></td>
+                            <td class="p-4 space-x-1">
+                                <button onclick="updateTicketStatus('${ticket.id}', 'In Progress')" class="text-[11px] bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">Progress</button>
+                                <button onclick="triggerCloseAndSurvey('${ticket.id}')" class="text-[11px] bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold">Close & Survey</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const endRange = totalRecords > 0 ? Math.min(startIdx + rowsPerPage, totalRecords) : 0;
+            const pageInfo = document.getElementById('ticket-page-info');
+            const pageNum = document.getElementById('ticket-page-num');
+            if (pageInfo) pageInfo.innerText = `Showing ${totalRecords > 0 ? startIdx + 1 : 0}-${endRange} of ${totalRecords} tickets`;
+            if (pageNum) pageNum.innerText = `Page ${currentTicketPage} of ${maxPages}`;
+        }
+
+        // REPORTS VIEW PREVIEW & PAGINATION
+        function getFilteredReportTickets() {
+            const locFilterEl = document.getElementById('report-location-filter');
+            const statusFilterEl = document.getElementById('report-status-filter');
+            const fromDateEl = document.getElementById('report-from-date');
+            const toDateEl = document.getElementById('report-to-date');
+
+            const locFilter = locFilterEl ? locFilterEl.value : '';
+            const statusFilter = statusFilterEl ? statusFilterEl.value : '';
+            const fromDate = fromDateEl ? fromDateEl.value : '';
+            const toDate = toDateEl ? toDateEl.value : '';
+
+            const activeTickets = getAccessibleTickets();
+            return activeTickets.filter(t => {
+                if (locFilter && t.location !== locFilter) return false;
+                if (statusFilter && t.status !== statusFilter) return false;
+                if (fromDate && t.createdAt && new Date(t.createdAt) < new Date(fromDate)) return false;
+                if (toDate && t.createdAt && new Date(t.createdAt) > new Date(toDate + 'T23:59:59')) return false;
+                return true;
+            });
+        }
+
+        function changeReportPage(direction) {
+            const filtered = getFilteredReportTickets();
+            const maxPages = Math.ceil(filtered.length / rowsPerPage) || 1;
+            currentReportPage += direction;
+            if (currentReportPage < 1) currentReportPage = 1;
+            if (currentReportPage > maxPages) currentReportPage = maxPages;
+            renderReportPreview();
+        }
+
+        function renderReportPreview() {
+            const filtered = getFilteredReportTickets();
+            const totalRecords = filtered.length;
+            const maxPages = Math.ceil(totalRecords / rowsPerPage) || 1;
+            if (currentReportPage > maxPages) currentReportPage = maxPages;
+
+            const startIdx = (currentReportPage - 1) * rowsPerPage;
+            const paginatedList = filtered.slice(startIdx, startIdx + rowsPerPage);
+
+            const tbody = document.getElementById('report-table-body');
+            const countIndicator = document.getElementById('report-count-indicator');
+            if (countIndicator) countIndicator.innerText = `${totalRecords} Records`;
+
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (!paginatedList.length) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">No report records match the selected filters.</td></tr>`;
+            } else {
+                paginatedList.forEach(t => {
+                    let priorityBadge = 'bg-slate-100 text-slate-700';
+                    if (t.priority === 'Critical') priorityBadge = 'bg-red-100 text-red-700';
+                    else if (t.priority === 'High') priorityBadge = 'bg-orange-100 text-orange-700';
+                    let statusBadge = 'bg-amber-100 text-amber-700';
+                    if (t.status === 'In Progress') statusBadge = 'bg-blue-100 text-blue-700';
+                    else if (t.status === 'Closed') statusBadge = 'bg-emerald-100 text-emerald-700';
+
+                    const createdDate = t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono font-bold text-red-600">${t.id}</td>
+                            <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">${t.location}</span></td>
+                            <td class="p-3">${t.department || 'N/A'}</td>
+                            <td class="p-3 font-semibold">${t.name}</td>
+                            <td class="p-3 text-indigo-700 font-semibold">👤 ${t.raisedBy || 'N/A'}</td>
+                            <td class="p-3">${t.category}</td>
+                            <td class="p-3 font-medium text-slate-800">${t.subject}</td>
+                            <td class="p-3"><span class="${priorityBadge} text-[10px] px-2 py-0.5 rounded font-bold">${t.priority}</span></td>
+                            <td class="p-3"><span class="${statusBadge} text-[10px] px-2 py-0.5 rounded-full font-bold">${t.status}</span></td>
+                            <td class="p-3 font-mono text-slate-500">${createdDate}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const endRange = totalRecords > 0 ? Math.min(startIdx + rowsPerPage, totalRecords) : 0;
+            const pageInfo = document.getElementById('report-page-info');
+            const pageNum = document.getElementById('report-page-num');
+            if (pageInfo) pageInfo.innerText = `Showing ${totalRecords > 0 ? startIdx + 1 : 0}-${endRange} of ${totalRecords} records`;
+            if (pageNum) pageNum.innerText = `Page ${currentReportPage} of ${maxPages}`;
+        }
+
+        function viewTicketDetail(id) {
+            const t = ticketsList.find(x => x.id === id);
+            if (!t) return;
+            const detailContent = document.getElementById('ticket-detail-content');
+            if (detailContent) {
+                detailContent.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Ticket ID</span><p class="font-mono font-bold text-red-600">${t.id}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Status</span><p class="font-semibold">${t.status}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Employee</span><p class="font-semibold">${t.name}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Raised By</span><p class="font-semibold text-indigo-600">${t.raisedBy || 'N/A'}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Department</span><p>${t.department || 'N/A'}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Location</span><p>${t.location}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Asset TAG</span><p class="font-mono">${t.asset}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Category</span><p>${t.category}</p></div>
+                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Priority</span><p>${t.priority}</p></div>
+                        <div class="col-span-2"><span class="text-[10px] font-bold text-slate-400 uppercase">Subject</span><p class="font-semibold">${t.subject}</p></div>
+                        <div class="col-span-2"><span class="text-[10px] font-bold text-slate-400 uppercase">Description</span><p class="text-slate-600 mt-1">${t.description}</p></div>
+                    </div>
+                `;
+            }
+            openModal('ticket-detail-modal');
+        }
+
+        function triggerCloseAndSurvey(ticketId) {
+            updateTicketStatus(ticketId, 'Closed');
+            const surveyTicketId = document.getElementById('survey-ticket-id');
+            if (surveyTicketId) surveyTicketId.value = ticketId;
+            openModal('survey-modal');
+        }
+
+        function setRating(val) {
+            const ratingInput = document.getElementById('survey-rating');
+            if (ratingInput) ratingInput.value = val;
+            const starContainer = document.getElementById('star-container');
+            if (starContainer) {
+                const stars = starContainer.children;
+                for (let i = 0; i < 5; i++) {
+                    if (i < val) { stars[i].classList.add('text-amber-400'); stars[i].classList.remove('text-slate-300'); }
+                    else { stars[i].classList.remove('text-amber-400'); stars[i].classList.add('text-slate-300'); }
+                }
+            }
+        }
+
+        function handleSurveySubmit(e) {
+            e.preventDefault();
+            const surveyTicketId = document.getElementById('survey-ticket-id');
+            const ticketId = surveyTicketId ? surveyTicketId.value : '';
+            const helpdeskMail = localStorage.getItem('sical_smtp_helpdesk') || "hardware.support@sical.com";
+            showToast(`Feedback for ${ticketId} sent to ${helpdeskMail}.`, 'success');
+            addNotification(`Survey feedback submitted for ticket ${ticketId}.`, 'success');
+            closeModal('survey-modal');
+        }
+
+        function updateTicketStatus(id, newStatus) {
+            const ticket = ticketsList.find(t => t.id === id);
+            if (ticket) {
+                ticket.status = newStatus;
+                saveTickets();
+                renderTicketTable();
+                updateMetricsAndCharts();
+                renderReportPreview();
+                showToast(`Ticket ${id} updated to "${newStatus}".`);
+                addNotification(`Ticket ${id} status changed to "${newStatus}".`, 'info');
+            }
+        }
+
+        // METRICS & CHARTS (Scoped to accessible tickets)
+        function updateMetricsAndCharts() {
+            const activeTickets = getAccessibleTickets();
+            const total = activeTickets.length;
+            const open = activeTickets.filter(t => t.status === 'Open').length;
+            const progress = activeTickets.filter(t => t.status === 'In Progress').length;
+            const closed = activeTickets.filter(t => t.status === 'Closed').length;
+            const now = new Date();
+            const thisMonth = activeTickets.filter(t => {
+                if (!t.createdAt) return false;
+                const d = new Date(t.createdAt);
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            }).length;
+
+            const statTotal = document.getElementById('stat-total');
+            const statOpen = document.getElementById('stat-open');
+            const statProgress = document.getElementById('stat-progress');
+            const statClosed = document.getElementById('stat-closed');
+            const statMonth = document.getElementById('stat-month');
+
+            if (statTotal) statTotal.innerText = total;
+            if (statOpen) statOpen.innerText = open;
+            if (statProgress) statProgress.innerText = progress;
+            if (statClosed) statClosed.innerText = closed;
+            if (statMonth) statMonth.innerText = thisMonth;
+
+            // Top users
+            const userCounts = {};
+            activeTickets.forEach(t => { 
+                const uName = t.raisedBy || t.name || 'Unknown';
+                userCounts[uName] = (userCounts[uName] || 0) + 1; 
+            });
+            const topUsers = Object.entries(userCounts).sort((a,b) => b[1]-a[1]).slice(0,5);
+            const topUsersList = document.getElementById('top-users-list');
+            if (topUsersList) {
+                if (topUsers.length) {
+                    topUsersList.innerHTML = topUsers.map(([name, count]) => `
+                        <div class="flex items-center justify-between py-2 px-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <span class="text-xs font-bold text-slate-700 flex items-center gap-2">👤 ${name}</span>
+                            <span class="bg-red-100 text-red-700 text-xs font-extrabold px-2.5 py-0.5 rounded-full">${count} tickets</span>
+                        </div>
+                    `).join('');
+                } else {
+                    topUsersList.innerHTML = '<p class="text-xs text-slate-400 p-2">No user data yet.</p>';
+                }
+            }
+
+            // Top categories
+            const catCounts = {};
+            activeTickets.forEach(t => { catCounts[t.category] = (catCounts[t.category] || 0) + 1; });
+            const topCats = Object.entries(catCounts).sort((a,b) => b[1]-a[1]).slice(0,5);
+            const topCatsList = document.getElementById('top-categories-list');
+            if (topCatsList) {
+                if (topCats.length) {
+                    topCatsList.innerHTML = topCats.map(([cat, count]) => `
+                        <div class="flex items-center justify-between py-2 px-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <span class="text-xs font-bold text-slate-700 flex items-center gap-2">🏷️ ${cat}</span>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-extrabold px-2.5 py-0.5 rounded-full">${count} issues</span>
+                        </div>
+                    `).join('');
+                } else {
+                    topCatsList.innerHTML = '<p class="text-xs text-slate-400 p-2">No category data yet.</p>';
+                }
+            }
+
+            const critical = activeTickets.filter(t => t.priority === 'Critical').length;
+            const high = activeTickets.filter(t => t.priority === 'High').length;
+            const medium = activeTickets.filter(t => t.priority === 'Medium').length;
+            const low = activeTickets.filter(t => t.priority === 'Low').length;
+            const hw = activeTickets.filter(t => t.category === 'Hardware').length;
+            const nw = activeTickets.filter(t => t.category === 'Network').length;
+            const sw = activeTickets.filter(t => t.category === 'System Software').length;
+
+            const priorityCanvas = document.getElementById('priorityChart');
+            if (priorityCanvas) {
+                if (priorityChartInstance) priorityChartInstance.destroy();
+                const ctx1 = priorityCanvas.getContext('2d');
+                priorityChartInstance = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Critical 🔴', 'High 🟠', 'Medium 🔵', 'Low ⚪'],
+                        datasets: [{ data: [critical, high, medium, low], backgroundColor: ['#ef4444', '#f97316', '#3b82f6', '#94a3b8'], borderWidth: 2, borderColor: isDark ? '#1e293b' : '#ffffff' }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { weight: 'bold' } } } } }
+                });
+            }
+
+            const categoryCanvas = document.getElementById('categoryChart');
+            if (categoryCanvas) {
+                if (categoryChartInstance) categoryChartInstance.destroy();
+                const ctx2 = categoryCanvas.getContext('2d');
+                categoryChartInstance = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Hardware 💻', 'Network 🌐', 'System Software ⚙️'],
+                        datasets: [{ label: 'Tickets Count', data: [hw, nw, sw], backgroundColor: ['#dc2626', '#2563eb', '#059669'], borderRadius: 6 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+                });
+            }
+        }
+
+        // FILE UPLOAD (SUPPORTING ASSET TAG & ASSET NUMBER)
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const text = e.target.result;
+                    const lines = text.split('\n');
+                    for (let i = 1; i < lines.length; i++) {
+                        const cols = lines[i].split(',');
+                        if (cols.length >= 11) {
+                            const assetTag = cols[0] ? cols[0].trim() : '';
+                            const assetNo = cols[1] ? cols[1].trim() : '';
+                            const allocatedTo = cols[2] ? cols[2].trim() : '';
+                            const userMail = cols[3] ? cols[3].trim() : '';
+                            const department = cols[4] ? cols[4].trim() : '';
+                            const assetType = cols[5] ? cols[5].trim().toUpperCase() : 'LAPTOP';
+                            const location = cols[6] ? cols[6].trim().toUpperCase() : '';
+                            const manufacturer = cols[7] ? cols[7].trim() : '';
+                            const model = cols[8] ? cols[8].trim() : '';
+                            const serial = cols[9] ? cols[9].trim() : '';
+                            const systemName = cols[10] ? cols[10].trim() : '';
+                            const remarks = cols[11] ? cols[11].trim() : '';
+                            
+                            const memory = cols[12] ? cols[12].trim() : '';
+                            const processor = cols[13] ? cols[13].trim() : '';
+                            const os = cols[14] ? cols[14].trim() : '';
+                            const hdd = cols[15] ? cols[15].trim() : '';
+                            const osUpg = cols[16] ? cols[16].trim() : '';
+                            const onedrive = cols[17] ? cols[17].trim() : '';
+                            const usb = cols[18] ? cols[18].trim() : '';
+
+                            if (assetTag !== '') {
+                                if (!assetMasterList.some(a => a.assetTag && a.assetTag.toLowerCase() === assetTag.toLowerCase())) {
+                                    assetMasterList.push({ 
+                                        assetTag, assetNo, allocatedTo, userMail, department, assetType, location, 
+                                        manufacturer, model, serial, systemName, remarks,
+                                        memory, processor, os, hdd, osUpg, onedrive, usb 
+                                    });
+
+                                    assetHistoryList.unshift({
+                                        assetTag,
+                                        assetNo,
+                                        user: allocatedTo,
+                                        department,
+                                        location,
+                                        action: 'Bulk Upload Registration',
+                                        timestamp: new Date().toLocaleString()
+                                    });
+                                }
+                                if (location !== '' && !locationsList.includes(location)) {
+                                    locationsList.push(location);
+                                }
+                                if (assetType !== '' && !assetTypesList.includes(assetType)) {
+                                    assetTypesList.push(assetType);
+                                }
+                            }
+                        }
+                    }
+                    saveAssets();
+                    saveAssetHistory();
+                    saveLocations();
+                    saveAssetTypes();
+                    renderLocationDropdowns();
+                    renderAssetTypeDropdowns();
+                    renderLocationMasterTable();
+                    renderAssetTypeMasterTable();
+                    populateUserDropdown();
+                    renderAssetDirectoryTable();
+                    renderAssetHistoryTable();
+                    const statusBox = document.getElementById('upload-status');
+                    if (statusBox) {
+                        document.getElementById('upload-status-text').innerText = `Imported: "${file.name}" successfully!`;
+                        document.getElementById('asset-count-badge').innerText = `${assetMasterList.length} Total Assets Registered`;
+                        statusBox.classList.remove('hidden');
+                    }
+                    showToast(`${assetMasterList.length} total assets stored permanently with full specs.`);
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function downloadCSVTemplate() {
+            const csvHeader = "Asset TAG,Asset Number,ALLOATE TO,User Mail ID,Department,Asset Type,Location,MANUFACTURER NAME,ASSET MODEL,SERIAL NUMBER,System Name,REMARKS,MEMORY SIZE,PROCESSOR,OPERATING SYSTEM,HARD DRIVE SIZE,OS Upg.Required?,One drive,USB Access\n"
+                            + "HQC/IT/SMTL/001D,SICAL/DT/0402,Rajadurai K.,rajadurai@sical.com,DESKTOP,TUTICORIN-SMARTCFS,LENOVO,ThinkCentre,PF04TQDN,SICLT793,..,16 GB,Intel i5,Windows 11 Pro,512 GB SSD,No,Configured,Enabled\n";
+            const blob = new Blob([csvHeader], { type: 'text/csv' });
+            const link = document.createElement("a");
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", "SICAL_Master_Asset_Template_DualID.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function downloadExcelReport() {
+            const filtered = getFilteredReportTickets();
+            let csvContent = "Asset_TAG,Asset_Number,Location,Department,Allocated_To,Raised_By,Category,Subject,Priority,Status,Created\n";
+            filtered.forEach(t => {
+                const created = t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A';
+                csvContent += `${t.asset},${t.location},${t.department || ''},${t.name},${t.raisedBy || 'N/A'},${t.category},"${t.subject}",${t.priority},${t.status},${created}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "SICAL_IT_Tickets_Report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast(`Audit report downloaded (${filtered.length} permanent records).`);
+        }
+
+        function openModal(id) { 
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('flex');
+                el.classList.remove('hidden');
+            }
+        }
+        function closeModal(id) { 
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('flex');
+                el.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkPersistedSession();
+        });
+  </script>
+ </body>
+</html>
