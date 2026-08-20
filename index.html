@@ -1150,6 +1150,7 @@
             if (cloudHistory) assetHistoryList = cloudHistory;
 
             initApp();
+            checkPersistedSession(); // FIXED: Called after cloud users are fully loaded
         }
 
         function saveUsers() { 
@@ -2657,9 +2658,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            initializeCloudData().then(() => {
-                checkPersistedSession();
-            });
+            initializeCloudData();
         });
   </script>
  </body>
