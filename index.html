@@ -1214,7 +1214,7 @@
             }
         }
 
-        // LOADERS WITH LOCALSTORAGE FALLBACK
+        // LOADERS WITH LOCALSTORAGE & CLOUD FALLBACK
         let usersList = [DEFAULT_ADMIN];
         let locationsList = DEFAULT_LOCATIONS;
         let assetTypesList = DEFAULT_ASSET_TYPES;
@@ -1233,6 +1233,11 @@
             } else {
                 usersList = [DEFAULT_ADMIN];
                 saveUsers();
+            }
+
+            let cloudAssetTypes = await fetchSheetData("AssetTypes");
+            if (cloudAssetTypes && cloudAssetTypes.length > 0) {
+                assetTypesList = cloudAssetTypes.map(item => item.type || item);
             }
 
             let cloudTickets = await fetchSheetData("Tickets");
@@ -1254,7 +1259,14 @@
         }
 
         function saveLocations() { localStorage.setItem('sical_locations', JSON.stringify(locationsList)); }
-        function saveAssetTypes() { localStorage.setItem('sical_asset_types', JSON.stringify(assetTypesList)); }
+        
+        function saveAssetTypes() { 
+            localStorage.setItem('sical_asset_types', JSON.stringify(assetTypesList)); 
+            // Also save to Cloud so asset types persist permanently across all devices/refreshes!
+            const assetTypeRecords = assetTypesList.map(t => ({ type: t }));
+            saveSheetData("AssetTypes", assetTypeRecords);
+        }
+
         function saveRoles() { localStorage.setItem('sical_roles', JSON.stringify(rolesList)); }
 
         function saveTickets() { 
@@ -1319,9 +1331,9 @@
 
             const types = assetTypesList && assetTypesList.length ? assetTypesList : ["DESKTOP", "LAPTOP", "PRINTER", "OTHERS"];
 
-            let headerHTML = `<tr><th class="p-3">Entity / Location</th><th class="p-3">Status</th>`;
-            types.forEach(t => { headerHTML += `<th class="p-3 text-center">${t}</th>`; });
-            headerHTML += `<th class="p-3 text-center bg-slate-800">Total</th></tr>`;
+            let headerHTML = `<tr><th class="p-3 bg-slate-900 sticky top-0 z-20">Entity / Location</th><th class="p-3 bg-slate-900 sticky top-0 z-20">Status</th>`;
+            types.forEach(t => { headerHTML += `<th class="p-3 text-center bg-slate-900 sticky top-0 z-20">${t}</th>`; });
+            headerHTML += `<th class="p-3 text-center bg-slate-800 sticky top-0 z-20">Total</th></tr>`;
             thead.innerHTML = headerHTML;
 
             const smartLocations = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
@@ -1940,11 +1952,11 @@
             const val = input.value.trim().toUpperCase();
             if (val && !assetTypesList.includes(val)) {
                 assetTypesList.push(val);
-                saveAssetTypes();
+                saveAssetTypes(); // Now saves to cloud and local storage!
                 renderAssetTypeDropdowns();
                 renderAssetTypeMasterTable();
                 input.value = '';
-                showToast(`Asset Type "${val}" added.`);
+                showToast(`Asset Type "${val}" added and saved permanently!`);
             } else {
                 showToast('Asset Type already exists or empty.', 'error');
             }
