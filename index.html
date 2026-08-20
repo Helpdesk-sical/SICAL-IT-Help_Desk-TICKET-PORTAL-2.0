@@ -1240,6 +1240,16 @@
                 assetTypesList = cloudAssetTypes.map(item => item.type || item);
             }
 
+            let cloudLocations = await fetchSheetData("Locations");
+            if (cloudLocations && cloudLocations.length > 0) {
+                locationsList = cloudLocations.map(item => item.location || item);
+            }
+
+            let cloudRoles = await fetchSheetData("Roles");
+            if (cloudRoles && cloudRoles.length > 0) {
+                rolesList = cloudRoles.map(item => item.role || item);
+            }
+
             let cloudTickets = await fetchSheetData("Tickets");
             if (cloudTickets) ticketsList = cloudTickets;
 
@@ -1258,16 +1268,23 @@
             saveSheetData("Users", usersList);
         }
 
-        function saveLocations() { localStorage.setItem('sical_locations', JSON.stringify(locationsList)); }
+        function saveLocations() { 
+            localStorage.setItem('sical_locations', JSON.stringify(locationsList)); 
+            const locationRecords = locationsList.map(l => ({ location: l }));
+            saveSheetData("Locations", locationRecords);
+        }
         
         function saveAssetTypes() { 
             localStorage.setItem('sical_asset_types', JSON.stringify(assetTypesList)); 
-            // Also save to Cloud so asset types persist permanently across all devices/refreshes!
             const assetTypeRecords = assetTypesList.map(t => ({ type: t }));
             saveSheetData("AssetTypes", assetTypeRecords);
         }
 
-        function saveRoles() { localStorage.setItem('sical_roles', JSON.stringify(rolesList)); }
+        function saveRoles() { 
+            localStorage.setItem('sical_roles', JSON.stringify(rolesList)); 
+            const roleRecords = rolesList.map(r => ({ role: r }));
+            saveSheetData("Roles", roleRecords);
+        }
 
         function saveTickets() { 
             localStorage.setItem('sical_tickets', JSON.stringify(ticketsList)); 
@@ -1884,7 +1901,7 @@
                 renderLocationDropdowns();
                 renderLocationMasterTable();
                 input.value = '';
-                showToast(`Location "${val}" added.`);
+                showToast(`Location "${val}" added and saved permanently!`);
             } else {
                 showToast('Location already exists or empty.', 'error');
             }
@@ -2952,17 +2969,17 @@
                                 }
                                 if (location !== '' && !locationsList.includes(location)) {
                                     locationsList.push(location);
+                                    saveLocations();
                                 }
                                 if (assetType !== '' && !assetTypesList.includes(assetType)) {
                                     assetTypesList.push(assetType);
+                                    saveAssetTypes();
                                 }
                             }
                         }
                     }
                     saveAssets();
                     saveAssetHistory();
-                    saveLocations();
-                    saveAssetTypes();
                     renderLocationDropdowns();
                     renderAssetTypeDropdowns();
                     renderLocationMasterTable();
