@@ -140,11 +140,11 @@
   <!-- 2. MAIN APP LAYOUT                         -->
   <!-- ========================================== -->
   <div id="app-screen" class="hidden min-h-screen flex flex-row">
-   <!-- Sidebar Navigation -->
-   <aside id="sidebar-menu" class="sidebar-transition w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col min-h-screen sticky top-0 z-30">
+   <!-- Sidebar Navigation (FIXED STICKY SIDEBAR) -->
+   <aside id="sidebar-menu" class="sidebar-transition w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col h-screen sticky top-0 z-30 overflow-y-auto">
     <div class="p-4 border-b border-slate-800 text-center flex-shrink-0">
      <h1 class="text-2xl font-black text-red-500 tracking-wider">SICAL</h1>
-     <p class="text-[10px] text-indigo-300 italic whitespace-nowrap">A PRISTINE GROUP COMPANY</p>
+     <p class="text-[9px] text-indigo-300 italic whitespace-nowrap uppercase mt-1">A PRISTINE GROUP COMPANY</p>
     </div>
     <nav class="p-4 space-y-1 flex-1">
      <button onclick="switchTab('dashboard')" id="btn-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-slate-800 text-white font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-chart-pie w-5 text-red-500"></i> <span>Dashboard</span> </button> 
@@ -204,76 +204,147 @@
      <!-- TAB 1: DASHBOARD                           -->
      <!-- ========================================== -->
      <section id="tab-dashboard" class="space-y-6 animate-fade-in">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
-        <div>
-         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">📊 Total Tickets</p>
-         <p id="stat-total" class="text-3xl font-extrabold text-slate-800 mt-1">0</p>
+      <!-- Dashboard Sub-Menu Tabs -->
+      <div class="flex space-x-2 border-b border-slate-200 pb-3">
+       <button onclick="switchDashboardSubTab('metrics')" id="sub-btn-metrics" class="px-4 py-2 bg-red-600 text-white font-bold text-xs rounded-lg shadow-sm transition">📊 Dashboard Metrics</button>
+       <button onclick="switchDashboardSubTab('asset-summary')" id="sub-btn-asset-summary" class="px-4 py-2 bg-white text-slate-700 border border-slate-200 font-bold text-xs rounded-lg shadow-sm hover:bg-slate-50 transition">📦 Asset Summary</button>
+       <button onclick="switchDashboardSubTab('user-summary')" id="sub-btn-user-summary" class="px-4 py-2 bg-white text-slate-700 border border-slate-200 font-bold text-xs rounded-lg shadow-sm hover:bg-slate-50 transition">👥 User Summary</button>
+      </div>
+
+      <!-- DASHBOARD SUB-VIEW 1: METRICS -->
+      <div id="dash-view-metrics" class="space-y-6">
+       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+         <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">📊 Total Tickets</p>
+          <p id="stat-total" class="text-3xl font-extrabold text-slate-800 mt-1">0</p>
+         </div>
+         <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl shadow-inner">📋</div>
         </div>
-        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl shadow-inner">📋</div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+         <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">📂 Open Tickets</p>
+          <p id="stat-open" class="text-3xl font-extrabold text-amber-600 mt-1">0</p>
+         </div>
+         <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 text-2xl shadow-inner">⏳</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+         <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">⚡ In Progress</p>
+          <p id="stat-progress" class="text-3xl font-extrabold text-blue-600 mt-1">0</p>
+         </div>
+         <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl shadow-inner">🔧</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
+         <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">✅ Closed Tickets</p>
+          <p id="stat-closed" class="text-3xl font-extrabold text-emerald-600 mt-1">0</p>
+         </div>
+         <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-2xl shadow-inner">🎉</div>
+        </div>
        </div>
 
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
-        <div>
-         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">📂 Open Tickets</p>
-         <p id="stat-open" class="text-3xl font-extrabold text-amber-600 mt-1">0</p>
+       <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-indigo-600/30 rounded-xl flex items-center justify-center text-2xl border border-indigo-500/30">📅</div>
+         <div>
+          <p class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Current Month Performance</p>
+          <p class="text-2xl font-extrabold mt-0.5"><span id="stat-month">0</span> New Tickets Logged This Month</p>
+         </div>
         </div>
-        <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 text-2xl shadow-inner">⏳</div>
+        <div class="hidden sm:flex items-center space-x-2 text-xs font-semibold bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+         <span>🚀 System Active</span>
+        </div>
        </div>
 
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
-        <div>
-         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">⚡ In Progress</p>
-         <p id="stat-progress" class="text-3xl font-extrabold text-blue-600 mt-1">0</p>
+       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+         <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🎯 Tickets by Priority</h3>
+         <div class="h-64 flex justify-center items-center">
+          <canvas id="priorityChart"></canvas>
+         </div>
         </div>
-        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl shadow-inner">🔧</div>
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+         <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">📊 Category Distribution</h3>
+         <div class="h-64 flex justify-center items-center">
+          <canvas id="categoryChart"></canvas>
+         </div>
+        </div>
        </div>
 
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between stat-card-hover">
-        <div>
-         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">✅ Closed Tickets</p>
-         <p id="stat-closed" class="text-3xl font-extrabold text-emerald-600 mt-1">0</p>
+       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+         <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🏆 Top Users by Ticket Count</h3>
+         <div id="top-users-list" class="space-y-2"></div>
         </div>
-        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-2xl shadow-inner">🎉</div>
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+         <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🔥 Top Issue Categories</h3>
+         <div id="top-categories-list" class="space-y-2"></div>
+        </div>
        </div>
       </div>
 
-      <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
-       <div class="flex items-center space-x-4">
-        <div class="w-12 h-12 bg-indigo-600/30 rounded-xl flex items-center justify-center text-2xl border border-indigo-500/30">📅</div>
+      <!-- DASHBOARD SUB-VIEW 2: ASSET SUMMARY (FIXED STICKY HEADER) -->
+      <div id="dash-view-asset-summary" class="hidden space-y-6">
+       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+         <div>
+          <h3 class="text-lg font-bold text-slate-800">📦 Assets Summary (SMART &amp; SICAL)</h3>
+          <p class="text-xs text-slate-500">Grouped by Entity and Location with dynamic Asset Type auto-sync.</p>
+         </div>
+         <div class="flex flex-wrap items-center gap-2">
+          <div>
+           <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">From Date</label>
+           <input type="date" id="asset-sum-from" onchange="renderAssetSummaryTable()" class="border border-slate-300 rounded-lg p-1.5 text-xs">
+          </div>
+          <div>
+           <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">To Date</label>
+           <input type="date" id="asset-sum-to" onchange="renderAssetSummaryTable()" class="border border-slate-300 rounded-lg p-1.5 text-xs">
+          </div>
+          <div class="flex items-end space-x-1 pt-4">
+           <button onclick="resetAssetSummaryFilters()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-lg transition">Reset / Today</button>
+           <button onclick="exportAssetSummaryCSV()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-sm transition"><i class="fa-solid fa-file-excel mr-1"></i> Export Excel</button>
+          </div>
+         </div>
+        </div>
+
+        <div class="overflow-x-auto max-h-[650px] overflow-y-auto border border-slate-200 rounded-xl shadow-sm">
+         <table class="w-full text-left text-xs text-slate-700 border-collapse">
+          <thead id="asset-summary-thead" class="bg-slate-900 text-white font-bold uppercase text-[11px] sticky top-0 z-10">
+           <!-- Dynamic Sticky Headers -->
+          </thead>
+          <tbody id="asset-summary-tbody" class="divide-y divide-slate-100 font-medium">
+          </tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+
+      <!-- DASHBOARD SUB-VIEW 3: USER SUMMARY -->
+      <div id="dash-view-user-summary" class="hidden space-y-6">
+       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
         <div>
-         <p class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Current Month Performance</p>
-         <p class="text-2xl font-extrabold mt-0.5"><span id="stat-month">0</span> New Tickets Logged This Month</p>
+         <h3 class="text-lg font-bold text-slate-800">👥 User-wise Asset Allocation Summary</h3>
+         <p class="text-xs text-slate-500">List of all employees and their allocated asset counts. Click any count to view assigned devices.</p>
         </div>
-       </div>
-       <div class="hidden sm:flex items-center space-x-2 text-xs font-semibold bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
-        <span>🚀 System Active</span>
-       </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🎯 Tickets by Priority</h3>
-        <div class="h-64 flex justify-center items-center">
-         <canvas id="priorityChart"></canvas>
+        <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
+         <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-900 text-white font-bold uppercase text-[11px] sticky top-0 z-10">
+           <tr>
+            <th class="p-3">Employee Name</th>
+            <th class="p-3">User Mail ID</th>
+            <th class="p-3">Department</th>
+            <th class="p-3">Location Hub</th>
+            <th class="p-3 text-center">Total Assets Allocated</th>
+           </tr>
+          </thead>
+          <tbody id="user-summary-tbody" class="divide-y divide-slate-100 font-medium">
+          </tbody>
+         </table>
         </div>
-       </div>
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">📊 Category Distribution</h3>
-        <div class="h-64 flex justify-center items-center">
-         <canvas id="categoryChart"></canvas>
-        </div>
-       </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🏆 Top Users by Ticket Count</h3>
-        <div id="top-users-list" class="space-y-2"></div>
-       </div>
-       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">🔥 Top Issue Categories</h3>
-        <div id="top-categories-list" class="space-y-2"></div>
        </div>
       </div>
      </section>
@@ -796,9 +867,32 @@
    </main>
   </div>
 
-  <!-- ========================================== -->
-  <!-- EXPORT ASSET REPORT MODAL                  -->
-  <!-- ========================================== -->
+  <!-- USER ASSETS MODAL -->
+  <div id="user-assets-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center flex-shrink-0">
+     <h3 class="font-bold text-sm uppercase tracking-wider" id="user-assets-modal-title"><i class="fa-solid fa-laptop text-red-400 mr-2"></i>Allocated Assets</h3>
+     <button onclick="closeModal('user-assets-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="p-6 overflow-y-auto flex-1">
+     <table class="w-full text-left text-xs text-slate-700">
+      <thead class="bg-slate-100 font-bold uppercase">
+       <tr>
+        <th class="p-2.5">Asset TAG</th>
+        <th class="p-2.5">Asset Number</th>
+        <th class="p-2.5">Type</th>
+        <th class="p-2.5">Location</th>
+        <th class="p-2.5">Model / Serial</th>
+       </tr>
+      </thead>
+      <tbody id="user-assets-modal-tbody" class="divide-y divide-slate-100 font-medium">
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+
+  <!-- EXPORT ASSET REPORT MODAL -->
   <div id="export-asset-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
     <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
@@ -1075,14 +1169,14 @@
             username: "SICAL ADMIN", 
             password: "$ic@L0826", 
             email: "admin@sical.com", 
-            location: "CHENNAI-RAJAJI SALAI", 
+            location: "RAJAJI SALAI", 
             role: "IT Admin / Support Agent", 
             active: true,
             perms: { dashboard: true, ticket: true, asset: true, history: true, reports: true, setup: true } 
         };
 
         const DEFAULT_LOCATIONS = [
-            "NIGAHI", "CHENNAI-RAJAJI SALAI", "TUTICORIN-SMARTCFS", "BANGALORE-CORPORATE OFFICE", "CHENNAI-MINJUR", "VIZAG-GAJUWAKA", "CHENNAI-SIH"
+            "RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI", "SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRICHY"
         ];
 
         const DEFAULT_ASSET_TYPES = [
@@ -1131,7 +1225,6 @@
         let notifications = [];
 
         async function initializeCloudData() {
-            // Check session instantly using local storage / session storage first
             checkPersistedSession();
 
             let cloudUsers = await fetchSheetData("Users");
@@ -1152,7 +1245,7 @@
             if (cloudHistory) assetHistoryList = cloudHistory;
 
             initApp();
-            checkPersistedSession(); // Re-validate session once cloud data is fully synced
+            checkPersistedSession();
         }
 
         function saveUsers() { 
@@ -1195,6 +1288,271 @@
         let currentTicketPage = 1;
         let currentReportPage = 1;
         const rowsPerPage = 15;
+
+        // DASHBOARD SUB-TABS NAVIGATION
+        function switchDashboardSubTab(subTabId) {
+            const subTabs = ['metrics', 'asset-summary', 'user-summary'];
+            subTabs.forEach(t => {
+                const view = document.getElementById(`dash-view-${t}`);
+                const btn = document.getElementById(`sub-btn-${t}`);
+                if (view) view.classList.add('hidden');
+                if (btn) {
+                    btn.className = 'px-4 py-2 bg-white text-slate-700 border border-slate-200 font-bold text-xs rounded-lg shadow-sm hover:bg-slate-50 transition';
+                }
+            });
+            const activeView = document.getElementById(`dash-view-${subTabId}`);
+            const activeBtn = document.getElementById(`sub-btn-${subTabId}`);
+            if (activeView) activeView.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.className = 'px-4 py-2 bg-red-600 text-white font-bold text-xs rounded-lg shadow-sm transition';
+            }
+
+            if (subTabId === 'asset-summary') renderAssetSummaryTable();
+            if (subTabId === 'user-summary') renderUserSummaryTable();
+        }
+
+        // ASSET SUMMARY LOGIC (SMART & SICAL SEPARATED ENTITIES)
+        function renderAssetSummaryTable() {
+            const thead = document.getElementById('asset-summary-thead');
+            const tbody = document.getElementById('asset-summary-tbody');
+            if (!thead || !tbody) return;
+
+            const types = assetTypesList && assetTypesList.length ? assetTypesList : ["DESKTOP", "LAPTOP", "PRINTER", "OTHERS"];
+
+            let headerHTML = `<tr><th class="p-3">Entity / Location</th><th class="p-3">Status</th>`;
+            types.forEach(t => { headerHTML += `<th class="p-3 text-center">${t}</th>`; });
+            headerHTML += `<th class="p-3 text-center bg-slate-800">Total</th></tr>`;
+            thead.innerHTML = headerHTML;
+
+            const smartLocations = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
+            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRICHY"];
+            const statuses = ["Assigned", "Instock - Working", "Instock - Not Working", "Scrap"];
+
+            let html = '';
+            let smartGrandTotals = {};
+            let sicalGrandTotals = {};
+            types.forEach(t => { smartGrandTotals[t] = 0; sicalGrandTotals[t] = 0; });
+            smartGrandTotals.total = 0; sicalGrandTotals.total = 0;
+
+            // 1. SMART - Asset Summary Section
+            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 3}" class="p-2.5 tracking-wider">SMART - Asset Summary</td></tr>`;
+            
+            smartLocations.forEach(loc => {
+                let locTotals = {};
+                types.forEach(t => locTotals[t] = 0);
+                locTotals.total = 0;
+
+                statuses.forEach((status, sIdx) => {
+                    html += `<tr class="hover:bg-slate-50 border-b border-slate-100">`;
+                    if (sIdx === 0) {
+                        html += `<td rowspan="${statuses.length + 1}" class="p-3 font-bold bg-amber-50/50 align-top uppercase">${loc}</td>`;
+                    }
+                    html += `<td class="p-2.5 font-semibold text-slate-700">${status}</td>`;
+
+                    let rowTotal = 0;
+                    types.forEach(t => {
+                        let count = assetMasterList.filter(a => {
+                            let aLoc = (a.location || '').toUpperCase();
+                            let aType = (a.assetType || '').toUpperCase();
+                            let aAlloc = (a.allocatedTo || '').trim();
+                            let aRemarks = (a.remarks || '').toLowerCase();
+
+                            if (!aLoc.includes(loc.toUpperCase())) return false;
+                            if (aType !== t.toUpperCase()) return false;
+
+                            if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
+                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aRemarks.includes('working') || !aRemarks.includes('not working') && !aRemarks.includes('scrap'));
+                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aRemarks.includes('not working');
+                            if (status === "Scrap") return aRemarks.includes('scrap');
+                            return false;
+                        }).length;
+
+                        locTotals[t] += count;
+                        smartGrandTotals[t] += count;
+                        rowTotal += count;
+                        html += `<td class="p-2.5 text-center font-mono">${count || ''}</td>`;
+                    });
+
+                    locTotals.total += rowTotal;
+                    smartGrandTotals.total += rowTotal;
+
+                    html += `<td class="p-2.5 text-center font-mono font-bold bg-slate-50">${rowTotal || ''}</td></tr>`;
+                });
+
+                html += `
+                    <tr class="bg-slate-100 font-bold border-b-2 border-slate-200">
+                        <td class="p-2.5 text-slate-800">TOTAL</td>
+                `;
+                types.forEach(t => { html += `<td class="p-2.5 text-center font-mono">${locTotals[t]}</td>`; });
+                html += `<td class="p-2.5 text-center font-mono bg-slate-200 text-red-600">${locTotals.total}</td></tr>`;
+            });
+
+            // 2. SICAL - Assets Summary Section
+            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 3}" class="p-2.5 tracking-wider">SICAL - Assets Summary</td></tr>`;
+
+            sicalLocations.forEach(loc => {
+                let locTotals = {};
+                types.forEach(t => locTotals[t] = 0);
+                locTotals.total = 0;
+
+                statuses.forEach((status, sIdx) => {
+                    html += `<tr class="hover:bg-slate-50 border-b border-slate-100">`;
+                    if (sIdx === 0) {
+                        html += `<td rowspan="${statuses.length + 1}" class="p-3 font-bold bg-amber-50/50 align-top uppercase">SICAL - ${loc}</td>`;
+                    }
+                    html += `<td class="p-2.5 font-semibold text-slate-700">${status}</td>`;
+
+                    let rowTotal = 0;
+                    types.forEach(t => {
+                        let count = assetMasterList.filter(a => {
+                            let aLoc = (a.location || '').toUpperCase();
+                            let aType = (a.assetType || '').toUpperCase();
+                            let aAlloc = (a.allocatedTo || '').trim();
+                            let aRemarks = (a.remarks || '').toLowerCase();
+
+                            if (!aLoc.includes(loc.toUpperCase())) return false;
+                            if (aType !== t.toUpperCase()) return false;
+
+                            if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
+                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aRemarks.includes('working') || !aRemarks.includes('not working') && !aRemarks.includes('scrap'));
+                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aRemarks.includes('not working');
+                            if (status === "Scrap") return aRemarks.includes('scrap');
+                            return false;
+                        }).length;
+
+                        locTotals[t] += count;
+                        sicalGrandTotals[t] += count;
+                        rowTotal += count;
+                        html += `<td class="p-2.5 text-center font-mono">${count || ''}</td>`;
+                    });
+
+                    locTotals.total += rowTotal;
+                    sicalGrandTotals.total += rowTotal;
+
+                    html += `<td class="p-2.5 text-center font-mono font-bold bg-slate-50">${rowTotal || ''}</td></tr>`;
+                });
+
+                html += `
+                    <tr class="bg-slate-100 font-bold border-b-2 border-slate-200">
+                        <td class="p-2.5 text-slate-800">TOTAL</td>
+                `;
+                types.forEach(t => { html += `<td class="p-2.5 text-center font-mono">${locTotals[t]}</td>`; });
+                html += `<td class="p-2.5 text-center font-mono bg-slate-200 text-red-600">${locTotals.total}</td></tr>`;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function resetAssetSummaryFilters() {
+            document.getElementById('asset-sum-from').value = '';
+            document.getElementById('asset-sum-to').value = '';
+            renderAssetSummaryTable();
+            showToast('Asset Summary filter reset.', 'info');
+        }
+
+        function exportAssetSummaryCSV() {
+            const types = assetTypesList && assetTypesList.length ? assetTypesList : ["DESKTOP", "LAPTOP", "PRINTER"];
+            let csv = "Group,Branch/Location,Status," + types.join(",") + ",Total\n";
+            
+            const smartLocations = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
+            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRICHY"];
+            const statuses = ["Assigned", "Instock - Working", "Instock - Not Working", "Scrap"];
+
+            smartLocations.forEach(loc => {
+                statuses.forEach(status => {
+                    let row = ["SMART", loc, status];
+                    let rTotal = 0;
+                    types.forEach(t => {
+                        let count = assetMasterList.filter(a => (a.location||'').toUpperCase().includes(loc.toUpperCase()) && (a.assetType||'').toUpperCase() === t.toUpperCase()).length;
+                        row.push(count);
+                        rTotal += count;
+                    });
+                    row.push(rTotal);
+                    csv += `"${row.join('","')}"\n`;
+                });
+            });
+
+            sicalLocations.forEach(loc => {
+                statuses.forEach(status => {
+                    let row = ["SICAL", loc, status];
+                    let rTotal = 0;
+                    types.forEach(t => {
+                        let count = assetMasterList.filter(a => (a.location||'').toUpperCase().includes(loc.toUpperCase()) && (a.assetType||'').toUpperCase() === t.toUpperCase()).length;
+                        row.push(count);
+                        rTotal += count;
+                    });
+                    row.push(rTotal);
+                    csv += `"${row.join('","')}"\n`;
+                });
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "SICAL_Assets_Summary_Report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Asset Summary exported successfully!', 'success');
+        }
+
+        // USER SUMMARY LOGIC
+        function renderUserSummaryTable() {
+            const tbody = document.getElementById('user-summary-tbody');
+            if (!tbody) return;
+
+            const userMap = {};
+            assetMasterList.forEach(a => {
+                let user = (a.allocatedTo || 'Unassigned').trim();
+                if (!userMap[user]) {
+                    userMap[user] = { name: user, email: a.userMail || 'N/A', department: a.department || 'N/A', location: a.location || 'N/A', assets: [] };
+                }
+                userMap[user].assets.push(a);
+            });
+
+            const usersArr = Object.values(userMap);
+            if (!usersArr.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 font-medium">No allocated users found in asset register.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = usersArr.map(u => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-3 font-bold text-slate-800">👤 ${u.name}</td>
+                    <td class="p-3 text-slate-600">${u.email}</td>
+                    <td class="p-3 text-slate-600">${u.department}</td>
+                    <td class="p-3 font-semibold">${u.location}</td>
+                    <td class="p-3 text-center">
+                        <button onclick='openUserAssetsModal(${JSON.stringify(u.name)}, ${JSON.stringify(u.assets)})' class="bg-red-50 hover:bg-red-100 text-red-700 font-extrabold px-3 py-1 rounded-full border border-red-200 font-mono">
+                            ${u.assets.length} Assets
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openUserAssetsModal(userName, assets) {
+            document.getElementById('user-assets-modal-title').innerHTML = `<i class="fa-solid fa-laptop text-red-400 mr-2"></i>Assets Allocated to: ${userName}`;
+            const tbody = document.getElementById('user-assets-modal-tbody');
+            if (!tbody) return;
+
+            if (!assets.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">No assets allocated.</td></tr>`;
+            } else {
+                tbody.innerHTML = assets.map(a => `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100 text-xs">
+                        <td class="p-2.5 font-mono font-bold text-red-600">${a.assetTag || 'N/A'}</td>
+                        <td class="p-2.5 font-mono">${a.assetNo || 'N/A'}</td>
+                        <td class="p-2.5"><span class="bg-slate-100 px-2 py-0.5 rounded font-bold">${a.assetType || 'N/A'}</span></td>
+                        <td class="p-2.5">${a.location || 'N/A'}</td>
+                        <td class="p-2.5 font-mono">${a.manufacturer || ''} ${a.model || ''} (SN: ${a.serial || 'N/A'})</td>
+                    </tr>
+                `).join('');
+            }
+            openModal('user-assets-modal');
+        }
 
         // CLEAR TICKET SEARCH & AUTO-FILL FIELDS
         function clearTicketSearch() {
