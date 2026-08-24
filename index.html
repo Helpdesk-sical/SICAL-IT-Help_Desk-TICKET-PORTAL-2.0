@@ -47,11 +47,6 @@
             transition: width 0.3s ease-in-out, margin-left 0.3s ease-in-out;
         }
 
-        .star-rating i {
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
         /* REFINED, HIGH-CONTRAST PROFESSIONAL DARK MODE */
         .dark body { background-color: #0b1120; color: #f1f5f9; }
         .dark .bg-white { background-color: #1e293b !important; color: #f1f5f9 !important; }
@@ -560,44 +555,18 @@
       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
         <div>
-         <h3 class="text-lg font-bold text-slate-800">Automated Mail &amp; Feedback Survey Setup</h3>
-         <p class="text-xs text-slate-500">Configure central SICAL SMTP server settings to automatically send ticket receipts &amp; feedback surveys.</p>
+         <h3 class="text-lg font-bold text-slate-800">Microsoft Forms Feedback Survey Setup</h3>
+         <p class="text-xs text-slate-500">Configure your Microsoft Forms link so IT engineers can quickly share it with users when closing tickets.</p>
         </div>
-        <span class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-200"> <i class="fa-solid fa-envelope-circle-check mr-1"></i> Auto-Mail Active </span>
+        <span class="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200"> <i class="fa-solid fa-square-poll-vertical mr-1"></i> MS Forms Active </span>
        </div>
-       <form onsubmit="handleSaveMailSetup(event)" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">SMTP Server Host</label> 
-          <input type="text" id="smtp-host" placeholder="smtp.office365.com" value="smtp.sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">SMTP Port</label> 
-          <input type="number" id="smtp-port" placeholder="587" value="587" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Helpdesk Fixed Support Mail</label> 
-          <input type="email" id="smtp-helpdesk-mail" placeholder="hardware.support@sical.com" value="hardware.support@sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
+       <form onsubmit="handleSaveMsFormSetup(event)" class="space-y-4">
+        <div>
+         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Microsoft Forms Survey URL</label> 
+         <input type="url" id="ms-form-url" placeholder="https://forms.office.com/r/xxxxxxxxxx" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 font-mono" required>
+         <p class="text-[11px] text-slate-400 mt-1">Paste the link generated from Microsoft Forms when you click "Collect responses".</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Sender Email ID</label> 
-          <input type="email" id="smtp-sender-mail" placeholder="it.helpdesk@sical.com" value="it.helpdesk@sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Sender Password / App Key</label> 
-          <input type="password" id="smtp-password" value="••••••••••••" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-        </div>
-        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
-         <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Automated Mail Triggers</label>
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-semibold text-slate-700">
-          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="trigger-create" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Send Auto-Mail on Ticket Creation (To User &amp; Helpdesk Team)</span> </label> 
-          <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" id="trigger-close" checked class="rounded text-red-600 focus:ring-red-500 w-4 h-4"> <span>Send Auto-Survey Form on Ticket Closure (Return Feedback to Fixed Mail)</span> </label>
-         </div>
-        </div>
-        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-sm"> Save Email &amp; Survey Configuration </button>
+        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-sm"> Save Microsoft Forms URL </button>
        </form>
       </div>
 
@@ -937,46 +906,33 @@
    </div>
   </div>
 
-  <!-- FEEDBACK SURVEY MODAL -->
+  <!-- MICROSOFT FORMS SURVEY MODAL -->
   <div id="survey-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200">
     <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
-     <h3 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-comment-dots text-red-500 mr-2"></i>SICAL Help Desk Feedback Survey</h3>
+     <h3 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-square-poll-vertical text-emerald-400 mr-2"></i>Send Microsoft Forms Survey</h3>
      <button onclick="closeModal('survey-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-    <form onsubmit="handleSurveySubmit(event)" class="p-6 space-y-6">
+    <div class="p-6 space-y-4">
      <input type="hidden" id="survey-ticket-id">
      <div>
-      <p class="text-sm font-bold text-slate-800 mb-2">How did you contact our help desk?</p>
-      <div class="space-y-2 text-xs font-semibold text-slate-700">
-       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="contact_method" value="Walk up" required class="text-red-600 focus:ring-red-500"> <span>Walk up</span> </label> 
-       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="contact_method" value="On the phone" class="text-red-600 focus:ring-red-500"> <span>On the phone</span> </label> 
-       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="contact_method" value="Online chat" class="text-red-600 focus:ring-red-500"> <span>Online chat / Portal</span> </label>
-      </div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">1. Copy Ticket Details for User</label>
+      <textarea id="survey-share-text" rows="4" class="w-full border border-slate-300 rounded-lg p-2 text-xs font-mono bg-slate-50" readonly></textarea>
+      <button type="button" onclick="copySurveyText()" class="mt-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
+       <i class="fa-solid fa-copy mr-1"></i> Copy Details to Clipboard
+      </button>
      </div>
-     <div>
-      <p class="text-sm font-bold text-slate-800 mb-2">How satisfied are you with the quality of the support you received?</p>
-      <div class="flex space-x-2 text-2xl text-slate-300 star-rating" id="star-container">
-       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(1)"></i> 
-       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(2)"></i> 
-       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(3)"></i> 
-       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(4)"></i> 
-       <i class="fa-solid fa-star hover:text-amber-400" onclick="setRating(5)"></i>
-      </div>
-      <input type="hidden" id="survey-rating" value="5">
+     <div class="border-t border-slate-100 pt-3">
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">2. Open Microsoft Forms Survey</label>
+      <p class="text-xs text-slate-500 mb-2">Click below to open your Microsoft Form in a new tab, then share it with the user along with the copied ticket details.</p>
+      <a id="ms-form-link-btn" href="#" target="_blank" class="inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-sm">
+       <i class="fa-solid fa-external-link-alt"></i> <span>Open Microsoft Forms Survey</span>
+      </a>
      </div>
-     <div>
-      <p class="text-sm font-bold text-slate-800 mb-2">Was your problem resolved in a timely manner?</p>
-      <div class="space-y-2 text-xs font-semibold text-slate-700">
-       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="timely" value="Yes" required class="text-red-600 focus:ring-red-500"> <span>Yes</span> </label> 
-       <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="timely" value="No" class="text-red-600 focus:ring-red-500"> <span>No</span> </label>
-      </div>
+     <div class="flex justify-end space-x-3 pt-3 border-t border-slate-100">
+      <button type="button" onclick="closeModal('survey-modal')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg">Close</button>
      </div>
-     <div class="flex justify-end space-x-3 pt-2 border-t border-slate-100">
-      <button type="button" onclick="closeModal('survey-modal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-lg">Skip</button> 
-      <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm">Submit Feedback to IT Helpdesk</button>
-     </div>
-    </form>
+    </div>
    </div>
   </div>
 
@@ -1227,7 +1183,6 @@
         async function initializeCloudData() {
             checkPersistedSession();
 
-            // Fetch all sheets simultaneously in parallel using Promise.all() for lightning-fast loading (under 1 second)
             const [cloudUsers, cloudAssetTypes, cloudLocations, cloudRoles, cloudTickets, cloudAssets, cloudHistory] = await Promise.all([
                 fetchSheetData("Users"),
                 fetchSheetData("AssetTypes"),
@@ -1971,7 +1926,7 @@
             const val = input.value.trim().toUpperCase();
             if (val && !assetTypesList.includes(val)) {
                 assetTypesList.push(val);
-                saveAssetTypes(); // Now saves to cloud and local storage!
+                saveAssetTypes();
                 renderAssetTypeDropdowns();
                 renderAssetTypeMasterTable();
                 input.value = '';
@@ -2222,14 +2177,12 @@
             showToast(`Changes saved for ${u.username}.`);
         }
 
-        // SMTP SAVE
-        function handleSaveMailSetup(e) {
+        // MICROSOFT FORM URL SAVE
+        function handleSaveMsFormSetup(e) {
             e.preventDefault();
-            const host = document.getElementById('smtp-host').value;
-            const helpdeskMail = document.getElementById('smtp-helpdesk-mail').value;
-            localStorage.setItem('sical_smtp_host', host);
-            localStorage.setItem('sical_smtp_helpdesk', helpdeskMail);
-            showToast('SMTP Configuration Saved Successfully!');
+            const url = document.getElementById('ms-form-url').value.trim();
+            localStorage.setItem('sical_ms_form_url', url);
+            showToast('Microsoft Forms URL saved successfully!');
         }
 
         // MANUAL ASSET SUBMIT
@@ -2400,7 +2353,6 @@
                 return;
             }
 
-            // Map keys to headers
             const headerNames = {
                 assetTag: 'Asset TAG', assetNo: 'Asset Number', assetType: 'Asset Type',
                 allocatedTo: 'Allocated To', userMail: 'User Mail ID', department: 'Department',
@@ -2472,7 +2424,6 @@
             if (!datalist) return;
             datalist.innerHTML = '';
             assetMasterList.forEach((item) => {
-                // Search suggestions by Asset Number and Employee Name
                 datalist.innerHTML += `<option value="${item.assetNo}">Asset No: ${item.assetNo} - ${item.allocatedTo} (${item.location})</option>`;
                 datalist.innerHTML += `<option value="${item.allocatedTo}">User: ${item.allocatedTo} (No: ${item.assetNo})</option>`;
             });
@@ -2490,7 +2441,7 @@
                 document.getElementById('ticket-name').value = match.allocatedTo || '';
                 document.getElementById('ticket-department').value = match.department || '';
                 document.getElementById('ticket-location').value = match.location || '';
-                document.getElementById('ticket-asset').value = match.assetTag || ''; // Records Asset Tag
+                document.getElementById('ticket-asset').value = match.assetTag || '';
                 document.getElementById('ticket-model').value = `${match.manufacturer} ${match.model} (${match.memory || ''}, ${match.processor || ''})`.trim();
                 document.getElementById('ticket-serial').value = match.serial || '';
                 document.getElementById('ticket-system-name').value = match.systemName || '';
@@ -2528,8 +2479,7 @@
             renderTicketTable();
             updateMetricsAndCharts();
             renderReportPreview();
-            const helpdeskMail = localStorage.getItem('sical_smtp_helpdesk') || "hardware.support@sical.com";
-            showToast(`Ticket ${nextId} raised! Auto-mail to ${helpdeskMail} triggered.`, 'success');
+            showToast(`Ticket ${nextId} raised successfully!`, 'success');
             addNotification(`Ticket ${nextId} raised for "${newTicket.name}" by ${raisedByName} — ${newTicket.subject}`, 'info');
             closeModal('ticket-modal');
             e.target.reset();
@@ -2776,32 +2726,30 @@
 
         function triggerCloseAndSurvey(ticketId) {
             updateTicketStatus(ticketId, 'Closed');
-            const surveyTicketId = document.getElementById('survey-ticket-id');
-            if (surveyTicketId) surveyTicketId.value = ticketId;
+            const ticket = ticketsList.find(x => x.id === ticketId);
+            
+            const msFormUrl = localStorage.getItem('sical_ms_form_url') || "https://forms.office.com/r/YOUR_FORM_ID";
+            const shareText = `Hello ${ticket ? ticket.name : 'User'}, your IT Support Ticket (${ticketId}) has been resolved and closed.\n\n` +
+                              `Ticket ID: ${ticketId}\n` +
+                              `Subject: ${ticket ? ticket.subject : ''}\n\n` +
+                              `Please take a moment to provide your feedback using our Microsoft Form:\n${msFormUrl}`;
+            
+            const shareTextEl = document.getElementById('survey-share-text');
+            const linkBtnEl = document.getElementById('ms-form-link-btn');
+            
+            if (shareTextEl) shareTextEl.value = shareText;
+            if (linkBtnEl) linkBtnEl.href = msFormUrl;
+
             openModal('survey-modal');
         }
 
-        function setRating(val) {
-            const ratingInput = document.getElementById('survey-rating');
-            if (ratingInput) ratingInput.value = val;
-            const starContainer = document.getElementById('star-container');
-            if (starContainer) {
-                const stars = starContainer.children;
-                for (let i = 0; i < 5; i++) {
-                    if (i < val) { stars[i].classList.add('text-amber-400'); stars[i].classList.remove('text-slate-300'); }
-                    else { stars[i].classList.remove('text-amber-400'); stars[i].classList.add('text-slate-300'); }
-                }
+        function copySurveyText() {
+            const shareTextEl = document.getElementById('survey-share-text');
+            if (shareTextEl) {
+                shareTextEl.select();
+                navigator.clipboard.writeText(shareTextEl.value);
+                showToast('Ticket details and survey link copied to clipboard!', 'success');
             }
-        }
-
-        function handleSurveySubmit(e) {
-            e.preventDefault();
-            const surveyTicketId = document.getElementById('survey-ticket-id');
-            const ticketId = surveyTicketId ? surveyTicketId.value : '';
-            const helpdeskMail = localStorage.getItem('sical_smtp_helpdesk') || "hardware.support@sical.com";
-            showToast(`Feedback for ${ticketId} sent to ${helpdeskMail}.`, 'success');
-            addNotification(`Survey feedback submitted for ticket ${ticketId}.`, 'success');
-            closeModal('survey-modal');
         }
 
         function updateTicketStatus(id, newStatus) {
@@ -3025,7 +2973,7 @@
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", "SICAL_IT_Tickets_Report.csv");
+            link.setAttribute("download", `SICAL_IT_Tickets_Report.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
