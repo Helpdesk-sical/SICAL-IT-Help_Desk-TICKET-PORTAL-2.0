@@ -28,11 +28,11 @@
         }
 
         .login-bg {
-    background-image: url('SICAL IT SUPPORT BG2.jpg');
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-}
+            background-image: url('SICAL IT SUPPORT BG2.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
 
         @media (max-width: 768px) {
             .login-bg {
@@ -92,8 +92,8 @@
   <!-- ========================================== -->
   <!-- 1. LOGIN SCREEN                            -->
   <!-- ========================================== -->
- <div id="login-screen" class="min-h-screen w-full flex items-center justify-start pl-16 login-bg p-4 fixed inset-0 z-50">
- <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border border-slate-200">
+  <div id="login-screen" class="min-h-screen w-full flex items-center justify-start pl-16 login-bg p-4 fixed inset-0 z-50">
+   <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border border-slate-200">
     <div class="text-center mb-6">
      <h1 class="text-3xl font-extrabold text-red-600 tracking-wider">SICAL</h1>
      <p class="text-xs text-indigo-900 font-medium italic mt-1">A PRISTINE GROUP COMPANY</p>
@@ -145,6 +145,7 @@
      <button onclick="switchTab('ticket-system')" id="btn-ticket-system" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-ticket w-5 text-red-500"></i> <span>Ticket System</span> </button> 
      <button onclick="switchTab('asset-register')" id="btn-asset-register" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-laptop w-5 text-red-500"></i> <span>Asset Register</span> </button> 
      <button onclick="switchTab('asset-history')" id="btn-asset-history" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-clock-rotate-left w-5 text-red-500"></i> <span>Asset History</span> </button> 
+     <button onclick="switchTab('address-book')" id="btn-address-book" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-address-book w-5 text-red-500"></i> <span>Address Book</span> </button> 
      <button onclick="switchTab('reports')" id="btn-reports" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-file-excel w-5 text-red-500"></i> <span>Reports</span> </button> 
      <button onclick="switchTab('setup')" id="btn-setup" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 font-medium text-sm transition whitespace-nowrap"> <i class="fa-solid fa-sliders w-5 text-red-500"></i> <span>Setup &amp; Access</span> </button>
     </nav>
@@ -338,6 +339,49 @@
           </tbody>
          </table>
         </div>
+       </div>
+      </div>
+     </section>
+
+     <!-- ========================================== -->
+     <!-- TAB: ADDRESS BOOK MODULE                   -->
+     <!-- ========================================== -->
+     <section id="tab-address-book" class="hidden space-y-6 animate-fade-in">
+      <div class="flex flex-wrap justify-between items-center gap-3">
+       <div>
+        <h3 class="text-lg font-bold text-slate-800">Employee Directory &amp; Address Book</h3>
+        <p class="text-xs text-slate-500">Manage employee contacts, designations, departments, and location details.</p>
+       </div>
+       <div class="flex flex-wrap items-center gap-2">
+        <input type="text" id="address-search-input" placeholder="Search employee or ID..." oninput="renderAddressBookTable()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none w-48"> 
+        <button onclick="openModal('upload-address-modal')" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2">
+         <i class="fa-solid fa-file-csv"></i> <span>Bulk Upload CSV</span>
+        </button>
+        <button onclick="exportAddressBookCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2">
+         <i class="fa-solid fa-file-excel"></i> <span>Export Excel</span>
+        </button>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+       <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+        <table class="w-full text-left text-xs text-slate-600">
+         <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[10px] border-b border-slate-200 sticky top-0 z-10">
+          <tr>
+           <th class="p-3 bg-slate-50">Emp ID</th>
+           <th class="p-3 bg-slate-50">Name</th>
+           <th class="p-3 bg-slate-50">Type</th>
+           <th class="p-3 bg-slate-50">Designation</th>
+           <th class="p-3 bg-slate-50">Dept / Div</th>
+           <th class="p-3 bg-slate-50">Project</th>
+           <th class="p-3 bg-slate-50">Location</th>
+           <th class="p-3 bg-slate-50">Mail ID</th>
+           <th class="p-3 bg-slate-50">MFA</th>
+           <th class="p-3 bg-slate-50">Mobile No</th>
+          </tr>
+         </thead>
+         <tbody id="address-book-table-body" class="divide-y divide-slate-100 font-medium">
+         </tbody>
+        </table>
        </div>
       </div>
      </section>
@@ -798,6 +842,28 @@
    </div>
   </div>
 
+  <!-- UPLOAD ADDRESS BOOK MODAL -->
+  <div id="upload-address-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+     <h3 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-file-csv text-emerald-400 mr-2"></i>Bulk Upload Address Book</h3>
+     <button onclick="closeModal('upload-address-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="p-6 space-y-4">
+     <div class="flex justify-between items-center">
+      <p class="text-xs text-slate-500">Upload CSV with exact headers matching the address book fields.</p>
+      <button onclick="downloadAddressBookTemplate()" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-2.5 py-1 rounded">Template</button>
+     </div>
+     <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center bg-slate-50 hover:bg-slate-100/50 transition">
+      <i class="fa-solid fa-file-csv text-3xl text-emerald-600 mb-2"></i>
+      <p class="text-xs font-semibold text-slate-700">Select Address Book CSV File</p>
+      <input type="file" id="address-file-input" accept=".csv" class="hidden" onchange="handleAddressBookUpload(event)"> 
+      <button onclick="document.getElementById('address-file-input').click()" class="mt-3 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Browse CSV</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
   <!-- EXPORT ASSET REPORT MODAL -->
   <div id="export-asset-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
@@ -1061,7 +1127,7 @@
         };
 
         const DEFAULT_LOCATIONS = [
-            "RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI", "SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRICHY"
+            "RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI", "SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRK-TRICHY", "RAMAYAPATNAM", "KANCHAN", "BHARATPUR", "RAIGARH"
         ];
 
         const DEFAULT_ASSET_TYPES = [
@@ -1107,19 +1173,21 @@
         let ticketsList = [];
         let assetMasterList = [];
         let assetHistoryList = [];
+        let addressBookList = [];
         let notifications = [];
 
         async function initializeCloudData() {
             checkPersistedSession();
 
-            const [cloudUsers, cloudAssetTypes, cloudLocations, cloudRoles, cloudTickets, cloudAssets, cloudHistory] = await Promise.all([
+            const [cloudUsers, cloudAssetTypes, cloudLocations, cloudRoles, cloudTickets, cloudAssets, cloudHistory, cloudAddressBook] = await Promise.all([
                 fetchSheetData("Users"),
                 fetchSheetData("AssetTypes"),
                 fetchSheetData("Locations"),
                 fetchSheetData("Roles"),
                 fetchSheetData("Tickets"),
                 fetchSheetData("Assets"),
-                fetchSheetData("AssetHistory")
+                fetchSheetData("AssetHistory"),
+                fetchSheetData("AddressBook")
             ]);
 
             if (cloudUsers && cloudUsers.length > 0) {
@@ -1144,6 +1212,7 @@
             if (cloudTickets) ticketsList = cloudTickets;
             if (cloudAssets) assetMasterList = cloudAssets;
             if (cloudHistory) assetHistoryList = cloudHistory;
+            if (cloudAddressBook) addressBookList = cloudAddressBook;
 
             initApp();
             checkPersistedSession();
@@ -1185,6 +1254,11 @@
         function saveAssetHistory() { 
             localStorage.setItem('sical_asset_history', JSON.stringify(assetHistoryList)); 
             saveSheetData("AssetHistory", assetHistoryList);
+        }
+
+        function saveAddressBook() {
+            localStorage.setItem('sical_address_book', JSON.stringify(addressBookList));
+            saveSheetData("AddressBook", addressBookList);
         }
 
         function loadNotifications() {
@@ -1240,7 +1314,7 @@
             thead.innerHTML = headerHTML;
 
             const smartLocations = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
-            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRICHY"];
+            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRK-TRICHY", "RAMAYAPATNAM", "KANCHAN", "BHARATPUR", "RAIGARH"];
             const statuses = ["Assigned", "Instock - Working", "Instock - Not Working", "Scrap"];
 
             let html = '';
@@ -1370,7 +1444,7 @@
             let csv = "Group,Branch/Location,Status," + types.join(",") + ",Total\n";
             
             const smartLocations = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
-            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRICHY"];
+            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRK-TRICHY", "RAMAYAPATNAM", "KANCHAN", "BHARATPUR", "RAIGARH"];
             const statuses = ["Assigned", "Instock - Working", "Instock - Not Working", "Scrap"];
 
             smartLocations.forEach(loc => {
@@ -1467,6 +1541,102 @@
                 `).join('');
             }
             openModal('user-assets-modal');
+        }
+
+        // ADDRESS BOOK LOGIC
+        function renderAddressBookTable() {
+            const search = (document.getElementById('address-search-input')?.value || '').toLowerCase();
+            const tbody = document.getElementById('address-book-table-body');
+            if (!tbody) return;
+
+            const filtered = addressBookList.filter(emp => {
+                const id = String(emp["EMPLOYEE ID"] || emp.employeeId || '');
+                const name = String(emp["NAME"] || emp.name || '');
+                const mail = String(emp["MAIL ID"] || emp.mailId || '');
+                return !search || id.toLowerCase().includes(search) || name.toLowerCase().includes(search) || mail.toLowerCase().includes(search);
+            });
+
+            if (!filtered.length) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">No address book records found. Please upload a CSV file.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(emp => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100 text-xs">
+                    <td class="p-3 font-mono font-bold text-red-600">${emp["EMPLOYEE ID"] || emp.employeeId || 'N/A'}</td>
+                    <td class="p-3 font-bold text-slate-800">${emp["NAME"] || emp.name || 'N/A'}</td>
+                    <td class="p-3"><span class="bg-slate-100 px-2 py-0.5 rounded font-semibold">${emp["EMP. TYPE"] || emp.empType || 'N/A'}</span></td>
+                    <td class="p-3 text-slate-700">${emp["DESIGNATION"] || emp.designation || 'N/A'}</td>
+                    <td class="p-3">${emp["DEPARTMENT"] || emp.department || 'N/A'} / ${emp["DIVISION"] || emp.division || 'N/A'}</td>
+                    <td class="p-3">${emp["PROJECT"] || emp.project || 'N/A'}</td>
+                    <td class="p-3 font-semibold">${emp["LOCATION"] || emp.location || 'N/A'}</td>
+                    <td class="p-3 text-blue-600 font-mono">${emp["MAIL ID"] || emp.mailId || 'N/A'}</td>
+                    <td class="p-3"><span class="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">${emp["MFA REMARKS"] || emp.mfaRemarks || 'N/A'}</span></td>
+                    <td class="p-3 font-mono font-semibold">${emp["MOBILE NUMBER"] || emp.mobileNumber || 'N/A'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function handleAddressBookUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                const rows = text.split('\n').map(r => r.trim()).filter(r => r.length > 0);
+                if (rows.length < 2) {
+                    showToast('CSV file is empty or invalid format.', 'error');
+                    return;
+                }
+                const headers = rows[0].split(',').map(h => h.trim().replace(/^"(.*)"$/, '$1'));
+                const newRecords = [];
+
+                for (let i = 1; i < rows.length; i++) {
+                    const vals = rows[i].split(',').map(v => v.trim().replace(/^"(.*)"$/, '$1'));
+                    let obj = {};
+                    headers.forEach((h, idx) => {
+                        obj[h] = vals[idx] || '';
+                    });
+                    newRecords.push(obj);
+                }
+
+                addressBookList = newRecords;
+                saveAddressBook();
+                renderAddressBookTable();
+                closeModal('upload-address-modal');
+                showToast(`Successfully imported ${newRecords.length} contacts!`, 'success');
+            };
+            reader.readAsText(file);
+        }
+
+        function downloadAddressBookTemplate() {
+            const headers = ["EMPLOYEE ID", "NAME", "EMP. TYPE", "DESIGNATION", "DEPARTMENT", "DIVISION", "PROJECT", "LOCATION", "MAIL ID", "MFA REMARKS", "MOBILE NUMBER"];
+            const csv = headers.join(",") + "\n" + "3457,GIRIDHARAN.S,STAFF,SR. EXE,IT,SMART,CFS,CHENNAI RJS,giridharan.s@sical.com,YES,7550108613";
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "AddressBook_Template.csv";
+            link.click();
+            showToast('Template downloaded!');
+        }
+
+        function exportAddressBookCSV() {
+            if (!addressBookList.length) {
+                showToast('No records to export.', 'error');
+                return;
+            }
+            const headers = ["EMPLOYEE ID", "NAME", "EMP. TYPE", "DESIGNATION", "DEPARTMENT", "DIVISION", "PROJECT", "LOCATION", "MAIL ID", "MFA REMARKS", "MOBILE NUMBER"];
+            let csv = headers.join(",") + "\n";
+            addressBookList.forEach(emp => {
+                let row = headers.map(h => `"${String(emp[h] || '').replace(/"/g, '""')}"`);
+                csv += row.join(",") + "\n";
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "SICAL_AddressBook_Report.csv";
+            link.click();
+            showToast('Address Book exported successfully!', 'success');
         }
 
         // CLEAR TICKET SEARCH & AUTO-FILL FIELDS
@@ -1662,6 +1832,7 @@
             toggleMenuBtn('btn-ticket-system', p.ticket);
             toggleMenuBtn('btn-asset-register', p.asset);
             toggleMenuBtn('btn-asset-history', p.history);
+            toggleMenuBtn('btn-address-book', true);
             toggleMenuBtn('btn-reports', p.reports);
             toggleMenuBtn('btn-setup', p.setup);
             if (p.dashboard) switchTab('dashboard');
@@ -1690,6 +1861,7 @@
             renderTicketTable();
             renderAssetDirectoryTable();
             renderAssetHistoryTable();
+            renderAddressBookTable();
             renderUsersTable();
             populateUserDropdown();
             updateMetricsAndCharts();
@@ -1698,7 +1870,7 @@
         }
 
         function switchTab(tabId) {
-            const tabs = ['dashboard', 'ticket-system', 'asset-register', 'asset-history', 'reports', 'setup'];
+            const tabs = ['dashboard', 'ticket-system', 'asset-register', 'asset-history', 'address-book', 'reports', 'setup'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if (el) el.classList.add('hidden');
@@ -1720,6 +1892,7 @@
                 'ticket-system': 'Ticket Management System',
                 'asset-register': 'Master Asset Register Directory',
                 'asset-history': 'Asset Assignment History & Audit Trail',
+                'address-book': 'Employee Directory & Address Book',
                 'reports': 'Reports & Exports',
                 'setup': 'System Access & Master Data Directory'
             };
@@ -1732,6 +1905,8 @@
                 renderAssetDirectoryTable();
             } else if (tabId === 'asset-history') {
                 renderAssetHistoryTable();
+            } else if (tabId === 'address-book') {
+                renderAddressBookTable();
             }
         }
 
@@ -2308,6 +2483,30 @@
             showToast(`Asset report successfully exported (${filtered.length} records)!`, 'success');
         }
 
+        function downloadCSVTemplate() {
+            const headers = [
+                "Asset Tag", "Asset No", "Division", "Location", "Asset Type", "Make", "Model", 
+                "Serial No", "Processor", "Memory", "Storage", "OS Version", "MAC Address", 
+                "Ms Office", "AV", "OneDrive", "USB DRIVE", "Status", "Assigned To", 
+                "User Mail ID", "Purchased Date", "Bill To", "Bill No", "Purchased From", 
+                "Warranty ENDED", "Sticker"
+            ];
+            
+            const csvContent = headers.join(",") + "\n" + 
+                "HQC/IT/SMTL/001D,SICAL/LT/806,SMART,RAJAJI SALAI,LAPTOP,Dell,Latitude 5420,PF12345,Intel i5,16GB,512GB SSD,Windows 11 Pro,00:11:22:33:44:55,Yes,Quick Heal,Yes,Yes,Assigned,GIRIDHARAN S,giridharan.s@sical.com,2023-01-15,SICAL Logistics,BIL-9988,Dell India,2026-01-15,STK-001";
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "SICAL_Asset_Register_Template.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Template downloaded successfully!', 'success');
+        }
+
         // TICKET SYSTEM
         function populateUserDropdown() {
             const datalist = document.getElementById('asset-datalist');
@@ -2545,7 +2744,7 @@
         }
 
         // METRICS & CHARTS
-       function updateMetricsAndCharts() {
+      function updateMetricsAndCharts() {
             const accessible = getAccessibleTickets();
             const total = accessible.length;
             const open = accessible.filter(t => t.status === 'Open').length;
