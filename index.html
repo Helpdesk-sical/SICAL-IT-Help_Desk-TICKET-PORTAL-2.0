@@ -282,7 +282,7 @@
        </div>
       </div>
 
-      <!-- DASHBOARD SUB-VIEW 2: ASSET SUMMARY (FIXED STICKY HEADER) -->
+      <!-- DASHBOARD SUB-VIEW 2: ASSET SUMMARY -->
       <div id="dash-view-asset-summary" class="hidden space-y-6">
        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
         <div class="flex flex-wrap justify-between items-center gap-3">
@@ -309,7 +309,6 @@
         <div class="overflow-x-auto max-h-[650px] overflow-y-auto border border-slate-200 rounded-xl shadow-sm">
          <table class="w-full text-left text-xs text-slate-700 border-collapse">
           <thead id="asset-summary-thead" class="bg-slate-900 text-white font-bold uppercase text-[11px] sticky top-0 z-10">
-           <!-- Dynamic Sticky Headers -->
           </thead>
           <tbody id="asset-summary-tbody" class="divide-y divide-slate-100 font-medium">
           </tbody>
@@ -420,13 +419,14 @@
         <table class="w-full text-left text-sm text-slate-600">
          <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[11px] border-b border-slate-200 sticky top-0 z-10">
           <tr>
-           <th class="p-3 bg-slate-50">Asset TAG</th>
-           <th class="p-3 bg-slate-50">Asset Number</th>
-           <th class="p-3 bg-slate-50">Asset Type</th>
-           <th class="p-3 bg-slate-50">Allocated User &amp; Dept</th>
+           <th class="p-3 bg-slate-50">Asset Tag</th>
+           <th class="p-3 bg-slate-50">Asset No</th>
+           <th class="p-3 bg-slate-50">Division</th>
            <th class="p-3 bg-slate-50">Location</th>
-           <th class="p-3 bg-slate-50">Manufacturer &amp; Model</th>
-           <th class="p-3 bg-slate-50">Processor &amp; RAM</th>
+           <th class="p-3 bg-slate-50">Asset Type</th>
+           <th class="p-3 bg-slate-50">Make &amp; Model</th>
+           <th class="p-3 bg-slate-50">Processor &amp; Memory</th>
+           <th class="p-3 bg-slate-50">Assigned To</th>
            <th class="p-3 bg-slate-50 text-right">Actions</th>
           </tr>
          </thead>
@@ -575,7 +575,7 @@
        <div class="flex justify-between items-center">
         <div>
          <h3 class="text-lg font-bold text-slate-800">Bulk Upload SICAL Master Asset Register</h3>
-         <p class="text-xs text-slate-500 mt-0.5">Supports: <b>Asset TAG, Asset Number, ALLOCATE TO, User Mail ID, Department, Asset Type, Location, MANUFACTURER NAME, ASSET MODEL, SERIAL NUMBER, System Name, REMARKS, MEMORY SIZE, PROCESSOR, OPERATING SYSTEM, HARD DRIVE SIZE, OS Upg. Required?, One drive, USB Access</b></p>
+         <p class="text-xs text-slate-500 mt-0.5">Supports: <b>Asset Tag, Asset No, Division, Location, Asset Type, Make, Model, Serial No, Processor, Memory, Storage, OS Version, MAC Address, Ms Office, AV, OneDrive, USB DRIVE, Status, Assigned To, User Mail ID, Purchased Date, Bill To, Bill No, Purchased From, Warranty ENDED, Sticker</b></p>
         </div>
         <button onclick="downloadCSVTemplate()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-3 py-1.5 rounded flex items-center space-x-1"> <i class="fa-solid fa-download"></i> <span>Download Format Template</span> </button>
        </div>
@@ -595,105 +595,41 @@
 
       <!-- NEW MANUAL ASSET ENTRY FORM -->
       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-       <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Add New Single Asset Manually (Full Specs)</h3>
+       <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Add New Single Asset Manually (IT Head 26 Columns Spec)</h3>
        <form onsubmit="handleManualAssetSubmit(event)" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset TAG</label>
-          <input type="text" id="manual-asset-tag" placeholder="e.g. HQC/IT/SMTL/001D" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Number</label>
-          <input type="text" id="manual-asset-no" placeholder="e.g. SICAL/DT/0402" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 font-mono">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Allocate To (Name)</label>
-          <input type="text" id="manual-allocated-to" placeholder="e.g. John Doe" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">User Mail ID</label>
-          <input type="email" id="manual-user-mail" placeholder="john@sical.com" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Department</label>
-          <input type="text" id="manual-department" placeholder="e.g. IT / SMART-CFS" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Type (Lookup)</label>
-          <select id="manual-asset-type" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
-         </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Location</label>
-          <select id="manual-location" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Manufacturer</label>
-          <input type="text" id="manual-manufacturer" placeholder="e.g. LENOVO" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Model</label>
-          <input type="text" id="manual-model" placeholder="e.g. ThinkCentre" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Serial Number</label>
-          <input type="text" id="manual-serial" placeholder="e.g. PF04TQDN" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">System Name</label>
-          <input type="text" id="manual-system-name" placeholder="e.g. SICLT800" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Remarks</label>
-          <input type="text" id="manual-remarks" placeholder="Any additional notes..." class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
-         </div>
-        </div>
-        <!-- TECHNICAL SPECS FIELDS -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Memory Size</label>
-          <input type="text" id="manual-memory" placeholder="e.g. 16 GB" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Processor</label>
-          <input type="text" id="manual-processor" placeholder="e.g. Intel i5 12th Gen" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Operating System</label>
-          <input type="text" id="manual-os" placeholder="e.g. Windows 11 Pro" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hard Drive Size</label>
-          <input type="text" id="manual-hdd" placeholder="e.g. 512 GB SSD" required class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-         </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">OS Upg. Required?</label>
-          <select id="manual-os-upg" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
-           <option value="No">No</option>
-           <option value="Yes">Yes</option>
-          </select>
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">One drive</label>
-          <select id="manual-onedrive" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
-           <option value="Configured">Configured</option>
-           <option value="Pending">Pending</option>
-          </select>
-         </div>
-         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">USB Access</label>
-          <select id="manual-usb" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
-           <option value="Enabled">Enabled</option>
-           <option value="Disabled">Disabled</option>
-          </select>
-         </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Asset Tag</label><input type="text" id="m-Asset Tag" required class="w-full border rounded-lg p-2 font-mono"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Asset No</label><input type="text" id="m-Asset No" required class="w-full border rounded-lg p-2 font-mono"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Division</label><input type="text" id="m-Division" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Location</label><select id="m-Location" required class="w-full border rounded-lg p-2"></select></div>
+         
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Asset Type</label><select id="m-Asset Type" required class="w-full border rounded-lg p-2"></select></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Make</label><input type="text" id="m-Make" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Model</label><input type="text" id="m-Model" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Serial No</label><input type="text" id="m-Serial No" required class="w-full border rounded-lg p-2 font-mono"></div>
+
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Processor</label><input type="text" id="m-Processor" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Memory</label><input type="text" id="m-Memory" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Storage</label><input type="text" id="m-Storage" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">OS Version</label><input type="text" id="m-OS Version" required class="w-full border rounded-lg p-2"></div>
+
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">MAC Address</label><input type="text" id="m-MAC Address" required class="w-full border rounded-lg p-2 font-mono"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Ms Office</label><input type="text" id="m-Ms Office" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">AV</label><input type="text" id="m-AV" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">OneDrive</label><input type="text" id="m-OneDrive" required class="w-full border rounded-lg p-2"></div>
+
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">USB DRIVE</label><input type="text" id="m-USB DRIVE" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Status</label><input type="text" id="m-Status" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Assigned To</label><input type="text" id="m-Assigned To" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">User Mail ID</label><input type="email" id="m-User Mail ID" placeholder="user@sical.com" required class="w-full border rounded-lg p-2"></div>
+
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Purchased Date</label><input type="date" id="m-Purchased Date" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Bill To</label><input type="text" id="m-Bill To" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Bill No</label><input type="text" id="m-Bill No" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Purchased From</label><input type="text" id="m-Purchased From" required class="w-full border rounded-lg p-2"></div>
+
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Warranty ENDED</label><input type="date" id="m-Warranty ENDED" required class="w-full border rounded-lg p-2"></div>
+         <div><label class="block font-bold text-slate-600 uppercase mb-1">Sticker</label><input type="text" id="m-Sticker" required class="w-full border rounded-lg p-2"></div>
         </div>
         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-sm">Save Asset to Permanent Register</button>
        </form>
@@ -878,24 +814,32 @@
      <div>
       <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Select Columns to Export</label>
       <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200 max-h-48 overflow-y-auto">
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="assetTag" checked class="asset-col-chk"> <span>Asset TAG</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="assetNo" checked class="asset-col-chk"> <span>Asset Number</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="assetType" checked class="asset-col-chk"> <span>Asset Type</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="allocatedTo" checked class="asset-col-chk"> <span>Allocated To</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="userMail" checked class="asset-col-chk"> <span>User Mail ID</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="department" checked class="asset-col-chk"> <span>Department</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="location" checked class="asset-col-chk"> <span>Location</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="manufacturer" checked class="asset-col-chk"> <span>Manufacturer</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="model" checked class="asset-col-chk"> <span>Asset Model</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="serial" checked class="asset-col-chk"> <span>Serial Number</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="systemName" checked class="asset-col-chk"> <span>System Name</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="memory" checked class="asset-col-chk"> <span>Memory Size</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="processor" checked class="asset-col-chk"> <span>Processor</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="os" checked class="asset-col-chk"> <span>Operating System</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="hdd" checked class="asset-col-chk"> <span>Hard Drive Size</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="osUpg" checked class="asset-col-chk"> <span>OS Upg. Required?</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="onedrive" checked class="asset-col-chk"> <span>One drive</span></label>
-       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="usb" checked class="asset-col-chk"> <span>USB Access</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Asset Tag" checked class="asset-col-chk"> <span>Asset Tag</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Asset No" checked class="asset-col-chk"> <span>Asset No</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Division" checked class="asset-col-chk"> <span>Division</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Location" checked class="asset-col-chk"> <span>Location</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Asset Type" checked class="asset-col-chk"> <span>Asset Type</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Make" checked class="asset-col-chk"> <span>Make</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Model" checked class="asset-col-chk"> <span>Model</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Serial No" checked class="asset-col-chk"> <span>Serial No</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Processor" checked class="asset-col-chk"> <span>Processor</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Memory" checked class="asset-col-chk"> <span>Memory</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Storage" checked class="asset-col-chk"> <span>Storage</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="OS Version" checked class="asset-col-chk"> <span>OS Version</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="MAC Address" checked class="asset-col-chk"> <span>MAC Address</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Ms Office" checked class="asset-col-chk"> <span>Ms Office</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="AV" checked class="asset-col-chk"> <span>AV</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="OneDrive" checked class="asset-col-chk"> <span>OneDrive</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="USB DRIVE" checked class="asset-col-chk"> <span>USB DRIVE</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Status" checked class="asset-col-chk"> <span>Status</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Assigned To" checked class="asset-col-chk"> <span>Assigned To</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="User Mail ID" checked class="asset-col-chk"> <span>User Mail ID</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Purchased Date" checked class="asset-col-chk"> <span>Purchased Date</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Bill To" checked class="asset-col-chk"> <span>Bill To</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Bill No" checked class="asset-col-chk"> <span>Bill No</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Purchased From" checked class="asset-col-chk"> <span>Purchased From</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Warranty ENDED" checked class="asset-col-chk"> <span>Warranty ENDED</span></label>
+       <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Sticker" checked class="asset-col-chk"> <span>Sticker</span></label>
       </div>
      </div>
      <div class="flex justify-end space-x-3 pt-2">
@@ -1023,6 +967,7 @@
         <option>Hardware</option> 
         <option>Network</option> 
         <option>System Software</option> 
+        <option>Other</option>
        </select>
       </div>
       <div>
@@ -1059,6 +1004,43 @@
      <button onclick="closeModal('ticket-detail-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
     <div id="ticket-detail-content" class="p-6 text-sm text-slate-700 space-y-3 max-h-[70vh] overflow-y-auto"></div>
+   </div>
+  </div>
+
+  <!-- EDIT ASSET MODAL -->
+  <div id="edit-asset-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4 z-50">
+   <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
+    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+     <h3 class="font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-pen text-red-400 mr-2"></i>Edit Asset Allocation</h3>
+     <button onclick="closeModal('edit-asset-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <form onsubmit="handleSaveAssetEdit(event)" class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+     <input type="hidden" id="edit-asset-tag-id">
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Asset Tag</label>
+      <input type="text" id="edit-asset-tag" required class="w-full border border-slate-300 rounded-lg p-2 text-sm font-mono bg-slate-50" readonly>
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Assigned To (User Name)</label>
+      <input type="text" id="edit-asset-assigned" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">User Mail ID</label>
+      <input type="email" id="edit-asset-mail" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500">
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Location</label>
+      <select id="edit-asset-location" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500"></select>
+     </div>
+     <div>
+      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Status</label>
+      <input type="text" id="edit-asset-status" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500" placeholder="e.g. Assigned, Instock - Working, Scrap">
+     </div>
+     <div class="flex justify-end space-x-3 pt-2">
+      <button type="button" onclick="closeModal('edit-asset-modal')" class="px-4 py-2 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg">Cancel</button>
+      <button type="submit" class="px-5 py-2 bg-red-600 text-white text-sm font-bold rounded-lg shadow-sm hover:bg-red-700">Save &amp; Log History</button>
+     </div>
+    </form>
    </div>
   </div>
 
@@ -1284,18 +1266,18 @@
                     let rowTotal = 0;
                     types.forEach(t => {
                         let count = assetMasterList.filter(a => {
-                            let aLoc = (a.location || '').toUpperCase();
-                            let aType = (a.assetType || '').toUpperCase();
-                            let aAlloc = (a.allocatedTo || '').trim();
-                            let aRemarks = (a.remarks || '').toLowerCase();
+                            let aLoc = (a["Location"] || a.location || '').toUpperCase();
+                            let aType = (a["Asset Type"] || a.assetType || '').toUpperCase();
+                            let aAlloc = (a["Assigned To"] || a.allocatedTo || '').trim();
+                            let aStatus = (a["Status"] || a.status || '').toLowerCase();
 
                             if (!aLoc.includes(loc.toUpperCase())) return false;
                             if (aType !== t.toUpperCase()) return false;
 
                             if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
-                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aRemarks.includes('working') || !aRemarks.includes('not working') && !aRemarks.includes('scrap'));
-                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aRemarks.includes('not working');
-                            if (status === "Scrap") return aRemarks.includes('scrap');
+                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aStatus.includes('working') || !aStatus.includes('not working') && !aStatus.includes('scrap'));
+                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aStatus.includes('not working');
+                            if (status === "Scrap") return aStatus.includes('scrap');
                             return false;
                         }).length;
 
@@ -1337,18 +1319,18 @@
                     let rowTotal = 0;
                     types.forEach(t => {
                         let count = assetMasterList.filter(a => {
-                            let aLoc = (a.location || '').toUpperCase();
-                            let aType = (a.assetType || '').toUpperCase();
-                            let aAlloc = (a.allocatedTo || '').trim();
-                            let aRemarks = (a.remarks || '').toLowerCase();
+                            let aLoc = (a["Location"] || a.location || '').toUpperCase();
+                            let aType = (a["Asset Type"] || a.assetType || '').toUpperCase();
+                            let aAlloc = (a["Assigned To"] || a.allocatedTo || '').trim();
+                            let aStatus = (a["Status"] || a.status || '').toLowerCase();
 
                             if (!aLoc.includes(loc.toUpperCase())) return false;
                             if (aType !== t.toUpperCase()) return false;
 
                             if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
-                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aRemarks.includes('working') || !aRemarks.includes('not working') && !aRemarks.includes('scrap'));
-                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aRemarks.includes('not working');
-                            if (status === "Scrap") return aRemarks.includes('scrap');
+                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aStatus.includes('working') || !aStatus.includes('not working') && !aStatus.includes('scrap'));
+                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aStatus.includes('not working');
+                            if (status === "Scrap") return aStatus.includes('scrap');
                             return false;
                         }).length;
 
@@ -1395,7 +1377,7 @@
                     let row = ["SMART", loc, status];
                     let rTotal = 0;
                     types.forEach(t => {
-                        let count = assetMasterList.filter(a => (a.location||'').toUpperCase().includes(loc.toUpperCase()) && (a.assetType||'').toUpperCase() === t.toUpperCase()).length;
+                        let count = assetMasterList.filter(a => ((a["Location"] || a.location || '')).toUpperCase().includes(loc.toUpperCase()) && ((a["Asset Type"] || a.assetType || '')).toUpperCase() === t.toUpperCase()).length;
                         row.push(count);
                         rTotal += count;
                     });
@@ -1409,7 +1391,7 @@
                     let row = ["SICAL", loc, status];
                     let rTotal = 0;
                     types.forEach(t => {
-                        let count = assetMasterList.filter(a => (a.location||'').toUpperCase().includes(loc.toUpperCase()) && (a.assetType||'').toUpperCase() === t.toUpperCase()).length;
+                        let count = assetMasterList.filter(a => ((a["Location"] || a.location || '')).toUpperCase().includes(loc.toUpperCase()) && ((a["Asset Type"] || a.assetType || '')).toUpperCase() === t.toUpperCase()).length;
                         row.push(count);
                         rTotal += count;
                     });
@@ -1437,9 +1419,9 @@
 
             const userMap = {};
             assetMasterList.forEach(a => {
-                let user = (a.allocatedTo || 'Unassigned').trim();
+                let user = (a["Assigned To"] || a.allocatedTo || 'Unassigned').trim();
                 if (!userMap[user]) {
-                    userMap[user] = { name: user, email: a.userMail || 'N/A', department: a.department || 'N/A', location: a.location || 'N/A', assets: [] };
+                    userMap[user] = { name: user, email: a["User Mail ID"] || a.userMail || 'N/A', department: a["Division"] || a.department || 'N/A', location: a["Location"] || a.location || 'N/A', assets: [] };
                 }
                 userMap[user].assets.push(a);
             });
@@ -1475,11 +1457,11 @@
             } else {
                 tbody.innerHTML = assets.map(a => `
                     <tr class="hover:bg-slate-50 border-b border-slate-100 text-xs">
-                        <td class="p-2.5 font-mono font-bold text-red-600">${a.assetTag || 'N/A'}</td>
-                        <td class="p-2.5 font-mono">${a.assetNo || 'N/A'}</td>
-                        <td class="p-2.5"><span class="bg-slate-100 px-2 py-0.5 rounded font-bold">${a.assetType || 'N/A'}</span></td>
-                        <td class="p-2.5">${a.location || 'N/A'}</td>
-                        <td class="p-2.5 font-mono">${a.manufacturer || ''} ${a.model || ''} (SN: ${a.serial || 'N/A'})</td>
+                        <td class="p-2.5 font-mono font-bold text-red-600">${a["Asset Tag"] || a.assetTag || 'N/A'}</td>
+                        <td class="p-2.5 font-mono">${a["Asset No"] || a.assetNo || 'N/A'}</td>
+                        <td class="p-2.5"><span class="bg-slate-100 px-2 py-0.5 rounded font-bold">${a["Asset Type"] || a.assetType || 'N/A'}</span></td>
+                        <td class="p-2.5">${a["Location"] || a.location || 'N/A'}</td>
+                        <td class="p-2.5 font-mono">${a["Make"] || a.manufacturer || ''} ${a["Model"] || a.model || ''}</td>
                     </tr>
                 `).join('');
             }
@@ -1754,7 +1736,7 @@
 
         // DROPDOWNS
         function renderLocationDropdowns() {
-            const dropdownIds = ['new-user-location', 'ticket-location', 'report-location-filter', 'manual-location', 'asset-location-filter', 'export-asset-location'];
+            const dropdownIds = ['new-user-location', 'ticket-location', 'report-location-filter', 'm-Location', 'edit-asset-location', 'asset-location-filter', 'export-asset-location'];
             dropdownIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
@@ -1765,7 +1747,7 @@
         }
 
         function renderAssetTypeDropdowns() {
-            const el = document.getElementById('manual-asset-type');
+            const el = document.getElementById('m-Asset Type');
             if (!el) return;
             el.innerHTML = '<option value="">Select Asset Type</option>' + assetTypesList.map(t => `<option value="${t}">${t}</option>`).join('');
         }
@@ -2027,17 +2009,19 @@
             tbody.innerHTML = '';
             usersList.forEach((u, index) => {
                 let permTags = '';
-                if (u.perms.dashboard) permTags += '<span class="bg-blue-50 text-blue-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Dash</span>';
-                if (u.perms.ticket) permTags += '<span class="bg-amber-50 text-amber-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Ticket</span>';
-                if (u.perms.asset) permTags += '<span class="bg-indigo-50 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Asset</span>';
-                if (u.perms.history) permTags += '<span class="bg-cyan-50 text-cyan-700 text-[10px] px-1.5 py-0.5 rounded mr-1">History</span>';
-                if (u.perms.reports) permTags += '<span class="bg-emerald-50 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Reports</span>';
-                if (u.perms.setup) permTags += '<span class="bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Setup</span>';
-                const statusBadge = u.active 
+                if (u.perms) {
+                    if (u.perms.dashboard) permTags += '<span class="bg-blue-50 text-blue-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Dash</span>';
+                    if (u.perms.ticket) permTags += '<span class="bg-amber-50 text-amber-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Ticket</span>';
+                    if (u.perms.asset) permTags += '<span class="bg-indigo-50 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Asset</span>';
+                    if (u.perms.history) permTags += '<span class="bg-cyan-50 text-cyan-700 text-[10px] px-1.5 py-0.5 rounded mr-1">History</span>';
+                    if (u.perms.reports) permTags += '<span class="bg-emerald-50 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Reports</span>';
+                    if (u.perms.setup) permTags += '<span class="bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded mr-1">Setup</span>';
+                }
+                const statusBadge = u.active !== false 
                     ? '<span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-bold">Active</span>'
                     : '<span class="bg-red-100 text-red-800 text-[10px] px-2 py-0.5 rounded font-bold">Inactive</span>';
-                const toggleBtnText = u.active ? 'Deactivate' : 'Activate';
-                const toggleBtnClass = u.active ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100';
+                const toggleBtnText = u.active !== false ? 'Deactivate' : 'Activate';
+                const toggleBtnClass = u.active !== false ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100';
                 const isSuperAdmin = u.username === 'SICAL ADMIN';
                 const actionButtons = isSuperAdmin ? '<span class="text-xs text-slate-400 font-semibold italic">System Admin</span>' : `
                     <button onclick="openEditUserModal(${index})" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded border border-slate-300">
@@ -2065,10 +2049,10 @@
         }
 
         function toggleUserStatus(index) {
-            usersList[index].active = !usersList[index].active;
+            usersList[index].active = usersList[index].active === false ? true : false;
             saveUsers();
             renderUsersTable();
-            showToast(`User ${usersList[index].active ? 'activated' : 'deactivated'}.`);
+            showToast(`User status updated.`);
         }
 
         function requestDeleteUser(index, btn) {
@@ -2104,134 +2088,104 @@
             openModal('edit-user-modal');
         }
 
-        function handleSaveUserEdit(e) {
-            e.preventDefault();
-            const index = document.getElementById('edit-user-index').value;
-            const u = usersList[index];
-            u.password = document.getElementById('edit-password').value.trim();
-            u.perms = {
-                dashboard: document.getElementById('edit-perm-dashboard').checked,
-                ticket: document.getElementById('edit-perm-ticket').checked,
-                asset: document.getElementById('edit-perm-asset').checked,
-                history: document.getElementById('edit-perm-history').checked,
-                reports: document.getElementById('edit-perm-reports').checked,
-                setup: document.getElementById('edit-perm-setup').checked
-            };
-            saveUsers();
-            renderUsersTable();
-            closeModal('edit-user-modal');
-            showToast(`Changes saved for ${u.username}.`);
-        }
-
-        // MICROSOFT FORM URL SAVE
-        function handleSaveMsFormSetup(e) {
-            e.preventDefault();
-            const url = document.getElementById('ms-form-url').value.trim();
-            localStorage.setItem('sical_ms_form_url', url);
-            showToast('Microsoft Forms URL saved successfully!');
-        }
-
         // MANUAL ASSET SUBMIT
         function handleManualAssetSubmit(e) {
             e.preventDefault();
-            const assetTag = document.getElementById('manual-asset-tag').value.trim();
-            const assetNo = document.getElementById('manual-asset-no').value.trim();
-            const allocatedTo = document.getElementById('manual-allocated-to').value.trim();
-            const userMail = document.getElementById('manual-user-mail').value.trim();
-            const department = document.getElementById('manual-department').value.trim();
-            const assetType = document.getElementById('manual-asset-type').value;
-            const location = document.getElementById('manual-location').value.trim().toUpperCase();
-            const manufacturer = document.getElementById('manual-manufacturer').value.trim();
-            const model = document.getElementById('manual-model').value.trim();
-            const serial = document.getElementById('manual-serial').value.trim();
-            const systemName = document.getElementById('manual-system-name').value.trim();
-            const remarks = document.getElementById('manual-remarks').value.trim();
-            
-            const memory = document.getElementById('manual-memory').value.trim();
-            const processor = document.getElementById('manual-processor').value.trim();
-            const os = document.getElementById('manual-os').value.trim();
-            const hdd = document.getElementById('manual-hdd').value.trim();
-            const osUpg = document.getElementById('manual-os-upg').value.trim();
-            const onedrive = document.getElementById('manual-onedrive').value.trim();
-            const usb = document.getElementById('manual-usb').value.trim();
+            const assetTag = document.getElementById('m-Asset Tag').value.trim();
+            const assetNo = document.getElementById('m-Asset No').value.trim();
+            const department = document.getElementById('m-Division').value.trim();
+            const assignedTo = document.getElementById('m-Assigned To').value.trim();
+            const location = document.getElementById('m-Location').value.trim().toUpperCase();
 
-            if (assetMasterList.some(a => a.assetTag && a.assetTag.toLowerCase() === assetTag.toLowerCase())) {
-                showToast(`Asset TAG "${assetTag}" already exists!`, 'error');
-                return;
-            }
-
-            const newAsset = { 
-                assetTag, assetNo, allocatedTo, userMail, department, assetType, location, 
-                manufacturer, model, serial, systemName, remarks,
-                memory, processor, os, hdd, osUpg, onedrive, usb 
+            const newAsset = {
+                "Asset Tag": assetTag,
+                "Asset No": assetNo,
+                "Division": department,
+                "Location": location,
+                "Asset Type": document.getElementById('m-Asset Type').value.trim().toUpperCase(),
+                "Make": document.getElementById('m-Make').value.trim(),
+                "Model": document.getElementById('m-Model').value.trim(),
+                "Serial No": document.getElementById('m-Serial No').value.trim(),
+                "Processor": document.getElementById('m-Processor').value.trim(),
+                "Memory": document.getElementById('m-Memory').value.trim(),
+                "Storage": document.getElementById('m-Storage').value.trim(),
+                "OS Version": document.getElementById('m-OS Version').value.trim(),
+                "MAC Address": document.getElementById('m-MAC Address').value.trim(),
+                "Ms Office": document.getElementById('m-Ms Office').value.trim(),
+                "AV": document.getElementById('m-AV').value.trim(),
+                "OneDrive": document.getElementById('m-OneDrive').value.trim(),
+                "USB DRIVE": document.getElementById('m-USB DRIVE').value.trim(),
+                "Status": document.getElementById('m-Status').value.trim(),
+                "Assigned To": assignedTo,
+                "User Mail ID": document.getElementById('m-User Mail ID').value.trim(),
+                "Purchased Date": document.getElementById('m-Purchased Date').value,
+                "Bill To": document.getElementById('m-Bill To').value.trim(),
+                "Bill No": document.getElementById('m-Bill No').value.trim(),
+                "Purchased From": document.getElementById('m-Purchased From').value.trim(),
+                "Warranty ENDED": document.getElementById('m-Warranty ENDED').value,
+                "Sticker": document.getElementById('m-Sticker').value.trim()
             };
+
             assetMasterList.push(newAsset);
             saveAssets();
 
-            // Log history
             assetHistoryList.unshift({
-                assetTag,
-                assetNo,
-                user: allocatedTo,
-                department,
-                location,
-                action: 'Initial Registration / Assignment',
-                timestamp: new Date().toLocaleString()
+                "Asset Tag": assetTag,
+                "Asset No": assetNo,
+                "Assigned To": assignedTo,
+                "Division": department,
+                "location": location,
+                "action": 'Initial Registration (IT Head Spec)',
+                "timestamp": new Date().toLocaleString()
             });
             saveAssetHistory();
 
-            populateUserDropdown();
             renderAssetDirectoryTable();
             renderAssetHistoryTable();
-            showToast(`Asset TAG "${assetTag}" added permanently with full specs!`, 'success');
+            populateUserDropdown();
+            showToast(`Asset "${assetTag}" saved successfully!`);
             e.target.reset();
         }
 
         // EDIT ASSET HANDLERS
         function openEditAssetModal(assetTag) {
-            const asset = assetMasterList.find(a => a.assetTag === assetTag);
+            const asset = assetMasterList.find(a => (a["Asset Tag"] || a.assetTag) === assetTag);
             if (!asset) return;
-
-            document.getElementById('edit-asset-tag-id').value = asset.assetTag;
-            document.getElementById('edit-asset-tag').value = asset.assetTag || '';
-            document.getElementById('edit-asset-no').value = asset.assetNo || '';
-            document.getElementById('edit-asset-allocated').value = asset.allocatedTo || '';
-            document.getElementById('edit-asset-mail').value = asset.userMail || '';
-            document.getElementById('edit-asset-dept').value = asset.department || '';
-            
-            const locSelect = document.getElementById('edit-asset-location');
-            locSelect.innerHTML = locationsList.map(l => `<option value="${l}" ${l === asset.location ? 'selected' : ''}>${l}</option>`).join('');
-
+            document.getElementById('edit-asset-tag-id').value = assetTag;
+            document.getElementById('edit-asset-tag').value = assetTag;
+            document.getElementById('edit-asset-assigned').value = asset["Assigned To"] || asset.allocatedTo || '';
+            document.getElementById('edit-asset-mail').value = asset["User Mail ID"] || asset.userMail || '';
+            document.getElementById('edit-asset-location').value = asset["Location"] || asset.location || '';
+            document.getElementById('edit-asset-status').value = asset["Status"] || asset.status || 'Assigned';
             openModal('edit-asset-modal');
         }
 
         function handleSaveAssetEdit(e) {
             e.preventDefault();
-            const oldTag = document.getElementById('edit-asset-tag-id').value;
-            const asset = assetMasterList.find(a => a.assetTag === oldTag);
+            const tagId = document.getElementById('edit-asset-tag-id').value;
+            const asset = assetMasterList.find(a => (a["Asset Tag"] || a.assetTag) === tagId);
             if (!asset) return;
 
-            const oldUser = asset.allocatedTo;
-            const newUser = document.getElementById('edit-asset-allocated').value.trim();
+            const oldUser = asset["Assigned To"] || asset.allocatedTo;
+            const newUser = document.getElementById('edit-asset-assigned').value.trim();
 
-            asset.assetTag = document.getElementById('edit-asset-tag').value.trim();
-            asset.assetNo = document.getElementById('edit-asset-no').value.trim();
-            asset.allocatedTo = newUser;
-            asset.userMail = document.getElementById('edit-asset-mail').value.trim();
-            asset.department = document.getElementById('edit-asset-dept').value.trim();
-            asset.location = document.getElementById('edit-asset-location').value;
+            asset["Asset Tag"] = document.getElementById('edit-asset-tag').value.trim();
+            asset["Assigned To"] = newUser;
+            asset["User Mail ID"] = document.getElementById('edit-asset-mail').value.trim();
+            asset["Location"] = document.getElementById('edit-asset-location').value;
+            asset["Status"] = document.getElementById('edit-asset-status').value.trim();
 
             saveAssets();
 
             let actionText = oldUser !== newUser ? `Reassigned from [${oldUser}] to [${newUser}]` : 'Updated Asset Details';
             assetHistoryList.unshift({
-                assetTag: asset.assetTag,
-                assetNo: asset.assetNo,
-                user: newUser,
-                department: asset.department,
-                location: asset.location,
-                action: actionText,
-                timestamp: new Date().toLocaleString()
+                "Asset Tag": asset["Asset Tag"],
+                "Asset No": asset["Asset No"] || asset.assetNo || 'N/A',
+                "Assigned To": newUser,
+                "Division": asset["Division"] || asset.department || 'N/A',
+                "location": asset["Location"],
+                "action": actionText,
+                "timestamp": new Date().toLocaleString()
             });
             saveAssetHistory();
 
@@ -2239,10 +2193,10 @@
             renderAssetHistoryTable();
             populateUserDropdown();
             closeModal('edit-asset-modal');
-            showToast(`Asset TAG "${asset.assetTag}" updated & history logged!`, 'success');
+            showToast(`Asset "${asset["Asset Tag"]}" updated & history logged!`, 'success');
         }
 
-        // ASSET DIRECTORY TABLE RENDERING (LOCATION FILTER & SEARCH)
+        // ASSET DIRECTORY TABLE RENDERING
         function renderAssetDirectoryTable() {
             const search = (document.getElementById('asset-directory-search')?.value || '').toLowerCase();
             const locFilter = document.getElementById('asset-location-filter')?.value || '';
@@ -2250,34 +2204,65 @@
             if (!tbody) return;
 
             const filtered = assetMasterList.filter(a => {
-                const matchLoc = !locFilter || a.location === locFilter;
+                const matchLoc = !locFilter || (a["Location"] || a.location) === locFilter;
                 const matchSearch = !search || 
-                    (a.assetTag && a.assetTag.toLowerCase().includes(search)) ||
-                    (a.assetNo && a.assetNo.toLowerCase().includes(search)) ||
-                    (a.allocatedTo && a.allocatedTo.toLowerCase().includes(search)) ||
-                    (a.serial && a.serial.toLowerCase().includes(search));
+                    ((a["Asset Tag"] || a.assetTag) && (a["Asset Tag"] || a.assetTag).toLowerCase().includes(search)) ||
+                    ((a["Asset No"] || a.assetNo) && (a["Asset No"] || a.assetNo).toLowerCase().includes(search)) ||
+                    ((a["Assigned To"] || a.allocatedTo) && (a["Assigned To"] || a.allocatedTo).toLowerCase().includes(search)) ||
+                    ((a["Serial No"] || a.serial) && (a["Serial No"] || a.serial).toLowerCase().includes(search));
                 return matchLoc && matchSearch;
             });
 
             if (!filtered.length) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400 font-medium">No assets match the selected location/search.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400 font-medium">No assets match the selected location/search.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = filtered.map(a => `
                 <tr class="hover:bg-slate-50 border-b border-slate-100">
-                    <td class="p-3 font-mono font-bold text-red-600">${a.assetTag || 'N/A'}<br><span class="text-[10px] text-slate-400">SN: ${a.serial || 'N/A'}</span></td>
-                    <td class="p-3 font-mono text-xs font-bold text-slate-700">${a.assetNo || 'N/A'}</td>
-                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-bold">${a.assetType || 'PC'}</span></td>
-                    <td class="p-3 font-semibold text-slate-800">${a.allocatedTo}<br><span class="text-[10px] text-slate-400">${a.department || 'N/A'} (${a.userMail || ''})</span></td>
-                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">${a.location}</span></td>
-                    <td class="p-3 text-slate-600">${a.manufacturer || ''} ${a.model || ''}</td>
-                    <td class="p-3 font-mono">${a.processor || 'N/A'}<br><span class="text-[10px] text-indigo-600 font-bold">RAM: ${a.memory || 'N/A'}</span></td>
+                    <td class="p-3 font-mono font-bold text-red-600">${a["Asset Tag"] || a.assetTag || 'N/A'}<br><span class="text-[10px] text-slate-400">SN: ${a["Serial No"] || a.serial || 'N/A'}</span></td>
+                    <td class="p-3 font-mono text-xs font-bold text-slate-700">${a["Asset No"] || a.assetNo || 'N/A'}</td>
+                    <td class="p-3">${a["Division"] || a.department || 'N/A'}</td>
+                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">${a["Location"] || a.location || 'N/A'}</span></td>
+                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-bold">${a["Asset Type"] || a.assetType || 'PC'}</span></td>
+                    <td class="p-3 text-slate-600">${a["Make"] || a.manufacturer || ''} ${a["Model"] || a.model || ''}</td>
+                    <td class="p-3 font-mono">${a["Processor"] || a.processor || 'N/A'}<br><span class="text-[10px] text-indigo-600 font-bold">RAM: ${a["Memory"] || a.memory || 'N/A'}</span></td>
+                    <td class="p-3 font-semibold text-slate-800">👤 ${a["Assigned To"] || a.allocatedTo || 'Unassigned'}</td>
                     <td class="p-3 text-right">
-                        <button onclick="openEditAssetModal('${a.assetTag}')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded border border-slate-300">
+                        <button onclick="openEditAssetModal('${a["Asset Tag"] || a.assetTag}')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded border border-slate-300">
                             <i class="fa-solid fa-pen text-slate-500 mr-1"></i> Edit
                         </button>
                     </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAssetHistoryTable() {
+            const search = (document.getElementById('asset-history-search')?.value || '').toLowerCase();
+            const tbody = document.getElementById('asset-history-table-body');
+            if (!tbody) return;
+
+            const filtered = assetHistoryList.filter(h => {
+                const tag = h["Asset Tag"] || h.assetTag || '';
+                const user = h["Assigned To"] || h.user || '';
+                const matchSearch = !search || tag.toLowerCase().includes(search) || user.toLowerCase().includes(search);
+                return matchSearch;
+            });
+
+            if (!filtered.length) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-medium">No asset history records found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(h => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100 text-xs">
+                    <td class="p-3 font-mono font-bold text-red-600">${h["Asset Tag"] || h.assetTag || 'N/A'}</td>
+                    <td class="p-3 font-mono font-bold text-slate-700">${h["Asset No"] || h.assetNo || 'N/A'}</td>
+                    <td class="p-3 font-semibold text-slate-800">👤 ${h["Assigned To"] || h.user || 'N/A'}</td>
+                    <td class="p-3 text-slate-600">${h["Division"] || h.department || 'N/A'}</td>
+                    <td class="p-3"><span class="bg-slate-100 text-slate-800 px-2 py-0.5 rounded font-semibold">${h["location"] || h.location || 'N/A'}</span></td>
+                    <td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">${h["action"] || h.action || 'Updated'}</span></td>
+                    <td class="p-3 font-mono text-slate-500">${h["timestamp"] || h.timestamp || 'N/A'}</td>
                 </tr>
             `).join('');
         }
@@ -2293,23 +2278,13 @@
                 return;
             }
 
-            const filtered = assetMasterList.filter(a => !locFilter || a.location === locFilter);
+            const filtered = assetMasterList.filter(a => !locFilter || (a["Location"] || a.location) === locFilter);
             if (filtered.length === 0) {
                 showToast('No assets available for export with this location filter.', 'error');
                 return;
             }
 
-            const headerNames = {
-                assetTag: 'Asset TAG', assetNo: 'Asset Number', assetType: 'Asset Type',
-                allocatedTo: 'Allocated To', userMail: 'User Mail ID', department: 'Department',
-                location: 'Location', manufacturer: 'Manufacturer', model: 'Asset Model',
-                serial: 'Serial Number', systemName: 'System Name', remarks: 'Remarks',
-                memory: 'Memory Size', processor: 'Processor', os: 'Operating System',
-                hdd: 'Hard Drive Size', osUpg: 'OS Upg. Required?', onedrive: 'One drive', usb: 'USB Access'
-            };
-
-            let csvContent = selectedCols.map(c => headerNames[c] || c).join(',') + '\n';
-
+            let csvContent = selectedCols.map(c => `"${c}"`).join(',') + '\n';
             filtered.forEach(a => {
                 let row = selectedCols.map(col => {
                     let val = a[col] || '';
@@ -2321,8 +2296,8 @@
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `SICAL_Asset_Register_${locFilter || 'All_Locations'}.csv`);
+            link.href = url;
+            link.download = `SICAL_Asset_Register_${locFilter || 'All_Locations'}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -2332,46 +2307,17 @@
             showToast(`Asset report successfully exported (${filtered.length} records)!`, 'success');
         }
 
-        // ASSET HISTORY TABLE RENDERING
-        function renderAssetHistoryTable() {
-            const search = (document.getElementById('asset-history-search')?.value || '').toLowerCase();
-            const tbody = document.getElementById('asset-history-table-body');
-            if (!tbody) return;
-
-            const filtered = assetHistoryList.filter(h => 
-                !search || 
-                (h.assetTag && h.assetTag.toLowerCase().includes(search)) ||
-                (h.assetNo && h.assetNo.toLowerCase().includes(search)) ||
-                h.user.toLowerCase().includes(search) ||
-                h.action.toLowerCase().includes(search)
-            );
-
-            if (!filtered.length) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-medium">No asset history logs found yet. Reassign an asset to record history.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = filtered.map(h => `
-                <tr class="hover:bg-slate-50 border-b border-slate-100">
-                    <td class="p-3 font-mono font-bold text-red-600">${h.assetTag || 'N/A'}</td>
-                    <td class="p-3 font-mono text-xs font-bold text-slate-700">${h.assetNo || 'N/A'}</td>
-                    <td class="p-3 font-semibold text-slate-800">👤 ${h.user}</td>
-                    <td class="p-3 text-slate-600">${h.department || 'N/A'}</td>
-                    <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">${h.location}</span></td>
-                    <td class="p-3"><span class="bg-indigo-50 text-indigo-700 text-[10px] px-2 py-0.5 rounded font-bold">${h.action}</span></td>
-                    <td class="p-3 font-mono text-slate-500">${h.timestamp}</td>
-                </tr>
-            `).join('');
-        }
-
-        // ASSET SEARCH (SEARCH BY ASSET NUMBER OR EMPLOYEE NAME)
+        // TICKET SYSTEM
         function populateUserDropdown() {
             const datalist = document.getElementById('asset-datalist');
             if (!datalist) return;
             datalist.innerHTML = '';
-            assetMasterList.forEach((item) => {
-                datalist.innerHTML += `<option value="${item.assetNo}">Asset No: ${item.assetNo} - ${item.allocatedTo} (${item.location})</option>`;
-                datalist.innerHTML += `<option value="${item.allocatedTo}">User: ${item.allocatedTo} (No: ${item.assetNo})</option>`;
+            assetMasterList.forEach(item => {
+                const no = item["Asset No"] || item.assetNo || '';
+                const assigned = item["Assigned To"] || item.allocatedTo || '';
+                const loc = item["Location"] || item.location || '';
+                datalist.innerHTML += `<option value="${no}">Asset No: ${no} - ${assigned} (${loc})</option>`;
+                datalist.innerHTML += `<option value="${assigned}">User: ${assigned} (No: ${no})</option>`;
             });
         }
 
@@ -2379,22 +2325,18 @@
             if (!val || val.trim() === '') return;
             const cleanVal = val.trim().toLowerCase();
             const match = assetMasterList.find(a => 
-                (a.assetNo && a.assetNo.toLowerCase() === cleanVal) || 
-                (a.assetTag && a.assetTag.toLowerCase() === cleanVal) ||
-                (a.allocatedTo && a.allocatedTo.toLowerCase() === cleanVal)
+                ((a["Asset No"] || a.assetNo || '').toLowerCase() === cleanVal) || 
+                ((a["Asset Tag"] || a.assetTag || '').toLowerCase() === cleanVal) ||
+                ((a["Assigned To"] || a.allocatedTo || '').toLowerCase() === cleanVal)
             );
             if (match) {
-                document.getElementById('ticket-name').value = match.allocatedTo || '';
-                document.getElementById('ticket-department').value = match.department || '';
-                document.getElementById('ticket-location').value = match.location || '';
-                document.getElementById('ticket-asset').value = match.assetTag || '';
-                document.getElementById('ticket-model').value = `${match.manufacturer} ${match.model} (${match.memory || ''}, ${match.processor || ''})`.trim();
-                document.getElementById('ticket-serial').value = match.serial || '';
-                document.getElementById('ticket-system-name').value = match.systemName || '';
+                document.getElementById('ticket-name').value = match["Assigned To"] || match.allocatedTo || '';
+                document.getElementById('ticket-department').value = match["Division"] || match.department || '';
+                document.getElementById('ticket-location').value = match["Location"] || match.location || '';
+                document.getElementById('ticket-asset').value = match["Asset Tag"] || match.assetTag || '';
             }
         }
 
-        // TICKET SUBMIT (WITH AUTO-FETCH USER MAIL)
         function handleTicketSubmit(e) {
             e.preventDefault();
             const nextId = "TCK-" + (1001 + ticketsList.length);
@@ -2402,8 +2344,8 @@
             const raisedByName = currentUser ? currentUser.name : "SICAL Admin";
             
             const assetTag = document.getElementById('ticket-asset').value;
-            const assetMatch = assetMasterList.find(a => a.assetTag === assetTag);
-            const userMail = assetMatch ? assetMatch.userMail : "";
+            const assetMatch = assetMasterList.find(a => (a["Asset Tag"] || a.assetTag) === assetTag);
+            const userMail = assetMatch ? assetMatch["User Mail ID"] || assetMatch.userMail || "" : "";
 
             const newTicket = {
                 id: nextId,
@@ -2411,9 +2353,6 @@
                 department: document.getElementById('ticket-department').value,
                 location: document.getElementById('ticket-location').value,
                 asset: assetTag,
-                model: document.getElementById('ticket-model').value,
-                serial: document.getElementById('ticket-serial').value,
-                systemName: document.getElementById('ticket-system-name').value,
                 category: document.getElementById('ticket-category').value,
                 priority: document.getElementById('ticket-priority').value,
                 subject: document.getElementById('ticket-subject').value,
@@ -2430,37 +2369,18 @@
             renderTicketTable();
             updateMetricsAndCharts();
             renderReportPreview();
+            closeModal('ticket-modal');
             showToast(`Ticket ${nextId} raised successfully!`, 'success');
             addNotification(`Ticket ${nextId} raised for "${newTicket.name}" by ${raisedByName} — ${newTicket.subject}`, 'info');
-            closeModal('ticket-modal');
             e.target.reset();
-            const searchInput = document.getElementById('asset-search-input');
-            if (searchInput) searchInput.value = '';
         }
 
-        // OPEN EMAIL USER MODAL (FOR WEB / O365 OUTLOOK USERS)
         function triggerTicketMail(ticketId) {
             const t = ticketsList.find(x => x.id === ticketId);
             if (!t) return;
-
-            const emailText = `Hello ${t.name},\n\n` +
-                              `Your IT Support Ticket has been successfully logged and assigned.\n\n` +
-                              `Ticket ID: ${t.id}\n` +
-                              `Subject: ${t.subject}\n` +
-                              `Asset TAG: ${t.asset}\n` +
-                              `Priority: ${t.priority}\n` +
-                              `Status: Open\n\n` +
-                              `Our support team is reviewing your request.\n\n` +
-                              `Thanks & Regards,\n` +
-                              `SICAL IT Support Team\n` +
-                              `hardware.support@sical.com`;
-
+            const emailText = `Hello ${t.name},\n\nYour IT Support Ticket has been successfully logged and assigned.\n\nTicket ID: ${t.id}\nSubject: ${t.subject}\nAsset TAG: ${t.asset}\nPriority: ${t.priority}\nStatus: Open\n\nOur support team is reviewing your request.\n\nThanks & Regards,\nSICAL IT Support Team\nhardware.support@sical.com`;
             document.getElementById('email-user-share-text').value = emailText;
-            
-            // Link to Outlook on the web (O365) pre-filling To, Subject, and Body
-            const webMailUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(t.userMail || '')}&subject=${encodeURIComponent(`SICAL IT Helpdesk - Ticket Logged: ${t.id} (${t.subject})`)}&body=${encodeURIComponent(emailText)}`;
-            document.getElementById('outlook-web-link-btn').href = webMailUrl;
-
+            document.getElementById('outlook-web-link-btn').href = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(t.userMail || '')}&subject=${encodeURIComponent(`SICAL IT Helpdesk - Ticket Logged: ${t.id} (${t.subject})`)}&body=${encodeURIComponent(emailText)}`;
             openModal('email-user-modal');
         }
 
@@ -2471,270 +2391,83 @@
             showToast('Ticket email text copied to clipboard!');
         }
 
-        // ROLE-BASED TICKET ACCESS HELPER
         function getAccessibleTickets() {
             if (!currentUser) return ticketsList; 
             const role = (currentUser.role || '').toLowerCase();
             const isAdmin = currentUser.username === 'SICAL ADMIN' || role.includes('admin') || role.includes('engineer') || role.includes('lead');
-            if (isAdmin) {
-                return ticketsList;
-            }
+            if (isAdmin) return ticketsList;
             const userName = currentUser.name ? currentUser.name.toLowerCase() : '';
-            const userEmail = currentUser.email ? currentUser.email.toLowerCase() : '';
-            const userLogin = currentUser.username ? currentUser.username.toLowerCase() : '';
-
-            const matchedAssets = assetMasterList.filter(a => 
-                (a.allocatedTo && a.allocatedTo.toLowerCase() === userName) ||
-                (a.userMail && a.userMail.toLowerCase() === userEmail)
-            );
-            const assetTags = matchedAssets.map(a => a.assetTag ? a.assetTag.toLowerCase() : '');
-
-            return ticketsList.filter(t => {
-                const tName = t.name ? t.name.toLowerCase() : '';
-                const tAsset = t.asset ? t.asset.toLowerCase() : '';
-                const tRaisedBy = t.raisedBy ? t.raisedBy.toLowerCase() : '';
-                return tName === userName || tName === userLogin || tRaisedBy === userName || assetTags.includes(tAsset);
-            });
+            return ticketsList.filter(t => (t.name || '').toLowerCase() === userName || (t.raisedBy || '').toLowerCase() === userName);
         }
 
-        // TICKET TABLE & PAGINATION
-        function filterTickets() {
-            currentTicketPage = 1;
-            renderTicketTable();
-        }
-
-        function changeTicketPage(direction) {
-            const accessible = getAccessibleTickets();
-            const searchInput = document.getElementById('ticket-search-input');
-            const statusFilter = document.getElementById('ticket-status-filter');
-            const search = (searchInput ? searchInput.value : '').toLowerCase();
-            const status = statusFilter ? statusFilter.value : '';
-            
-            const filtered = accessible.filter(t => {
-                const matchSearch = !search || 
-                    t.id.toLowerCase().includes(search) || 
-                    (t.name && t.name.toLowerCase().includes(search)) ||
-                    (t.subject && t.subject.toLowerCase().includes(search)) ||
-                    (t.asset && t.asset.toLowerCase().includes(search)) ||
-                    (t.raisedBy && t.raisedBy.toLowerCase().includes(search));
-                const matchStatus = !status || t.status === status;
-                return matchSearch && matchStatus;
-            });
-
-            const maxPages = Math.ceil(filtered.length / rowsPerPage) || 1;
-            currentTicketPage += direction;
-            if (currentTicketPage < 1) currentTicketPage = 1;
-            if (currentTicketPage > maxPages) currentTicketPage = maxPages;
-            renderTicketTable();
-        }
+        function filterTickets() { renderTicketTable(); }
 
         function renderTicketTable() {
             const accessible = getAccessibleTickets();
-            const searchInput = document.getElementById('ticket-search-input');
-            const statusFilter = document.getElementById('ticket-status-filter');
-            const search = (searchInput ? searchInput.value : '').toLowerCase();
-            const status = statusFilter ? statusFilter.value : '';
+            const search = (document.getElementById('ticket-search-input')?.value || '').toLowerCase();
+            const status = document.getElementById('ticket-status-filter')?.value || '';
             
             const filtered = accessible.filter(t => {
-                const matchSearch = !search || 
-                    t.id.toLowerCase().includes(search) || 
-                    (t.name && t.name.toLowerCase().includes(search)) ||
-                    (t.subject && t.subject.toLowerCase().includes(search)) ||
-                    (t.asset && t.asset.toLowerCase().includes(search)) ||
-                    (t.raisedBy && t.raisedBy.toLowerCase().includes(search));
+                const matchSearch = !search || t.id.toLowerCase().includes(search) || (t.name || '').toLowerCase().includes(search) || (t.subject || '').toLowerCase().includes(search) || (t.asset || '').toLowerCase().includes(search);
                 const matchStatus = !status || t.status === status;
                 return matchSearch && matchStatus;
             });
-
-            const totalRecords = filtered.length;
-            const maxPages = Math.ceil(totalRecords / rowsPerPage) || 1;
-            if (currentTicketPage > maxPages) currentTicketPage = maxPages;
-
-            const startIdx = (currentTicketPage - 1) * rowsPerPage;
-            const paginatedList = filtered.slice(startIdx, startIdx + rowsPerPage);
 
             const tbody = document.getElementById('ticket-table-body');
             if (!tbody) return;
             tbody.innerHTML = '';
             
-            if (!paginatedList.length) {
+            if (!filtered.length) {
                 tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-400 font-medium">No tickets found.</td></tr>`;
-            } else {
-                paginatedList.forEach(ticket => {
-                    let priorityBadge = 'bg-slate-100 text-slate-700';
-                    if (ticket.priority === 'Critical') priorityBadge = 'bg-red-100 text-red-700';
-                    else if (ticket.priority === 'High') priorityBadge = 'bg-orange-100 text-orange-700';
-                    let statusBadge = 'bg-amber-100 text-amber-700';
-                    if (ticket.status === 'In Progress') statusBadge = 'bg-blue-100 text-blue-700';
-                    else if (ticket.status === 'Closed') statusBadge = 'bg-emerald-100 text-emerald-700';
-
-                    const raisedByDisplay = ticket.raisedBy || ticket.name || 'System Admin';
-
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50 border-b border-slate-100">
-                            <td class="p-4 font-mono font-bold text-red-600">
-                                <button onclick="viewTicketDetail('${ticket.id}')" class="hover:underline">${ticket.id}</button>
-                            </td>
-                            <td class="p-4"><span class="bg-slate-100 text-slate-800 text-xs px-2 py-1 rounded font-semibold">${ticket.location}</span></td>
-                            <td class="p-4">${ticket.category}</td>
-                            <td class="p-4 font-mono text-xs font-bold text-slate-700">${ticket.asset}</td>
-                            <td class="p-4 text-xs">${ticket.name}<br><span class="text-slate-400">${ticket.department || 'N/A'}</span></td>
-                            <td class="p-4 text-xs font-semibold text-indigo-700">👤 ${raisedByDisplay}</td>
-                            <td class="p-4 text-xs font-mono">${ticket.model || 'N/A'}<br><span class="text-slate-400">SN: ${ticket.serial || 'N/A'}</span></td>
-                            <td class="p-4 font-semibold text-slate-800">${ticket.subject}</td>
-                            <td class="p-4"><span class="${priorityBadge} text-xs px-2 py-0.5 rounded font-bold">${ticket.priority}</span></td>
-                            <td class="p-4"><span class="${statusBadge} text-xs px-2.5 py-1 rounded-full font-bold">${ticket.status}</span></td>
-                            <td class="p-4 space-x-1 whitespace-nowrap">
-                                <button onclick="triggerTicketMail('${ticket.id}')" class="text-[11px] bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2 py-1 rounded font-bold" title="Open Outlook Web to Email User"><i class="fa-solid fa-envelope mr-1"></i>Email User</button>
-                                <button onclick="updateTicketStatus('${ticket.id}', 'In Progress')" class="text-[11px] bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">Progress</button>
-                                <button onclick="triggerCloseAndSurvey('${ticket.id}')" class="text-[11px] bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold">Close & Survey</button>
-                            </td>
-                        </tr>
-                    `;
-                });
+                return;
             }
 
-            const endRange = totalRecords > 0 ? Math.min(startIdx + rowsPerPage, totalRecords) : 0;
-            const pageInfo = document.getElementById('ticket-page-info');
-            const pageNum = document.getElementById('ticket-page-num');
-            if (pageInfo) pageInfo.innerText = `Showing ${totalRecords > 0 ? startIdx + 1 : 0}-${endRange} of ${totalRecords} tickets`;
-            if (pageNum) pageNum.innerText = `Page ${currentTicketPage} of ${maxPages}`;
-        }
+            filtered.forEach(ticket => {
+                let priorityBadge = 'bg-slate-100 text-slate-700';
+                if (ticket.priority === 'Critical') priorityBadge = 'bg-red-100 text-red-700';
+                else if (ticket.priority === 'High') priorityBadge = 'bg-orange-100 text-orange-700';
+                let statusBadge = 'bg-amber-100 text-amber-700';
+                if (ticket.status === 'In Progress') statusBadge = 'bg-blue-100 text-blue-700';
+                else if (ticket.status === 'Closed') statusBadge = 'bg-emerald-100 text-emerald-700';
 
-        // REPORTS VIEW PREVIEW & PAGINATION
-        function getFilteredReportTickets() {
-            const locFilterEl = document.getElementById('report-location-filter');
-            const statusFilterEl = document.getElementById('report-status-filter');
-            const fromDateEl = document.getElementById('report-from-date');
-            const toDateEl = document.getElementById('report-to-date');
-
-            const locFilter = locFilterEl ? locFilterEl.value : '';
-            const statusFilter = statusFilterEl ? statusFilterEl.value : '';
-            const fromDate = fromDateEl ? fromDateEl.value : '';
-            const toDate = toDateEl ? toDateEl.value : '';
-
-            const activeTickets = getAccessibleTickets();
-            return activeTickets.filter(t => {
-                if (locFilter && t.location !== locFilter) return false;
-                if (statusFilter && t.status !== statusFilter) return false;
-                if (fromDate && t.createdAt && new Date(t.createdAt) < new Date(fromDate)) return false;
-                if (toDate && t.createdAt && new Date(t.createdAt) > new Date(toDate + 'T23:59:59')) return false;
-                return true;
-            });
-        }
-
-        function changeReportPage(direction) {
-            const filtered = getFilteredReportTickets();
-            const maxPages = Math.ceil(filtered.length / rowsPerPage) || 1;
-            currentReportPage += direction;
-            if (currentReportPage < 1) currentReportPage = 1;
-            if (currentReportPage > maxPages) currentReportPage = maxPages;
-            renderReportPreview();
-        }
-
-        function renderReportPreview() {
-            const filtered = getFilteredReportTickets();
-            const totalRecords = filtered.length;
-            const maxPages = Math.ceil(totalRecords / rowsPerPage) || 1;
-            if (currentReportPage > maxPages) currentReportPage = maxPages;
-
-            const startIdx = (currentReportPage - 1) * rowsPerPage;
-            const paginatedList = filtered.slice(startIdx, startIdx + rowsPerPage);
-
-            const tbody = document.getElementById('report-table-body');
-            const countIndicator = document.getElementById('report-count-indicator');
-            if (countIndicator) countIndicator.innerText = `${totalRecords} Records`;
-
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            if (!paginatedList.length) {
-                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">No report records match the selected filters.</td></tr>`;
-            } else {
-                paginatedList.forEach(t => {
-                    let priorityBadge = 'bg-slate-100 text-slate-700';
-                    if (t.priority === 'Critical') priorityBadge = 'bg-red-100 text-red-700';
-                    else if (t.priority === 'High') priorityBadge = 'bg-orange-100 text-orange-700';
-                    let statusBadge = 'bg-amber-100 text-amber-700';
-                    if (t.status === 'In Progress') statusBadge = 'bg-blue-100 text-blue-700';
-                    else if (t.status === 'Closed') statusBadge = 'bg-emerald-100 text-emerald-700';
-
-                    const createdDate = t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A';
-
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50 border-b border-slate-100">
-                            <td class="p-3 font-mono font-bold text-red-600">${t.id}</td>
-                            <td class="p-3"><span class="bg-slate-100 text-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">${t.location}</span></td>
-                            <td class="p-3">${t.department || 'N/A'}</td>
-                            <td class="p-3 font-semibold">${t.name}</td>
-                            <td class="p-3 text-indigo-700 font-semibold">👤 ${t.raisedBy || 'N/A'}</td>
-                            <td class="p-3">${t.category}</td>
-                            <td class="p-3 font-medium text-slate-800">${t.subject}</td>
-                            <td class="p-3"><span class="${priorityBadge} text-[10px] px-2 py-0.5 rounded font-bold">${t.priority}</span></td>
-                            <td class="p-3"><span class="${statusBadge} text-[10px] px-2 py-0.5 rounded-full font-bold">${t.status}</span></td>
-                            <td class="p-3 font-mono text-slate-500">${createdDate}</td>
-                        </tr>
-                    `;
-                });
-            }
-
-            const endRange = totalRecords > 0 ? Math.min(startIdx + rowsPerPage, totalRecords) : 0;
-            const pageInfo = document.getElementById('report-page-info');
-            const pageNum = document.getElementById('report-page-num');
-            if (pageInfo) pageInfo.innerText = `Showing ${totalRecords > 0 ? startIdx + 1 : 0}-${endRange} of ${totalRecords} records`;
-            if (pageNum) pageNum.innerText = `Page ${currentReportPage} of ${maxPages}`;
-        }
-
-        function viewTicketDetail(id) {
-            const t = ticketsList.find(x => x.id === id);
-            if (!t) return;
-            const detailContent = document.getElementById('ticket-detail-content');
-            if (detailContent) {
-                detailContent.innerHTML = `
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Ticket ID</span><p class="font-mono font-bold text-red-600">${t.id}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Status</span><p class="font-semibold">${t.status}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Employee</span><p class="font-semibold">${t.name}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Raised By</span><p class="font-semibold text-indigo-600">${t.raisedBy || 'N/A'}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Department</span><p>${t.department || 'N/A'}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Location</span><p>${t.location}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Asset TAG</span><p class="font-mono">${t.asset}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Category</span><p>${t.category}</p></div>
-                        <div><span class="text-[10px] font-bold text-slate-400 uppercase">Priority</span><p>${t.priority}</p></div>
-                        <div class="col-span-2"><span class="text-[10px] font-bold text-slate-400 uppercase">Subject</span><p class="font-semibold">${t.subject}</p></div>
-                        <div class="col-span-2"><span class="text-[10px] font-bold text-slate-400 uppercase">Description</span><p class="text-slate-600 mt-1">${t.description}</p></div>
-                    </div>
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100">
+                        <td class="p-4 font-mono font-bold text-red-600">${ticket.id}</td>
+                        <td class="p-4"><span class="bg-slate-100 text-xs px-2 py-1 rounded font-semibold">${ticket.location}</span></td>
+                        <td class="p-4">${ticket.category}</td>
+                        <td class="p-4 font-mono text-xs font-bold">${ticket.asset}</td>
+                        <td class="p-4 text-xs">${ticket.name}<br><span class="text-slate-400">${ticket.department || 'N/A'}</span></td>
+                        <td class="p-4 text-xs font-semibold text-indigo-700">👤 ${ticket.raisedBy || 'Admin'}</td>
+                        <td class="p-4 text-xs font-mono">${ticket.model || 'N/A'}</td>
+                        <td class="p-4 font-semibold text-slate-800">${ticket.subject}</td>
+                        <td class="p-4"><span class="${priorityBadge} text-xs px-2 py-0.5 rounded font-bold">${ticket.priority}</span></td>
+                        <td class="p-4"><span class="${statusBadge} text-xs px-2.5 py-1 rounded-full font-bold">${ticket.status}</span></td>
+                        <td class="p-4 space-x-1 whitespace-nowrap text-right">
+                            <button onclick="triggerTicketMail('${ticket.id}')" class="text-[11px] bg-indigo-50 text-indigo-700 px-2 py-1 rounded font-bold">Email User</button>
+                            <button onclick="updateTicketStatus('${ticket.id}', 'In Progress')" class="text-[11px] bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold">Progress</button>
+                            <button onclick="triggerCloseAndSurvey('${ticket.id}')" class="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-1 rounded font-bold">Close & Survey</button>
+                        </td>
+                    </tr>
                 `;
-            }
-            openModal('ticket-detail-modal');
+            });
         }
 
         function triggerCloseAndSurvey(ticketId) {
             updateTicketStatus(ticketId, 'Closed');
             const ticket = ticketsList.find(x => x.id === ticketId);
-            
             const msFormUrl = localStorage.getItem('sical_ms_form_url') || "https://forms.office.com/r/YOUR_FORM_ID";
-            const shareText = `Hello ${ticket ? ticket.name : 'User'}, your IT Support Ticket (${ticketId}) has been resolved and closed.\n\n` +
-                              `Ticket ID: ${ticketId}\n` +
-                              `Subject: ${ticket ? ticket.subject : ''}\n\n` +
-                              `Please take a moment to provide your feedback using our Microsoft Form:\n${msFormUrl}`;
+            const shareText = `Hello ${ticket ? ticket.name : 'User'}, your IT Support Ticket (${ticketId}) has been resolved and closed.\n\nTicket ID: ${ticketId}\nSubject: ${ticket ? ticket.subject : ''}\n\nPlease take a moment to provide your feedback using our Microsoft Form:\n${msFormUrl}`;
             
-            const shareTextEl = document.getElementById('survey-share-text');
-            const linkBtnEl = document.getElementById('ms-form-link-btn');
-            
-            if (shareTextEl) shareTextEl.value = shareText;
-            if (linkBtnEl) linkBtnEl.href = msFormUrl;
-
+            document.getElementById('survey-share-text').value = shareText;
+            document.getElementById('ms-form-link-btn').href = msFormUrl;
             openModal('survey-modal');
         }
 
         function copySurveyText() {
-            const shareTextEl = document.getElementById('survey-share-text');
-            if (shareTextEl) {
-                shareTextEl.select();
-                navigator.clipboard.writeText(shareTextEl.value);
-                showToast('Ticket details and survey link copied to clipboard!', 'success');
-            }
+            const txt = document.getElementById('survey-share-text');
+            txt.select();
+            navigator.clipboard.writeText(txt.value);
+            showToast('Ticket details and survey link copied to clipboard!');
         }
 
         function updateTicketStatus(id, newStatus) {
@@ -2746,244 +2479,120 @@
                 updateMetricsAndCharts();
                 renderReportPreview();
                 showToast(`Ticket ${id} updated to "${newStatus}".`);
-                addNotification(`Ticket ${id} status changed to "${newStatus}".`, 'info');
             }
         }
 
-        // METRICS & CHARTS (Scoped to accessible tickets)
-        function updateMetricsAndCharts() {
-            const activeTickets = getAccessibleTickets();
-            const total = activeTickets.length;
-            const open = activeTickets.filter(t => t.status === 'Open').length;
-            const progress = activeTickets.filter(t => t.status === 'In Progress').length;
-            const closed = activeTickets.filter(t => t.status === 'Closed').length;
-            const now = new Date();
-            const thisMonth = activeTickets.filter(t => {
-                if (!t.createdAt) return false;
-                const d = new Date(t.createdAt);
-                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-            }).length;
+        // REPORTS
+        function getFilteredReportTickets() {
+            const loc = document.getElementById('report-location-filter')?.value || '';
+            const status = document.getElementById('report-status-filter')?.value || '';
+            const from = document.getElementById('report-from-date')?.value || '';
+            const to = document.getElementById('report-to-date')?.value || '';
 
-            const statTotal = document.getElementById('stat-total');
-            const statOpen = document.getElementById('stat-open');
-            const statProgress = document.getElementById('stat-progress');
-            const statClosed = document.getElementById('stat-closed');
-            const statMonth = document.getElementById('stat-month');
-
-            if (statTotal) statTotal.innerText = total;
-            if (statOpen) statOpen.innerText = open;
-            if (statProgress) statProgress.innerText = progress;
-            if (statClosed) statClosed.innerText = closed;
-            if (statMonth) statMonth.innerText = thisMonth;
-
-            // Top users
-            const userCounts = {};
-            activeTickets.forEach(t => { 
-                const uName = t.raisedBy || t.name || 'Unknown';
-                userCounts[uName] = (userCounts[uName] || 0) + 1; 
+            return getAccessibleTickets().filter(t => {
+                if (loc && t.location !== loc) return false;
+                if (status && t.status !== status) return false;
+                if (from && t.createdAt && new Date(t.createdAt) < new Date(from)) return false;
+                if (to && t.createdAt && new Date(t.createdAt) > new Date(to + 'T23:59:59')) return false;
+                return true;
             });
-            const topUsers = Object.entries(userCounts).sort((a,b) => b[1]-a[1]).slice(0,5);
-            const topUsersList = document.getElementById('top-users-list');
-            if (topUsersList) {
-                if (topUsers.length) {
-                    topUsersList.innerHTML = topUsers.map(([name, count]) => `
-                        <div class="flex items-center justify-between py-2 px-3 bg-slate-50 rounded-lg border border-slate-100">
-                            <span class="text-xs font-bold text-slate-700 flex items-center gap-2">👤 ${name}</span>
-                            <span class="bg-red-100 text-red-700 text-xs font-extrabold px-2.5 py-0.5 rounded-full">${count} tickets</span>
-                        </div>
-                    `).join('');
-                } else {
-                    topUsersList.innerHTML = '<p class="text-xs text-slate-400 p-2">No user data yet.</p>';
-                }
-            }
+        }
 
-            // Top categories
-            const catCounts = {};
-            activeTickets.forEach(t => { catCounts[t.category] = (catCounts[t.category] || 0) + 1; });
-            const topCats = Object.entries(catCounts).sort((a,b) => b[1]-a[1]).slice(0,5);
-            const topCatsList = document.getElementById('top-categories-list');
-            if (topCatsList) {
-                if (topCats.length) {
-                    topCatsList.innerHTML = topCats.map(([cat, count]) => `
-                        <div class="flex items-center justify-between py-2 px-3 bg-slate-50 rounded-lg border border-slate-100">
-                            <span class="text-xs font-bold text-slate-700 flex items-center gap-2">🏷️ ${cat}</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs font-extrabold px-2.5 py-0.5 rounded-full">${count} issues</span>
-                        </div>
-                    `).join('');
-                } else {
-                    topCatsList.innerHTML = '<p class="text-xs text-slate-400 p-2">No category data yet.</p>';
-                }
-            }
+        function renderReportPreview() {
+            const filtered = getFilteredReportTickets();
+            const tbody = document.getElementById('report-table-body');
+            const countInd = document.getElementById('report-count-indicator');
+            if (countInd) countInd.innerText = `${filtered.length} Records`;
+            if (!tbody) return;
 
-            const critical = activeTickets.filter(t => t.priority === 'Critical').length;
-            const high = activeTickets.filter(t => t.priority === 'High').length;
-            const medium = activeTickets.filter(t => t.priority === 'Medium').length;
-            const low = activeTickets.filter(t => t.priority === 'Low').length;
-            const hw = activeTickets.filter(t => t.category === 'Hardware').length;
-            const nw = activeTickets.filter(t => t.category === 'Network').length;
-            const sw = activeTickets.filter(t => t.category === 'System Software').length;
+            tbody.innerHTML = filtered.length ? filtered.map(t => `
+                <tr class="hover:bg-slate-50 border-b text-xs">
+                    <td class="p-3 font-mono font-bold text-red-600">${t.id}</td>
+                    <td class="p-3">${t.location}</td>
+                    <td class="p-3">${t.department || 'N/A'}</td>
+                    <td class="p-3">${t.name}</td>
+                    <td class="p-3">${t.raisedBy || 'Admin'}</td>
+                    <td class="p-3">${t.category}</td>
+                    <td class="p-3 font-semibold">${t.subject}</td>
+                    <td class="p-3">${t.priority}</td>
+                    <td class="p-3">${t.status}</td>
+                    <td class="p-3 font-mono">${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A'}</td>
+                </tr>
+            `).join('') : `<tr><td colspan="10" class="p-6 text-center text-slate-400">No records match filters.</td></tr>`;
+        }
+
+        function downloadExcelReport() {
+            const filtered = getFilteredReportTickets();
+            let csv = "Ticket ID,Location,Department,Allocated User,Raised By,Category,Subject,Priority,Status,Created Date\n" + 
+                filtered.map(t => `${t.id},${t.location},${t.department || ''},${t.name},${t.raisedBy || ''},${t.category},"${t.subject}",${t.priority},${t.status},${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}`).join("\n");
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "SICAL_IT_Tickets_Report.csv";
+            link.click();
+            showToast("Report downloaded successfully!");
+        }
+
+        // METRICS & CHARTS
+        function updateMetricsAndCharts() {
+            const accessible = getAccessibleTickets();
+            const total = accessible.length;
+            const open = accessible.filter(t => t.status === 'Open').length;
+            const progress = accessible.filter(t => t.status === 'In Progress').length;
+            const closed = accessible.filter(t => t.status === 'Closed').length;
+
+            if (document.getElementById('stat-total')) document.getElementById('stat-total').innerText = total;
+            if (document.getElementById('stat-open')) document.getElementById('stat-open').innerText = open;
+            if (document.getElementById('stat-progress')) document.getElementById('stat-progress').innerText = progress;
+            if (document.getElementById('stat-closed')) document.getElementById('stat-closed').innerText = closed;
 
             const priorityCanvas = document.getElementById('priorityChart');
             if (priorityCanvas) {
                 if (priorityChartInstance) priorityChartInstance.destroy();
-                const ctx1 = priorityCanvas.getContext('2d');
-                priorityChartInstance = new Chart(ctx1, {
+                priorityChartInstance = new Chart(priorityCanvas.getContext('2d'), {
                     type: 'doughnut',
                     data: {
-                        labels: ['Critical 🔴', 'High 🟠', 'Medium 🔵', 'Low ⚪'],
-                        datasets: [{ data: [critical, high, medium, low], backgroundColor: ['#ef4444', '#f97316', '#3b82f6', '#94a3b8'], borderWidth: 2, borderColor: isDark ? '#1e293b' : '#ffffff' }]
+                        labels: ['Critical', 'High', 'Medium', 'Low'],
+                        datasets: [{ data: [
+                            accessible.filter(t=>t.priority==='Critical').length,
+                            accessible.filter(t=>t.priority==='High').length,
+                            accessible.filter(t=>t.priority==='Medium').length,
+                            accessible.filter(t=>t.priority==='Low').length
+                        ], backgroundColor: ['#ef4444', '#f97316', '#3b82f6', '#94a3b8'] }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { weight: 'bold' } } } } }
+                    options: { responsive: true, maintainAspectRatio: false }
                 });
             }
 
             const categoryCanvas = document.getElementById('categoryChart');
             if (categoryCanvas) {
                 if (categoryChartInstance) categoryChartInstance.destroy();
-                const ctx2 = categoryCanvas.getContext('2d');
-                categoryChartInstance = new Chart(ctx2, {
+                categoryChartInstance = new Chart(categoryCanvas.getContext('2d'), {
                     type: 'bar',
                     data: {
-                        labels: ['Hardware 💻', 'Network 🌐', 'System Software ⚙️'],
-                        datasets: [{ label: 'Tickets Count', data: [hw, nw, sw], backgroundColor: ['#dc2626', '#2563eb', '#059669'], borderRadius: 6 }]
+                        labels: ['Hardware', 'Network', 'System Software', 'Other'],
+                        datasets: [{ data: [
+                            accessible.filter(t=>t.category==='Hardware').length,
+                            accessible.filter(t=>t.category==='Network').length,
+                            accessible.filter(t=>t.category==='System Software').length,
+                            accessible.filter(t=>t.category==='Other').length
+                        ], backgroundColor: ['#dc2626', '#2563eb', '#059669', '#d97706'] }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
                 });
             }
         }
 
-        // FILE UPLOAD (SUPPORTING ASSET TAG & ASSET NUMBER)
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const text = e.target.result;
-                    const lines = text.split('\n');
-                    for (let i = 1; i < lines.length; i++) {
-                        const cols = lines[i].split(',');
-                        if (cols.length >= 11) {
-                            const assetTag = cols[0] ? cols[0].trim() : '';
-                            const assetNo = cols[1] ? cols[1].trim() : '';
-                            const allocatedTo = cols[2] ? cols[2].trim() : '';
-                            const userMail = cols[3] ? cols[3].trim() : '';
-                            const department = cols[4] ? cols[4].trim() : '';
-                            const assetType = cols[5] ? cols[5].trim().toUpperCase() : 'LAPTOP';
-                            const location = cols[6] ? cols[6].trim().toUpperCase() : '';
-                            const manufacturer = cols[7] ? cols[7].trim() : '';
-                            const model = cols[8] ? cols[8].trim() : '';
-                            const serial = cols[9] ? cols[9].trim() : '';
-                            const systemName = cols[10] ? cols[10].trim() : '';
-                            const remarks = cols[11] ? cols[11].trim() : '';
-                            
-                            const memory = cols[12] ? cols[12].trim() : '';
-                            const processor = cols[13] ? cols[13].trim() : '';
-                            const os = cols[14] ? cols[14].trim() : '';
-                            const hdd = cols[15] ? cols[15].trim() : '';
-                            const osUpg = cols[16] ? cols[16].trim() : '';
-                            const onedrive = cols[17] ? cols[17].trim() : '';
-                            const usb = cols[18] ? cols[18].trim() : '';
-
-                            if (assetTag !== '') {
-                                if (!assetMasterList.some(a => a.assetTag && a.assetTag.toLowerCase() === assetTag.toLowerCase())) {
-                                    assetMasterList.push({ 
-                                        assetTag, assetNo, allocatedTo, userMail, department, assetType, location, 
-                                        manufacturer, model, serial, systemName, remarks,
-                                        memory, processor, os, hdd, osUpg, onedrive, usb 
-                                    });
-
-                                    assetHistoryList.unshift({
-                                        assetTag,
-                                        assetNo,
-                                        user: allocatedTo,
-                                        department,
-                                        location,
-                                        action: 'Bulk Upload Registration',
-                                        timestamp: new Date().toLocaleString()
-                                    });
-                                }
-                                if (location !== '' && !locationsList.includes(location)) {
-                                    locationsList.push(location);
-                                    saveLocations();
-                                }
-                                if (assetType !== '' && !assetTypesList.includes(assetType)) {
-                                    assetTypesList.push(assetType);
-                                    saveAssetTypes();
-                                }
-                            }
-                        }
-                    }
-                    saveAssets();
-                    saveAssetHistory();
-                    renderLocationDropdowns();
-                    renderAssetTypeDropdowns();
-                    renderLocationMasterTable();
-                    renderAssetTypeMasterTable();
-                    populateUserDropdown();
-                    renderAssetDirectoryTable();
-                    renderAssetHistoryTable();
-                    const statusBox = document.getElementById('upload-status');
-                    if (statusBox) {
-                        document.getElementById('upload-status-text').innerText = `Imported: "${file.name}" successfully!`;
-                        document.getElementById('asset-count-badge').innerText = `${assetMasterList.length} Total Assets Registered`;
-                        statusBox.classList.remove('hidden');
-                    }
-                    showToast(`${assetMasterList.length} total assets stored permanently with full specs.`);
-                };
-                reader.readAsText(file);
-            }
+        function handleSaveMsFormSetup(e) {
+            e.preventDefault();
+            localStorage.setItem('sical_ms_form_url', document.getElementById('ms-form-url').value.trim());
+            showToast('Microsoft Forms URL saved successfully!');
         }
 
-        function downloadCSVTemplate() {
-            const csvHeader = "Asset TAG,Asset Number,ALLOATE TO,User Mail ID,Department,Asset Type,Location,MANUFACTURER NAME,ASSET MODEL,SERIAL NUMBER,System Name,REMARKS,MEMORY SIZE,PROCESSOR,OPERATING SYSTEM,HARD DRIVE SIZE,OS Upg.Required?,One drive,USB Access\n"
-                            + "HQC/IT/SMTL/001D,SICAL/DT/0402,Rajadurai K.,rajadurai@sical.com,DESKTOP,TUTICORIN-SMARTCFS,LENOVO,ThinkCentre,PF04TQDN,SICLT793,..,16 GB,Intel i5,Windows 11 Pro,512 GB SSD,No,Configured,Enabled\n";
-            const blob = new Blob([csvHeader], { type: 'text/csv' });
-            const link = document.createElement("a");
-            link.setAttribute("href", URL.createObjectURL(blob));
-            link.setAttribute("download", "SICAL_Master_Asset_Template_DualID.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('flex'); document.getElementById(id).classList.add('hidden'); }
 
-        function downloadExcelReport() {
-            const filtered = getFilteredReportTickets();
-            let csvContent = "Asset_TAG,Asset_Number,Location,Department,Allocated_To,Raised_By,Category,Subject,Priority,Status,Created\n";
-            filtered.forEach(t => {
-                const created = t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A';
-                csvContent += `${t.asset},${t.location},${t.department || ''},${t.name},${t.raisedBy || 'N/A'},${t.category},"${t.subject}",${t.priority},${t.status},${created}\n`;
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `SICAL_IT_Tickets_Report.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            showToast(`Audit report downloaded (${filtered.length} permanent records).`);
-        }
-
-        function openModal(id) { 
-            const el = document.getElementById(id);
-            if (el) {
-                el.classList.add('flex');
-                el.classList.remove('hidden');
-            }
-        }
-        function closeModal(id) { 
-            const el = document.getElementById(id);
-            if (el) {
-                el.classList.remove('flex');
-                el.classList.add('hidden');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeCloudData();
-        });
+        document.addEventListener('DOMContentLoaded', initializeCloudData);
   </script>
  </body>
 </html>
