@@ -2546,7 +2546,7 @@
         }
 
         // METRICS & CHARTS
-        function updateMetricsAndCharts() {
+       function updateMetricsAndCharts() {
             const accessible = getAccessibleTickets();
             const total = accessible.length;
             const open = accessible.filter(t => t.status === 'Open').length;
@@ -2558,6 +2558,52 @@
             if (document.getElementById('stat-progress')) document.getElementById('stat-progress').innerText = progress;
             if (document.getElementById('stat-closed')) document.getElementById('stat-closed').innerText = closed;
 
+            // Current Month Performance Counter
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const monthTickets = accessible.filter(t => {
+                if (!t.createdAt) return false;
+                const d = new Date(t.createdAt);
+                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+            }).length;
+            if (document.getElementById('stat-month')) document.getElementById('stat-month').innerText = monthTickets;
+
+            // 1. TOP USERS BY TICKET COUNT
+            const userCounts = {};
+            accessible.forEach(t => {
+                let usr = t.name || t.raisedBy || 'Unknown User';
+                userCounts[usr] = (userCounts[usr] || 0) + 1;
+            });
+            const sortedUsers = Object.entries(userCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            const topUsersList = document.getElementById('top-users-list');
+            if (topUsersList) {
+                topUsersList.innerHTML = sortedUsers.length ? sortedUsers.map(([user, count], idx) => `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs">
+                        <span class="font-bold text-slate-700">#${idx + 1} ${user}</span>
+                        <span class="bg-red-50 text-red-700 font-mono font-bold px-2 py-0.5 rounded">${count} Tickets</span>
+                    </div>
+                `).join('') : '<p class="text-xs text-slate-400 p-2">No user data available.</p>';
+            }
+
+            // 2. TOP ISSUE CATEGORIES
+            const catCounts = {};
+            accessible.forEach(t => {
+                let cat = t.category || 'Other';
+                catCounts[cat] = (catCounts[cat] || 0) + 1;
+            });
+            const sortedCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            const topCategoriesList = document.getElementById('top-categories-list');
+            if (topCategoriesList) {
+                topCategoriesList.innerHTML = sortedCats.length ? sortedCats.map(([cat, count], idx) => `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs">
+                        <span class="font-bold text-slate-700">#${idx + 1} ${cat}</span>
+                        <span class="bg-blue-50 text-blue-700 font-mono font-bold px-2 py-0.5 rounded">${count} Issues</span>
+                    </div>
+                `).join('') : '<p class="text-xs text-slate-400 p-2">No category data available.</p>';
+            }
+
+            // Charts Rendering
             const priorityCanvas = document.getElementById('priorityChart');
             if (priorityCanvas) {
                 if (priorityChartInstance) priorityChartInstance.destroy();
@@ -2583,7 +2629,7 @@
                     type: 'bar',
                     data: {
                         labels: ['Hardware', 'Network', 'System Software', 'Other'],
-                        datasets: [{ data: [
+                        datasets: [{ label: 'Tickets by Category', data: [
                             accessible.filter(t=>t.category==='Hardware').length,
                             accessible.filter(t=>t.category==='Network').length,
                             accessible.filter(t=>t.category==='System Software').length,
