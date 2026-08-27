@@ -371,6 +371,7 @@
            <th class="p-4 bg-slate-50">Location</th>
            <th class="p-4 bg-slate-50">Category</th>
            <th class="p-4 bg-slate-50">Asset TAG</th>
+           <th class="p-4 bg-slate-50">System Name (Asset No)</th>
            <th class="p-4 bg-slate-50">Allocated User &amp; Dept</th>
            <th class="p-4 bg-slate-50">Raised By (User)</th>
            <th class="p-4 bg-slate-50">Device Specs</th>
@@ -522,6 +523,7 @@
             <th class="p-3 bg-slate-50">Ticket ID</th>
             <th class="p-3 bg-slate-50">Location</th>
             <th class="p-3 bg-slate-50">Department</th>
+            <th class="p-3 bg-slate-50">System Name (Asset No)</th>
             <th class="p-3 bg-slate-50">Allocated User</th>
             <th class="p-3 bg-slate-50">Raised By</th>
             <th class="p-3 bg-slate-50">Category</th>
@@ -956,8 +958,8 @@
        <input type="text" id="ticket-serial" placeholder="Serial" class="w-full bg-transparent font-semibold text-slate-700 outline-none" readonly>
       </div>
       <div>
-       <span class="block text-slate-400 font-bold uppercase">System Name</span> 
-       <input type="text" id="ticket-system-name" placeholder="System" class="w-full bg-transparent font-semibold text-slate-700 outline-none" readonly>
+       <span class="block text-slate-400 font-bold uppercase">System Name (Asset No)</span> 
+       <input type="text" id="ticket-system-name" placeholder="Asset No" class="w-full bg-transparent font-semibold text-slate-700 outline-none" readonly>
       </div>
      </div>
      <div class="grid grid-cols-2 gap-4">
@@ -2334,6 +2336,11 @@
                 document.getElementById('ticket-department').value = match["Division"] || match.department || '';
                 document.getElementById('ticket-location').value = match["Location"] || match.location || '';
                 document.getElementById('ticket-asset').value = match["Asset Tag"] || match.assetTag || '';
+                
+                // Auto-fill Model, Serial No, and System Name (Asset No)
+                document.getElementById('ticket-model').value = match["Model"] || match.model || '';
+                document.getElementById('ticket-serial').value = match["Serial No"] || match.serial || '';
+                document.getElementById('ticket-system-name').value = match["Asset No"] || match.assetNo || '';
             }
         }
 
@@ -2353,6 +2360,9 @@
                 department: document.getElementById('ticket-department').value,
                 location: document.getElementById('ticket-location').value,
                 asset: assetTag,
+                model: document.getElementById('ticket-model').value,
+                serial: document.getElementById('ticket-serial').value,
+                systemName: document.getElementById('ticket-system-name').value,
                 category: document.getElementById('ticket-category').value,
                 priority: document.getElementById('ticket-priority').value,
                 subject: document.getElementById('ticket-subject').value,
@@ -2418,7 +2428,7 @@
             tbody.innerHTML = '';
             
             if (!filtered.length) {
-                tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-400 font-medium">No tickets found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" class="p-6 text-center text-slate-400 font-medium">No tickets found.</td></tr>`;
                 return;
             }
 
@@ -2436,9 +2446,10 @@
                         <td class="p-4"><span class="bg-slate-100 text-xs px-2 py-1 rounded font-semibold">${ticket.location}</span></td>
                         <td class="p-4">${ticket.category}</td>
                         <td class="p-4 font-mono text-xs font-bold">${ticket.asset}</td>
+                        <td class="p-4 font-mono text-xs font-bold text-slate-700">${ticket.systemName || ticket["systemName"] || 'N/A'}</td>
                         <td class="p-4 text-xs">${ticket.name}<br><span class="text-slate-400">${ticket.department || 'N/A'}</span></td>
                         <td class="p-4 text-xs font-semibold text-indigo-700">👤 ${ticket.raisedBy || 'Admin'}</td>
-                        <td class="p-4 text-xs font-mono">${ticket.model || 'N/A'}</td>
+                        <td class="p-4 text-xs font-mono">${ticket.model || ticket["Model"] || 'N/A'}</td>
                         <td class="p-4 font-semibold text-slate-800">${ticket.subject}</td>
                         <td class="p-4"><span class="${priorityBadge} text-xs px-2 py-0.5 rounded font-bold">${ticket.priority}</span></td>
                         <td class="p-4"><span class="${statusBadge} text-xs px-2.5 py-1 rounded-full font-bold">${ticket.status}</span></td>
@@ -2510,6 +2521,7 @@
                     <td class="p-3 font-mono font-bold text-red-600">${t.id}</td>
                     <td class="p-3">${t.location}</td>
                     <td class="p-3">${t.department || 'N/A'}</td>
+                    <td class="p-3 font-mono text-slate-700 font-bold">${t.systemName || t["systemName"] || 'N/A'}</td>
                     <td class="p-3">${t.name}</td>
                     <td class="p-3">${t.raisedBy || 'Admin'}</td>
                     <td class="p-3">${t.category}</td>
@@ -2518,13 +2530,13 @@
                     <td class="p-3">${t.status}</td>
                     <td class="p-3 font-mono">${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A'}</td>
                 </tr>
-            `).join('') : `<tr><td colspan="10" class="p-6 text-center text-slate-400">No records match filters.</td></tr>`;
+            `).join('') : `<tr><td colspan="11" class="p-6 text-center text-slate-400">No records match filters.</td></tr>`;
         }
 
         function downloadExcelReport() {
             const filtered = getFilteredReportTickets();
-            let csv = "Ticket ID,Location,Department,Allocated User,Raised By,Category,Subject,Priority,Status,Created Date\n" + 
-                filtered.map(t => `${t.id},${t.location},${t.department || ''},${t.name},${t.raisedBy || ''},${t.category},"${t.subject}",${t.priority},${t.status},${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}`).join("\n");
+            let csv = "Ticket ID,Location,Department,System Name (Asset No),Allocated User,Raised By,Category,Subject,Priority,Status,Created Date\n" + 
+                filtered.map(t => `${t.id},${t.location},${t.department || ''},${t.systemName || t["systemName"] || ''},${t.name},${t.raisedBy || ''},${t.category},"${t.subject}",${t.priority},${t.status},${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}`).join("\n");
             const blob = new Blob([csv], { type: 'text/csv' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
