@@ -350,7 +350,7 @@
       <div class="flex flex-wrap justify-between items-center gap-3">
        <div>
         <h3 class="text-lg font-bold text-slate-800">Employee Directory &amp; Address Book</h3>
-        <p class="text-xs text-slate-500">Manage employee contacts, designations, departments, and location details.</p>
+        <p class="text-xs text-slate-500">Manage employee contacts, company, branch, departments, and location details.</p>
        </div>
        <div class="flex flex-wrap items-center gap-2">
         <input type="text" id="address-search-input" placeholder="Search employee or ID..." oninput="renderAddressBookTable()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none w-48"> 
@@ -371,8 +371,10 @@
            <th class="p-3 bg-slate-50">Name</th>
            <th class="p-3 bg-slate-50">Type</th>
            <th class="p-3 bg-slate-50">Designation</th>
-           <th class="p-3 bg-slate-50">Dept / Div</th>
-           <th class="p-3 bg-slate-50">Project</th>
+           <th class="p-3 bg-slate-50">Department</th>
+           <th class="p-3 bg-slate-50">Company</th>
+           <th class="p-3 bg-slate-50">Division</th>
+           <th class="p-3 bg-slate-50">Branch</th>
            <th class="p-3 bg-slate-50">Location</th>
            <th class="p-3 bg-slate-50">Mail ID</th>
            <th class="p-3 bg-slate-50">MFA</th>
@@ -1557,7 +1559,7 @@
             });
 
             if (!filtered.length) {
-                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">No address book records found. Please upload a CSV file.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" class="p-6 text-center text-slate-400 font-medium">No address book records found. Please upload a CSV file.</td></tr>`;
                 return;
             }
 
@@ -1567,8 +1569,10 @@
                     <td class="p-3 font-bold text-slate-800">${emp["NAME"] || emp.name || 'N/A'}</td>
                     <td class="p-3"><span class="bg-slate-100 px-2 py-0.5 rounded font-semibold">${emp["EMP. TYPE"] || emp.empType || 'N/A'}</span></td>
                     <td class="p-3 text-slate-700">${emp["DESIGNATION"] || emp.designation || 'N/A'}</td>
-                    <td class="p-3">${emp["DEPARTMENT"] || emp.department || 'N/A'} / ${emp["DIVISION"] || emp.division || 'N/A'}</td>
-                    <td class="p-3">${emp["PROJECT"] || emp.project || 'N/A'}</td>
+                    <td class="p-3">${emp["DEPARTMENT"] || emp.department || 'N/A'}</td>
+                    <td class="p-3">${emp["COMPANY"] || emp.company || 'N/A'}</td>
+                    <td class="p-3">${emp["DIVISION"] || emp.division || 'N/A'}</td>
+                    <td class="p-3">${emp["BRANCH"] || emp.branch || 'N/A'}</td>
                     <td class="p-3 font-semibold">${emp["LOCATION"] || emp.location || 'N/A'}</td>
                     <td class="p-3 text-blue-600 font-mono">${emp["MAIL ID"] || emp.mailId || 'N/A'}</td>
                     <td class="p-3"><span class="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">${emp["MFA REMARKS"] || emp.mfaRemarks || 'N/A'}</span></td>
@@ -1610,8 +1614,8 @@
         }
 
         function downloadAddressBookTemplate() {
-            const headers = ["EMPLOYEE ID", "NAME", "EMP. TYPE", "DESIGNATION", "DEPARTMENT", "DIVISION", "PROJECT", "LOCATION", "MAIL ID", "MFA REMARKS", "MOBILE NUMBER"];
-            const csv = headers.join(",") + "\n" + "3457,GIRIDHARAN.S,STAFF,SR. EXE,IT,SMART,CFS,CHENNAI RJS,giridharan.s@sical.com,YES,7550108613";
+            const headers = ["EMPLOYEE ID", "NAME", "EMP. TYPE", "DESIGNATION", "DEPARTMENT", "COMPANY", "DIVISION", "BRANCH", "LOCATION", "MAIL ID", "MFA REMARKS", "MOBILE NUMBER"];
+            const csv = headers.join(",") + "\n" + "3457,GIRIDHARAN.S,STAFF,SR. EXE,IT,SMART,CFS,CFS HO,CHENNAI RJS,giridharan.s@sical.com,YES,7550108613";
             const blob = new Blob([csv], { type: 'text/csv' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
@@ -1625,7 +1629,7 @@
                 showToast('No records to export.', 'error');
                 return;
             }
-            const headers = ["EMPLOYEE ID", "NAME", "EMP. TYPE", "DESIGNATION", "DEPARTMENT", "DIVISION", "PROJECT", "LOCATION", "MAIL ID", "MFA REMARKS", "MOBILE NUMBER"];
+            const headers = ["EMPLOYEE ID", "NAME", "EMP. TYPE", "DESIGNATION", "DEPARTMENT", "COMPANY", "DIVISION", "BRANCH", "LOCATION", "MAIL ID", "MFA REMARKS", "MOBILE NUMBER"];
             let csv = headers.join(",") + "\n";
             addressBookList.forEach(emp => {
                 let row = headers.map(h => `"${String(emp[h] || '').replace(/"/g, '""')}"`);
@@ -2544,8 +2548,22 @@
 
         function handleTicketSubmit(e) {
             e.preventDefault();
-            const nextId = "TCK-" + (1001 + ticketsList.length);
             const now = new Date();
+            const currentYear = now.getFullYear();
+
+            // Continuous year-independent ticket sequence generation (e.g. TCK-2026-0001)
+            let yearPrefix = "TCK-" + currentYear + "-";
+            let maxSeq = 0;
+            ticketsList.forEach(t => {
+                if (t.id && t.id.startsWith(yearPrefix)) {
+                    let seqNum = parseInt(t.id.replace(yearPrefix, ''), 10);
+                    if (!isNaN(seqNum) && seqNum > maxSeq) {
+                        maxSeq = seqNum;
+                    }
+                }
+            });
+            const nextId = yearPrefix + String(maxSeq + 1).padStart(4, '0');
+
             const raisedByName = currentUser ? currentUser.name : "SICAL Admin";
             
             const assetTag = document.getElementById('ticket-asset').value;
@@ -2570,7 +2588,7 @@
                 status: "Open",
                 createdAt: now.toISOString(),
                 createdMonth: now.getMonth(),
-                createdYear: now.getFullYear()
+                createdYear: currentYear
             };
             ticketsList.unshift(newTicket);
             saveTickets();
