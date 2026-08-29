@@ -686,16 +686,22 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
        <!-- Location Master -->
        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-        <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Location Master</h3>
-        <form onsubmit="handleAddLocation(event)" class="flex space-x-2">
-         <input type="text" id="new-location-input" placeholder="e.g. CHENNAI" required class="flex-1 border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-red-500"> 
-         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm">Add</button>
+        <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Location &amp; Company Master</h3>
+        <form onsubmit="handleAddLocation(event)" class="space-y-2">
+         <div class="flex space-x-2">
+          <input type="text" id="new-location-input" placeholder="e.g. CHENNAI" required class="flex-1 border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-red-500"> 
+          <select id="new-location-company" class="border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-red-500 font-semibold">
+           <option value="SMART">SMART</option>
+           <option value="SICAL">SICAL</option>
+          </select>
+         </div>
+         <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg shadow-sm">Add Location</button>
         </form>
         <div class="overflow-y-auto max-h-48 border border-slate-200 rounded-lg">
          <table class="w-full text-left text-sm text-slate-600">
           <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[10px]">
            <tr>
-            <th class="p-2">Location Hub</th>
+            <th class="p-2">Location Hub &amp; Company</th>
             <th class="p-2 text-right">Action</th>
            </tr>
           </thead>
@@ -1129,7 +1135,20 @@
         };
 
         const DEFAULT_LOCATIONS = [
-            "RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI", "SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRK-TRICHY", "RAMAYAPATNAM", "KANCHAN", "BHARATPUR", "RAIGARH"
+            { name: "RAJAJI SALAI", company: "SMART" },
+            { name: "MINJUR", company: "SMART" },
+            { name: "TUTICORIN", company: "SMART" },
+            { name: "VIZAG", company: "SMART" },
+            { name: "GCT POONERI", company: "SMART" },
+            { name: "SIH", company: "SICAL" },
+            { name: "DREDGER", company: "SICAL" },
+            { name: "BANGALORE", company: "SICAL" },
+            { name: "NIGAHI", company: "SICAL" },
+            { name: "TRK-TRICHY", company: "SICAL" },
+            { name: "RAMAYAPATNAM", company: "SICAL" },
+            { name: "KANCHAN", company: "SICAL" },
+            { name: "BHARATPUR", company: "SICAL" },
+            { name: "RAIGARH", company: "SICAL" }
         ];
 
         const DEFAULT_ASSET_TYPES = [
@@ -1204,7 +1223,13 @@
             }
 
             if (cloudLocations && cloudLocations.length > 0) {
-                locationsList = cloudLocations.map(item => item.location || item);
+                locationsList = cloudLocations.map(item => {
+                    if (typeof item === 'string') {
+                        const smartList = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
+                        return { name: item, company: smartList.includes(item.toUpperCase()) ? "SMART" : "SICAL" };
+                    }
+                    return { name: item.name || item.location || '', company: item.company || 'SICAL' };
+                });
             }
 
             if (cloudRoles && cloudRoles.length > 0) {
@@ -1227,7 +1252,7 @@
 
         function saveLocations() { 
             localStorage.setItem('sical_locations', JSON.stringify(locationsList)); 
-            const locationRecords = locationsList.map(l => ({ location: l }));
+            const locationRecords = locationsList.map(l => ({ location: l.name, company: l.company }));
             saveSheetData("Locations", locationRecords);
         }
         
@@ -1302,7 +1327,35 @@
             if (subTabId === 'user-summary') renderUserSummaryTable();
         }
 
-        // ASSET SUMMARY LOGIC (SMART & SICAL SEPARATED ENTITIES)
+        // HELPER TO CALCULATE TOTAL ASSETS FOR A GROUP OF LOCATIONS
+        function calculateGroupTotal(locNames, types, statuses) {
+            let total = 0;
+            locNames.forEach(loc => {
+                statuses.forEach(status => {
+                    types.forEach(t => {
+                        let count = assetMasterList.filter(a => {
+                            let aLoc = (a["Location"] || a.location || '').toUpperCase();
+                            let aType = (a["Asset Type"] || a.assetType || '').toUpperCase();
+                            let aAlloc = (a["Assigned To"] || a.allocatedTo || '').trim();
+                            let aStatus = (a["Status"] || a.status || '').toLowerCase();
+
+                            if (!aLoc.includes(loc.toUpperCase())) return false;
+                            if (aType !== t.toUpperCase()) return false;
+
+                            if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
+                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aStatus.includes('working') || !aStatus.includes('not working') && !aStatus.includes('scrap'));
+                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aStatus.includes('not working');
+                            if (status === "Scrap") return aStatus.includes('scrap');
+                            return false;
+                        }).length;
+                        total += count;
+                    });
+                });
+            });
+            return total;
+        }
+
+        // ASSET SUMMARY LOGIC (SMART & SICAL SEPARATED ENTITIES WITH OVERALL TOTALS)
         function renderAssetSummaryTable() {
             const thead = document.getElementById('asset-summary-thead');
             const tbody = document.getElementById('asset-summary-tbody');
@@ -1315,8 +1368,8 @@
             headerHTML += `<th class="p-3 text-center bg-slate-800 sticky top-0 z-20">Total</th></tr>`;
             thead.innerHTML = headerHTML;
 
-            const smartLocations = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
-            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRK-TRICHY", "RAMAYAPATNAM", "KANCHAN", "BHARATPUR", "RAIGARH"];
+            const smartLocations = locationsList.filter(l => (l.company || '').toUpperCase() === 'SMART').map(l => l.name);
+            const sicalLocations = locationsList.filter(l => (l.company || '').toUpperCase() === 'SICAL').map(l => l.name);
             const statuses = ["Assigned", "Instock - Working", "Instock - Not Working", "Scrap"];
 
             let html = '';
@@ -1325,8 +1378,9 @@
             types.forEach(t => { smartGrandTotals[t] = 0; sicalGrandTotals[t] = 0; });
             smartGrandTotals.total = 0; sicalGrandTotals.total = 0;
 
-            // 1. SMART - Asset Summary Section
-            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 3}" class="p-2.5 tracking-wider">SMART - Asset Summary</td></tr>`;
+            // 1. SMART - Asset Summary Section with Overall Total in Header
+            const smartTotalOverall = calculateGroupTotal(smartLocations, types, statuses);
+            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 2}" class="p-2.5 tracking-wider">SMART - Asset Summary</td><td class="p-2.5 text-center font-mono">${smartTotalOverall}</td></tr>`;
             
             smartLocations.forEach(loc => {
                 let locTotals = {};
@@ -1378,8 +1432,9 @@
                 html += `<td class="p-2.5 text-center font-mono bg-slate-200 text-red-600">${locTotals.total}</td></tr>`;
             });
 
-            // 2. SICAL - Assets Summary Section
-            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 3}" class="p-2.5 tracking-wider">SICAL - Assets Summary</td></tr>`;
+            // 2. SICAL - Assets Summary Section with Overall Total in Header
+            const sicalTotalOverall = calculateGroupTotal(sicalLocations, types, statuses);
+            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 2}" class="p-2.5 tracking-wider">SICAL - Assets Summary</td><td class="p-2.5 text-center font-mono">${sicalTotalOverall}</td></tr>`;
 
             sicalLocations.forEach(loc => {
                 let locTotals = {};
@@ -1445,8 +1500,8 @@
             const types = assetTypesList && assetTypesList.length ? assetTypesList : ["DESKTOP", "LAPTOP", "PRINTER"];
             let csv = "Group,Branch/Location,Status," + types.join(",") + ",Total\n";
             
-            const smartLocations = ["RAJAJI SALAI", "MINJUR", "TUTICORIN", "VIZAG", "GCT POONERI"];
-            const sicalLocations = ["SIH", "DREDGER", "BANGALORE", "NIGAHI", "TRK-TRICHY", "RAMAYAPATNAM", "KANCHAN", "BHARATPUR", "RAIGARH"];
+            const smartLocations = locationsList.filter(l => (l.company || '').toUpperCase() === 'SMART').map(l => l.name);
+            const sicalLocations = locationsList.filter(l => (l.company || '').toUpperCase() === 'SICAL').map(l => l.name);
             const statuses = ["Assigned", "Instock - Working", "Instock - Not Working", "Scrap"];
 
             smartLocations.forEach(loc => {
@@ -1921,7 +1976,10 @@
                 const el = document.getElementById(id);
                 if (!el) return;
                 let html = (id === 'report-location-filter' || id === 'asset-location-filter' || id === 'export-asset-location') ? '<option value="">All Locations</option>' : '<option value="">Select Location</option>';
-                locationsList.forEach(loc => { html += `<option value="${loc}">${loc}</option>`; });
+                locationsList.forEach(loc => { 
+                    const locName = typeof loc === 'string' ? loc : loc.name;
+                    html += `<option value="${locName}">${locName}</option>`; 
+                });
                 el.innerHTML = html;
             });
         }
@@ -1938,15 +1996,17 @@
             el.innerHTML = rolesList.map(r => `<option value="${r}">${r}</option>`).join('');
         }
 
-        // LOCATION MASTER
+        // LOCATION MASTER WITH COMPANY MAPPING
         function renderLocationMasterTable() {
             const tbody = document.getElementById('location-master-table-body');
             if (!tbody) return;
             tbody.innerHTML = '';
-            locationsList.forEach((loc, index) => {
+            locationsList.forEach((locObj, index) => {
+                const locName = typeof locObj === 'string' ? locObj : locObj.name;
+                const locComp = typeof locObj === 'string' ? 'SICAL' : (locObj.company || 'SICAL');
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
-                        <td class="p-2 font-semibold text-slate-700">${loc}</td>
+                        <td class="p-2 font-semibold text-slate-700">${locName} <span class="ml-2 text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.5 rounded font-bold">${locComp}</span></td>
                         <td class="p-2 text-right space-x-1">
                             <button onclick="editLocationInline(${index}, this)" class="text-xs text-blue-600 hover:underline font-bold">Edit</button>
                             <button onclick="requestDeleteLocation(${index}, this)" class="text-xs text-red-600 hover:underline font-bold">Delete</button>
@@ -1959,14 +2019,18 @@
         function handleAddLocation(e) {
             e.preventDefault();
             const input = document.getElementById('new-location-input');
+            const compSelect = document.getElementById('new-location-company');
             const val = input.value.trim().toUpperCase();
-            if (val && !locationsList.includes(val)) {
-                locationsList.push(val);
+            const comp = compSelect ? compSelect.value : 'SICAL';
+            
+            if (val && !locationsList.some(l => (typeof l === 'string' ? l : l.name).toUpperCase() === val)) {
+                locationsList.push({ name: val, company: comp });
                 saveLocations();
                 renderLocationDropdowns();
                 renderLocationMasterTable();
+                renderAssetSummaryTable();
                 input.value = '';
-                showToast(`Location "${val}" added and saved permanently!`);
+                showToast(`Location "${val}" added under ${comp}!`);
             } else {
                 showToast('Location already exists or empty.', 'error');
             }
@@ -1975,16 +2039,29 @@
         function editLocationInline(index, btn) {
             const tr = btn.closest('tr');
             const td = tr.querySelector('td:first-child');
-            const oldVal = locationsList[index];
-            td.innerHTML = `<input type="text" value="${oldVal}" class="border border-slate-300 rounded p-1 text-xs w-full" id="loc-edit-${index}">`;
+            const oldObj = locationsList[index];
+            const oldName = typeof oldObj === 'string' ? oldObj : oldObj.name;
+            const oldComp = typeof oldObj === 'string' ? 'SICAL' : (oldObj.company || 'SICAL');
+
+            td.innerHTML = `
+                <div class="flex space-x-1">
+                    <input type="text" value="${oldName}" class="border border-slate-300 rounded p-1 text-xs flex-1" id="loc-edit-name-${index}">
+                    <select class="border border-slate-300 rounded p-1 text-xs" id="loc-edit-comp-${index}">
+                        <option value="SMART" ${oldComp === 'SMART' ? 'selected' : ''}>SMART</option>
+                        <option value="SICAL" ${oldComp === 'SICAL' ? 'selected' : ''}>SICAL</option>
+                    </select>
+                </div>
+            `;
             btn.textContent = 'Save';
             btn.onclick = function() {
-                const newVal = document.getElementById(`loc-edit-${index}`).value.trim().toUpperCase();
-                if (newVal) {
-                    locationsList[index] = newVal;
+                const newName = document.getElementById(`loc-edit-name-${index}`).value.trim().toUpperCase();
+                const newComp = document.getElementById(`loc-edit-comp-${index}`).value;
+                if (newName) {
+                    locationsList[index] = { name: newName, company: newComp };
                     saveLocations();
                     renderLocationDropdowns();
                     renderLocationMasterTable();
+                    renderAssetSummaryTable();
                     showToast('Location updated.');
                 }
             };
@@ -2002,11 +2079,12 @@
         }
 
         function deleteLocation(index) {
-            const name = locationsList[index];
+            const name = typeof locationsList[index] === 'string' ? locationsList[index] : locationsList[index].name;
             locationsList.splice(index, 1);
             saveLocations();
             renderLocationDropdowns();
             renderLocationMasterTable();
+            renderAssetSummaryTable();
             showToast(`Location "${name}" deleted.`);
         }
 
@@ -2322,6 +2400,7 @@
 
             renderAssetDirectoryTable();
             renderAssetHistoryTable();
+            renderAssetSummaryTable();
             populateUserDropdown();
             showToast(`Asset "${assetTag}" saved successfully!`);
             e.target.reset();
@@ -2371,6 +2450,7 @@
 
             renderAssetDirectoryTable();
             renderAssetHistoryTable();
+            renderAssetSummaryTable();
             populateUserDropdown();
             closeModal('edit-asset-modal');
             showToast(`Asset "${asset["Asset Tag"]}" updated & history logged!`, 'success');
