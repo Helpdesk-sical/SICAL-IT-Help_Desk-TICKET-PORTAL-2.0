@@ -1336,16 +1336,23 @@
                         let count = assetMasterList.filter(a => {
                             let aLoc = (a["Location"] || a.location || '').toUpperCase();
                             let aType = (a["Asset Type"] || a.assetType || '').toUpperCase();
-                            let aAlloc = (a["Assigned To"] || a.allocatedTo || '').trim();
-                            let aStatus = (a["Status"] || a.status || '').toLowerCase();
+                            let aStatus = (a["Status"] || a.status || '').toUpperCase();
 
                             if (!aLoc.includes(loc.toUpperCase())) return false;
                             if (aType !== t.toUpperCase()) return false;
 
-                            if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
-                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aStatus.includes('working') || !aStatus.includes('not working') && !aStatus.includes('scrap'));
-                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aStatus.includes('not working');
-                            if (status === "Scrap") return aStatus.includes('scrap');
+                            if (status === "Assigned") {
+                                return aStatus.includes("ALLOCATE");
+                            }
+                            if (status === "Instock - Working") {
+                                return aStatus.includes("INSTOCK") && aStatus.includes("WORKING");
+                            }
+                            if (status === "Instock - Not Working") {
+                                return aStatus.includes("INSTOCK") && aStatus.includes("NOT WORKING");
+                            }
+                            if (status === "Scrap") {
+                                return aStatus.includes("SCRAP");
+                            }
                             return false;
                         }).length;
                         total += count;
@@ -1399,16 +1406,23 @@
                         let count = assetMasterList.filter(a => {
                             let aLoc = (a["Location"] || a.location || '').toUpperCase();
                             let aType = (a["Asset Type"] || a.assetType || '').toUpperCase();
-                            let aAlloc = (a["Assigned To"] || a.allocatedTo || '').trim();
-                            let aStatus = (a["Status"] || a.status || '').toLowerCase();
+                            let aStatus = (a["Status"] || a.status || '').toUpperCase();
 
                             if (!aLoc.includes(loc.toUpperCase())) return false;
                             if (aType !== t.toUpperCase()) return false;
 
-                            if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
-                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aStatus.includes('working') || !aStatus.includes('not working') && !aStatus.includes('scrap'));
-                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aStatus.includes('not working');
-                            if (status === "Scrap") return aStatus.includes('scrap');
+                            if (status === "Assigned") {
+                                return aStatus.includes("ALLOCATE");
+                            }
+                            if (status === "Instock - Working") {
+                                return aStatus.includes("INSTOCK") && aStatus.includes("WORKING");
+                            }
+                            if (status === "Instock - Not Working") {
+                                return aStatus.includes("INSTOCK") && aStatus.includes("NOT WORKING");
+                            }
+                            if (status === "Scrap") {
+                                return aStatus.includes("SCRAP");
+                            }
                             return false;
                         }).length;
 
@@ -1453,16 +1467,23 @@
                         let count = assetMasterList.filter(a => {
                             let aLoc = (a["Location"] || a.location || '').toUpperCase();
                             let aType = (a["Asset Type"] || a.assetType || '').toUpperCase();
-                            let aAlloc = (a["Assigned To"] || a.allocatedTo || '').trim();
-                            let aStatus = (a["Status"] || a.status || '').toLowerCase();
+                            let aStatus = (a["Status"] || a.status || '').toUpperCase();
 
                             if (!aLoc.includes(loc.toUpperCase())) return false;
                             if (aType !== t.toUpperCase()) return false;
 
-                            if (status === "Assigned") return aAlloc !== '' && aAlloc.toLowerCase() !== 'unassigned' && aAlloc.toLowerCase() !== 'stock';
-                            if (status === "Instock - Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && (aStatus.includes('working') || !aStatus.includes('not working') && !aStatus.includes('scrap'));
-                            if (status === "Instock - Not Working") return (aAlloc === '' || aAlloc.toLowerCase() === 'stock') && aStatus.includes('not working');
-                            if (status === "Scrap") return aStatus.includes('scrap');
+                            if (status === "Assigned") {
+                                return aStatus.includes("ALLOCATE");
+                            }
+                            if (status === "Instock - Working") {
+                                return aStatus.includes("INSTOCK") && aStatus.includes("WORKING");
+                            }
+                            if (status === "Instock - Not Working") {
+                                return aStatus.includes("INSTOCK") && aStatus.includes("NOT WORKING");
+                            }
+                            if (status === "Scrap") {
+                                return aStatus.includes("SCRAP");
+                            }
                             return false;
                         }).length;
 
