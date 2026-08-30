@@ -1448,7 +1448,7 @@
 
             // 2. SICAL - Assets Summary Section with Overall Total in Header
             const sicalTotalOverall = calculateGroupTotal(sicalLocations, types, statuses);
-            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 2}" class="p-2.5 tracking-wider">SICAL - Assets Summary</td><td class="p-2.5 text-center font-mono">${sicalTotalOverall}</td></tr>`;
+            html += `<tr class="bg-indigo-950 text-white font-bold"><td colspan="${types.length + 2}" class="p-2.5 tracking-wider">SICAL - Asset Summary</td><td class="p-2.5 text-center font-mono">${sicalTotalOverall}</td></tr>`;
 
             sicalLocations.forEach(loc => {
                 let locTotals = {};
@@ -1517,6 +1517,7 @@
             showToast('Asset Summary filter reset.', 'info');
         }
 
+        // FIXED EXPORT ASSET SUMMARY CSV MATCHING UI METRICS EXACTLY
         function exportAssetSummaryCSV() {
             const types = assetTypesList && assetTypesList.length ? assetTypesList : ["DESKTOP", "LAPTOP", "PRINTER"];
             let csv = "Group,Branch/Location,Status," + types.join(",") + ",Total\n";
@@ -1525,33 +1526,38 @@
             const sicalLocations = locationsList.filter(l => (l.company || '').toUpperCase() === 'SICAL').map(l => l.name);
             const statuses = ["Assigned", "Instock - Working", "Instock - Not Working", "Scrap"];
 
-            smartLocations.forEach(loc => {
-                statuses.forEach(status => {
-                    let row = ["SMART", loc, status];
-                    let rTotal = 0;
-                    types.forEach(t => {
-                        let count = assetMasterList.filter(a => ((a["Location"] || a.location || '')).toUpperCase().includes(loc.toUpperCase()) && ((a["Asset Type"] || a.assetType || '')).toUpperCase() === t.toUpperCase()).length;
-                        row.push(count);
-                        rTotal += count;
-                    });
-                    row.push(rTotal);
-                    csv += `"${row.join('","')}"\n`;
-                });
-            });
+            const processGroupExport = (groupName, locs) => {
+                locs.forEach(loc => {
+                    statuses.forEach(status => {
+                        let row = [groupName, loc, status];
+                        let rTotal = 0;
+                        types.forEach(t => {
+                            let count = assetMasterList.filter(a => {
+                                let aLoc = (a["Location"] || a.location || '').toUpperCase();
+                                let aType = (a["Asset Type"] || a.assetType || '').toUpperCase();
+                                let aStatus = (a["Status"] || a.status || '').toUpperCase();
 
-            sicalLocations.forEach(loc => {
-                statuses.forEach(status => {
-                    let row = ["SICAL", loc, status];
-                    let rTotal = 0;
-                    types.forEach(t => {
-                        let count = assetMasterList.filter(a => ((a["Location"] || a.location || '')).toUpperCase().includes(loc.toUpperCase()) && ((a["Asset Type"] || a.assetType || '')).toUpperCase() === t.toUpperCase()).length;
-                        row.push(count);
-                        rTotal += count;
+                                if (!aLoc.includes(loc.toUpperCase())) return false;
+                                if (aType !== t.toUpperCase()) return false;
+
+                                if (status === "Assigned") return aStatus.includes("ALLOCATE");
+                                if (status === "Instock - Working") return aStatus.includes("INSTOCK") && aStatus.includes("WORKING");
+                                if (status === "Instock - Not Working") return aStatus.includes("INSTOCK") && aStatus.includes("NOT WORKING");
+                                if (status === "Scrap") return aStatus.includes("SCRAP");
+                                return false;
+                            }).length;
+
+                            row.push(count);
+                            rTotal += count;
+                        });
+                        row.push(rTotal);
+                        csv += `"${row.join('","')}"\n`;
                     });
-                    row.push(rTotal);
-                    csv += `"${row.join('","')}"\n`;
                 });
-            });
+            };
+
+            processGroupExport("SMART", smartLocations);
+            processGroupExport("SICAL", sicalLocations);
 
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
@@ -2075,10 +2081,10 @@
             `;
             btn.textContent = 'Save';
             btn.onclick = function() {
-                const newName = document.getElementById(`loc-edit-name-${index}`).value.trim().toUpperCase();
+                const newVal = document.getElementById(`loc-edit-name-${index}`).value.trim().toUpperCase();
                 const newComp = document.getElementById(`loc-edit-comp-${index}`).value;
-                if (newName) {
-                    locationsList[index] = { name: newName, company: newComp };
+                if (newVal) {
+                    locationsList[index] = { name: newVal, company: newComp };
                     saveLocations();
                     renderLocationDropdowns();
                     renderLocationMasterTable();
